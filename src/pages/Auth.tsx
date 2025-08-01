@@ -126,8 +126,14 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground">GREENRIOT</h1>
-          <p className="text-muted-foreground mt-2">Descubre y comparte objetos abandonados</p>
+          <div className="flex justify-center mb-4">
+            <img 
+              src="/lovable-uploads/d8b5b7dc-f65c-45cf-acee-55fb29fdba7c.png" 
+              alt="Greenriot" 
+              className="h-12 w-auto"
+            />
+          </div>
+          <p className="text-muted-foreground mt-2">Gana o ahorra. Salva el planeta</p>
           
           {affiliateCode && (
             <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">

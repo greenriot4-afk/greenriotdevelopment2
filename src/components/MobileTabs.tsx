@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { DollarSign } from "lucide-react";
 
 const tabs = [
   {
@@ -25,6 +26,12 @@ const tabs = [
     label: "Mercadillos",
     iconSrc: "/lovable-uploads/db565d88-e9c2-492d-bf27-7c312a6cd298.png",
     path: "/markets"
+  },
+  {
+    id: "affiliates",
+    label: "Afiliados",
+    icon: DollarSign,
+    path: "/affiliates"
   }
 ];
 
@@ -55,11 +62,17 @@ export function MobileTabs() {
               }`}
             >
               <div className="flex flex-col items-center gap-1">
-                <img 
-                  src={tab.iconSrc} 
-                  alt={tab.label}
-                  className={`h-5 w-5 ${isActive ? 'opacity-100' : 'opacity-60'}`}
-                />
+                {tab.iconSrc ? (
+                  <img 
+                    src={tab.iconSrc} 
+                    alt={tab.label}
+                    className={`h-5 w-5 ${isActive ? 'opacity-100' : 'opacity-60'}`}
+                  />
+                ) : tab.icon ? (
+                  <tab.icon 
+                    className={`h-5 w-5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
+                  />
+                ) : null}
                 <span className="text-xs font-medium">{tab.label}</span>
               </div>
             </Button>

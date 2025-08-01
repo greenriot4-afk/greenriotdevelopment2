@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, WalletIcon, LogOut, Store, Settings, MessageCircle } from "lucide-react";
+import { Menu, X, User, WalletIcon, LogOut, Store, Settings, MessageCircle, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -71,6 +71,11 @@ export function MobileMenu() {
     setIsOpen(false);
   };
 
+  const handleAffiliatesClick = () => {
+    navigate('/affiliates');
+    setIsOpen(false);
+  };
+
   const handleSignOut = async () => {
     await signOut();
     toast.success('Sesión cerrada correctamente');
@@ -128,6 +133,15 @@ export function MobileMenu() {
           >
             <MessageCircle className="h-4 w-4 mr-3" />
             Mis Chats
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-3 h-12"
+            onClick={handleAffiliatesClick}
+          >
+            <DollarSign className="h-4 w-4 mr-3" />
+            Programa de Afiliados
           </Button>
 
           {userHasMarket ? (
