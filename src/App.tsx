@@ -44,7 +44,6 @@ const App = () => (
                         alt="Greenriot" 
                         className="h-8 w-auto"
                       />
-                      <h1 className="font-bold text-lg text-primary-foreground ml-2">GREENRIOT</h1>
                     </div>
                     <div className="flex-1 flex justify-end">
                       <MobileMenu />
