@@ -31,7 +31,7 @@ const translations = {
     // Auth
     'auth.title': 'Authentication',
     'auth.description': 'Sign in or register to get started',
-    'auth.slogan': 'Earn or save. Save the planet',
+    'auth.slogan': 'Make or Save Money. Save the planet',
     'auth.signIn': 'Sign In',
     'auth.signUp': 'Sign Up',
     'auth.register': 'Register',
