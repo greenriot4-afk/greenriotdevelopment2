@@ -213,11 +213,14 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
               <div className="space-y-2">
                 {/* Botones de acción */}
                 <div className="flex items-center gap-2">
-                  <ChatButton 
-                    userId={object.user_id}
-                    size="sm"
-                    variant="outline"
-                  />
+                  {/* Solo mostrar botón de chat para donaciones y productos */}
+                  {objectType !== 'abandoned' && (
+                    <ChatButton 
+                      userId={object.user_id}
+                      size="sm"
+                      variant="outline"
+                    />
+                  )}
                   
                   {/* Solo mostrar botón de maps para abandonados */}
                   {objectType === 'abandoned' && (
