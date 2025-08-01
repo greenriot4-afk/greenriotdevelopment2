@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Heart, HeartOff, Loader2 } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Loader2 } from 'lucide-react';
 import { useUserLikes } from '@/hooks/useUserLikes';
 import { cn } from '@/lib/utils';
 
@@ -35,15 +35,15 @@ export const UserLikes = ({ targetUserId, size = 'md', className }: UserLikesPro
           sizeClasses[size],
           'transition-colors',
           stats.userLike?.like_type === 'like' 
-            ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100' 
-            : 'hover:bg-red-50 hover:border-red-200 hover:text-red-600'
+            ? 'bg-green-50 border-green-200 text-green-600 hover:bg-green-100' 
+            : 'hover:bg-green-50 hover:border-green-200 hover:text-green-600'
         )}
       >
         {loading ? (
           <Loader2 className="animate-spin" size={iconSize[size]} />
         ) : (
           <>
-            <Heart 
+            <ThumbsUp 
               className={cn(
                 stats.userLike?.like_type === 'like' ? 'fill-current' : ''
               )} 
@@ -63,15 +63,15 @@ export const UserLikes = ({ targetUserId, size = 'md', className }: UserLikesPro
           sizeClasses[size],
           'transition-colors',
           stats.userLike?.like_type === 'dislike' 
-            ? 'bg-gray-50 border-gray-300 text-gray-600 hover:bg-gray-100' 
-            : 'hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600'
+            ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100' 
+            : 'hover:bg-red-50 hover:border-red-200 hover:text-red-600'
         )}
       >
         {loading ? (
           <Loader2 className="animate-spin" size={iconSize[size]} />
         ) : (
           <>
-            <HeartOff 
+            <ThumbsDown 
               className={cn(
                 stats.userLike?.like_type === 'dislike' ? 'fill-current' : ''
               )} 
