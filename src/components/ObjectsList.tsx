@@ -250,6 +250,8 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
             <AlertDialogTitle>Confirmar Pago</AlertDialogTitle>
             <AlertDialogDescription>
               ¿Quieres pagar ${selectedObject?.price_credits} para abrir Google Maps con las coordenadas exactas de "{selectedObject?.title}"?
+              <br /><br />
+              <strong>⚠️ Advertencia:</strong> Comprar una coordenada no garantiza que el artículo siga allí!
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

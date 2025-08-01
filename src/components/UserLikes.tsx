@@ -33,10 +33,8 @@ export const UserLikes = ({ targetUserId, size = 'md', className }: UserLikesPro
         disabled={loading}
         className={cn(
           sizeClasses[size],
-          'transition-colors',
-          stats.userLike?.like_type === 'like' 
-            ? 'bg-green-50 border-green-200 text-green-600 hover:bg-green-100' 
-            : 'hover:bg-green-50 hover:border-green-200 hover:text-green-600'
+          'transition-colors bg-green-50 border-green-200 text-green-600 hover:bg-green-100',
+          stats.userLike?.like_type === 'like' && 'bg-green-100 border-green-300'
         )}
       >
         {loading ? (
@@ -61,10 +59,8 @@ export const UserLikes = ({ targetUserId, size = 'md', className }: UserLikesPro
         disabled={loading}
         className={cn(
           sizeClasses[size],
-          'transition-colors',
-          stats.userLike?.like_type === 'dislike' 
-            ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100' 
-            : 'hover:bg-red-50 hover:border-red-200 hover:text-red-600'
+          'transition-colors bg-red-50 border-red-200 text-red-600 hover:bg-red-100',
+          stats.userLike?.like_type === 'dislike' && 'bg-red-100 border-red-300'
         )}
       >
         {loading ? (
