@@ -116,8 +116,35 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     }
   };
 
-  const getButtonText = () => {
-    return 'Abrir Google Maps';
+  const getButtonText = (object: AbandonedObject) => {
+    if (objectType === 'donation') {
+      return (
+        <>
+          <MapPin className="w-3 h-3 mr-1" />
+          Abrir Google Maps
+        </>
+      );
+    }
+    return (
+      <>
+        <MapPin className="w-3 h-3 mr-1" />
+        Abrir Google Maps {object.price_credits} $
+      </>
+    );
+  };
+
+  const getDateText = (object: AbandonedObject) => {
+    const date = new Date(object.created_at);
+    
+    if (objectType === 'abandoned') {
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      return `Shared at ${hours}.${minutes} ${day}/${month}`;
+    }
+    
+    return `Shared ${date.toLocaleDateString()}`;
   };
 
   if (objects.length === 0) {
@@ -173,7 +200,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <User className="w-3 h-3" />
-                  Shared {new Date(object.created_at).toLocaleDateString()}
+                  {getDateText(object)}
                 </div>
                 
                 <Button
@@ -187,7 +214,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                   ) : object.is_sold ? (
                     'Agotado'
                   ) : (
-                    getButtonText()
+                    getButtonText(object)
                   )}
                 </Button>
               </div>
