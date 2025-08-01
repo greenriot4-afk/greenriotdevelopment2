@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { LanguageProvider } from "@/hooks/useLanguage";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
+import { FavoritesProvider } from "@/context/FavoritesContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { MobileTabs } from "@/components/MobileTabs";
 import { MobileMenu } from "@/components/MobileMenu";
@@ -21,6 +22,7 @@ import ChatPage from "./pages/ChatPage";
 import MarketCatalogPage from "./pages/MarketCatalogPage";
 import MarketDetailPage from "./pages/MarketDetailPage";
 import AffiliatePage from "./pages/AffiliatePage";
+import FavoritesPage from "./pages/FavoritesPage";
 import TestingPage from "./pages/TestingPage";
 import { UserProfilePage } from "./pages/UserProfilePage";
 import NotFound from "./pages/NotFound";
@@ -30,8 +32,9 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <LanguageProvider>
-      <AuthProvider>
-        <SubscriptionProvider>
+  <AuthProvider>
+    <SubscriptionProvider>
+      <FavoritesProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -75,6 +78,7 @@ const App = () => (
                           <Route path="/chat" element={<ChatListPage />} />
                           <Route path="/chat/:conversationId" element={<ChatPage />} />
                           <Route path="/affiliates" element={<AffiliatePage />} />
+                          <Route path="/favorites" element={<FavoritesPage />} />
                   <Route path="/testing" element={<TestingPage />} />
                   <Route path="/profile/:userId" element={<UserProfilePage />} />
                           <Route path="*" element={<NotFound />} />
@@ -85,7 +89,8 @@ const App = () => (
             } />
           </Routes>
         </BrowserRouter>
-      </TooltipProvider>
+        </TooltipProvider>
+      </FavoritesProvider>
     </SubscriptionProvider>
   </AuthProvider>
 </LanguageProvider>

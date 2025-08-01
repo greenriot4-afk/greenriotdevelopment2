@@ -6,6 +6,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { MapPin, Coins, User, Wallet } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
 import { useWallet } from '@/hooks/useWallet';
+import { FavoriteButton } from '@/components/FavoriteButton';
 import { ChatButton } from '@/components/ChatButton';
 import { UserLikes } from '@/components/UserLikes';
 import { toast } from 'sonner';
@@ -174,6 +175,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                 alt={object.title}
                 className="w-full h-full object-cover"
               />
+              <FavoriteButton objectId={object.id} />
               <div className="absolute top-2 right-2">
                 <Badge variant={object.is_sold ? "secondary" : "default"}>
                   {object.is_sold ? 'Sold' : 'Available'}

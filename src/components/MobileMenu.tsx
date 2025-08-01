@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, Settings, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus } from "lucide-react";
+import { Menu, X, User, Settings, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -78,6 +78,11 @@ export function MobileMenu() {
     setIsOpen(false);
   };
 
+  const handleFavoritesClick = () => {
+    navigate('/favorites');
+    setIsOpen(false);
+  };
+
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'es' : 'en');
   };
@@ -144,6 +149,15 @@ export function MobileMenu() {
           >
             <MessageCircle className="h-5 w-5 mr-3" />
             Chats
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={handleFavoritesClick}
+          >
+            <Heart className="h-5 w-5 mr-3" />
+            Favoritos
           </Button>
 
           <Button
