@@ -344,7 +344,7 @@ export default function AccountSettings() {
                 ) : (
                   <>
                     <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                      <p className="font-medium text-blue-900">Premium - €19.99/mes</p>
+                      <p className="font-medium text-blue-900">Premium - $19/mes</p>
                       <p className="text-sm text-blue-700 mt-1">
                         Crea y gestiona mercadillos circulares ilimitados
                       </p>

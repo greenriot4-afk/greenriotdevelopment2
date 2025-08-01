@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 
 // Precio por defecto - se puede cambiar aquí
-const PREMIUM_PRICE_EUR = 19.99;
+const PREMIUM_PRICE_USD = 19;
 
 export const AffiliateSection = () => {
   const { user } = useAuth();
@@ -37,7 +37,7 @@ export const AffiliateSection = () => {
       
       const { data, error } = await supabase.functions.invoke('create-premium-subscription', {
         body: { 
-          priceInCents: Math.round(PREMIUM_PRICE_EUR * 100) // Convert to cents
+          priceInCents: PREMIUM_PRICE_USD * 100 // Convert to cents
         }
       });
 
@@ -83,7 +83,7 @@ export const AffiliateSection = () => {
             Sistema de Afiliados
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Gana €{PREMIUM_PRICE_EUR} por cada usuario que refiera y se suscriba al plan premium
+            Gana $19 por cada usuario que refiera y se suscriba al plan premium
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -94,7 +94,7 @@ export const AffiliateSection = () => {
               <span className="font-medium">Ganancias totales:</span>
             </div>
             <Badge variant="secondary" className="text-lg font-bold">
-              €{totalEarnings.toFixed(2)}
+              ${totalEarnings.toFixed(2)}
             </Badge>
           </div>
 
@@ -202,7 +202,7 @@ export const AffiliateSection = () => {
                   <div className="text-right">
                     {referral.commission_paid ? (
                       <Badge variant="secondary" className="text-green-600">
-                        €{referral.commission_amount}
+                        ${referral.commission_amount}
                       </Badge>
                     ) : (
                       <Badge variant="outline">
@@ -229,7 +229,7 @@ export const AffiliateSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Plan Premium</p>
-              <p className="text-sm text-muted-foreground">€{PREMIUM_PRICE_EUR}/mes</p>
+              <p className="text-sm text-muted-foreground">$19/mes</p>
             </div>
             <Button 
               onClick={handleCreatePremiumSubscription}
@@ -257,7 +257,7 @@ export const AffiliateSection = () => {
           </div>
           <div className="flex gap-3">
             <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">3</div>
-            <p className="text-sm">Si se suscriben al plan premium en los próximos 30 días, recibes €{PREMIUM_PRICE_EUR}</p>
+            <p className="text-sm">Si se suscriben al plan premium en los próximos 30 días, recibes $19</p>
           </div>
           <div className="flex gap-3">
             <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">4</div>

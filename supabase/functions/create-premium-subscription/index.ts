@@ -76,7 +76,7 @@ serve(async (req) => {
       line_items: [
         {
           price_data: {
-            currency: "eur",
+            currency: "usd",
             product_data: { 
               name: "Mercadillo Circular Premium",
               description: "Suscripción premium para crear mercadillos circulares"
