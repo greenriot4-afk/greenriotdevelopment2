@@ -209,14 +209,14 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
         return (
           <>
             <MapPin className="w-3 h-3 mr-1" />
-            Abrir Google Maps GRATIS
+            Abrir Google Maps <span className="text-red-500 font-bold">GRATIS</span>
           </>
         );
       } else {
         return (
           <>
             <MapPin className="w-3 h-3 mr-1" />
-            Abrir Google Maps {object.price_credits}$ 
+            Abrir Google Maps <span className="text-red-500 font-bold">{object.price_credits}$</span>
             <Clock className="w-3 h-3 ml-2" />
           </>
         );
@@ -226,7 +226,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     return (
       <>
         <MapPin className="w-3 h-3 mr-1" />
-        Abrir Google Maps {object.price_credits}$
+        Abrir Google Maps <span className="text-red-500 font-bold">{object.price_credits}$</span>
       </>
     );
   };
@@ -268,11 +268,6 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                 className="w-full h-full object-cover"
               />
               <FavoriteButton objectId={object.id} />
-              <div className="absolute top-2 right-2">
-                <Badge variant={object.is_sold ? "secondary" : "default"}>
-                  {object.is_sold ? 'Sold' : 'Available'}
-                </Badge>
-              </div>
             </div>
             
             <CardHeader className="pb-2">
@@ -328,7 +323,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                        {!isAbandonedObjectFree(object) && (
                          <div className="text-center p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
                            <p className="text-xs font-medium text-orange-700 dark:text-orange-300">
-                             {getCountdownText(object)}
+                             <span className="text-red-500 font-bold">FREE</span> in {getTimeUntilFree(object).hours}h {getTimeUntilFree(object).minutes}m
                            </p>
                          </div>
                        )}
@@ -337,7 +332,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                          size="sm"
                          onClick={() => handlePurchaseClick(object)}
                          disabled={object.is_sold || purchasing === object.id}
-                         className={`flex-1 ${isAbandonedObjectFree(object) ? 'bg-green-600 hover:bg-green-700 text-white' : ''}`}
+                         className="flex-1"
                        >
                          {purchasing === object.id ? (
                            'Procesando...'
