@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, Settings, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus, Heart } from "lucide-react";
+import { Menu, X, User, Settings, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus, Heart, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -116,7 +116,7 @@ export function MobileMenu() {
             </div>
             <div>
               <h3 className="text-white font-semibold">
-                {user?.email?.split('@')[0] || 'Usuario'}
+                {user?.email?.split('@')[0] || t('menu.user')}
               </h3>
               
             </div>
@@ -127,7 +127,19 @@ export function MobileMenu() {
             onClick={handleAccountClick}
           >
             <Settings className="h-5 w-5 mr-3" />
-            Mi cuenta
+            {t('menu.myAccount')}
+          </Button>
+        </div>
+
+        {/* Language Toggle */}
+        <div className="p-4 border-b border-white/10">
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={toggleLanguage}
+          >
+            <Globe className="h-5 w-5 mr-3" />
+            {language === 'en' ? 'ES' : 'EN'}
           </Button>
         </div>
 
@@ -139,7 +151,7 @@ export function MobileMenu() {
             onClick={handleWalletClick}
           >
             <WalletIcon className="h-5 w-5 mr-3" />
-            Mi wallet
+            {t('menu.myWallet')}
           </Button>
 
           <Button
@@ -148,7 +160,7 @@ export function MobileMenu() {
             onClick={handleChatClick}
           >
             <MessageCircle className="h-5 w-5 mr-3" />
-            Chats
+            {t('menu.chats')}
           </Button>
 
           <Button
@@ -157,7 +169,7 @@ export function MobileMenu() {
             onClick={handleFavoritesClick}
           >
             <Heart className="h-5 w-5 mr-3" />
-            Favoritos
+            {t('menu.favorites')}
           </Button>
 
           <Button
@@ -167,8 +179,7 @@ export function MobileMenu() {
           >
             <DollarSign className="h-5 w-5 mr-3 mt-1 flex-shrink-0" />
             <span className="text-left leading-tight">
-              Trae un mercadillo circular:<br />
-              Ayuda al planeta y gana 19$!
+              {t('menu.affiliateProgram')}
             </span>
           </Button>
         </div>
@@ -181,7 +192,7 @@ export function MobileMenu() {
             onClick={handleSignOut}
           >
             <LogOut className="h-5 w-5 mr-3" />
-            Cerrar Sesión
+            {t('menu.signOut')}
           </Button>
         </div>
       </SheetContent>

@@ -19,10 +19,14 @@ const translations = {
     
     // Menu
     'menu.title': 'Menu',
+    'menu.user': 'User',
     'menu.myAccount': 'My Account',
+    'menu.myWallet': 'My Wallet',
     'menu.wallet': 'Wallet',
+    'menu.chats': 'Chats',
     'menu.myChats': 'My Chats',
-    'menu.affiliateProgram': 'Affiliate Program',
+    'menu.favorites': 'Favorites',
+    'menu.affiliateProgram': 'Bring a circular market:\nHelp the planet and earn $19!',
     'menu.myCircularMarket': 'My Circular Market',
     'menu.createCircularMarket': 'Create Circular Market',
     'menu.signOut': 'Sign Out',
@@ -146,10 +150,14 @@ const translations = {
     
     // Menu
     'menu.title': 'Menú',
+    'menu.user': 'Usuario',
     'menu.myAccount': 'Mi Cuenta',
+    'menu.myWallet': 'Mi Billetera',
     'menu.wallet': 'Billetera',
+    'menu.chats': 'Chats',
     'menu.myChats': 'Mis Chats',
-    'menu.affiliateProgram': 'Programa de Afiliados',
+    'menu.favorites': 'Favoritos',
+    'menu.affiliateProgram': 'Trae un mercadillo circular:\n¡Ayuda al planeta y gana 19$!',
     'menu.myCircularMarket': 'Mi Mercadillo Circular',
     'menu.createCircularMarket': 'Crear Mercadillo Circular',
     'menu.signOut': 'Cerrar Sesión',
