@@ -61,26 +61,38 @@ export type Database = {
       }
       profiles: {
         Row: {
+          auto_location: boolean | null
           avatar_url: string | null
           created_at: string
           display_name: string | null
           id: string
+          latitude: number | null
+          location_name: string | null
+          longitude: number | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          auto_location?: boolean | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          auto_location?: boolean | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
           updated_at?: string
           user_id?: string
         }

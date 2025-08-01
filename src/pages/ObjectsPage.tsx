@@ -164,7 +164,7 @@ const ObjectsPage = () => {
           <Button
             size="sm"
             variant="outline"
-            onClick={getCurrentLocation}
+            onClick={() => getCurrentLocation()}
             disabled={locationLoading}
             className="ml-auto text-xs h-7"
           >
@@ -191,7 +191,7 @@ const ObjectsPage = () => {
           <p className="text-muted-foreground mb-4 text-sm">
             Activa tu ubicación para ver las distancias a los objetos
           </p>
-          <Button onClick={getCurrentLocation} disabled={locationLoading} size="sm">
+          <Button onClick={() => getCurrentLocation()} disabled={locationLoading} size="sm">
             {locationLoading ? 'Obteniendo ubicación...' : 'Activar ubicación'}
           </Button>
         </div>

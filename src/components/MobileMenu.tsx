@@ -23,8 +23,7 @@ export function MobileMenu() {
   };
 
   const handleAccountClick = () => {
-    // Navigate to account page when implemented
-    toast.info('Próximamente: Configuración de cuenta');
+    navigate('/account');
     setIsOpen(false);
   };
 

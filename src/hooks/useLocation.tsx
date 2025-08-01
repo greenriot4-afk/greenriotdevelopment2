@@ -1,6 +1,8 @@
 import { Geolocation } from '@capacitor/geolocation';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from './useAuth';
 
 export interface UserLocation {
   latitude: number;
@@ -11,8 +13,62 @@ export interface UserLocation {
 export const useLocation = () => {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
 
-  const getCurrentLocation = async (): Promise<UserLocation | null> => {
+  // Load saved location on mount
+  useEffect(() => {
+    if (user) {
+      loadSavedLocation();
+    }
+  }, [user]);
+
+  const loadSavedLocation = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('latitude, longitude, location_name, auto_location')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (error) {
+        console.log('No saved location found');
+        return;
+      }
+
+      if (data.latitude && data.longitude) {
+        setUserLocation({
+          latitude: data.latitude,
+          longitude: data.longitude,
+          address: data.location_name || undefined
+        });
+        console.log('Loaded saved location:', data);
+      }
+    } catch (error) {
+      console.error('Error loading saved location:', error);
+    }
+  };
+
+  const saveLocationToProfile = async (location: UserLocation, locationName?: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          latitude: location.latitude,
+          longitude: location.longitude,
+          location_name: locationName || null
+        })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      console.log('Location saved to profile');
+    } catch (error) {
+      console.error('Error saving location:', error);
+    }
+  };
+
+  const getCurrentLocation = async (saveToProfile: boolean = true): Promise<UserLocation | null> => {
     setIsLoading(true);
     try {
       const position = await Geolocation.getCurrentPosition({
@@ -26,14 +82,27 @@ export const useLocation = () => {
       };
 
       setUserLocation(location);
+      
+      if (saveToProfile) {
+        await saveLocationToProfile(location, 'Ubicación actual');
+        toast.success('Ubicación guardada en tu perfil');
+      }
+      
       return location;
     } catch (error) {
       console.error('Error getting location:', error);
-      toast.error('Failed to get current location');
+      toast.error('Error al obtener la ubicación');
       return null;
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const updateSavedLocation = async (latitude: number, longitude: number, locationName?: string) => {
+    const location = { latitude, longitude, address: locationName };
+    setUserLocation(location);
+    await saveLocationToProfile(location, locationName);
+    toast.success('Ubicación actualizada');
   };
 
   // Calculate distance between two points using Haversine formula
@@ -56,6 +125,7 @@ export const useLocation = () => {
     userLocation,
     setUserLocation,
     getCurrentLocation,
+    updateSavedLocation,
     calculateDistance,
     isLoading,
   };

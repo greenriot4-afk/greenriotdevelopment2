@@ -9,6 +9,7 @@ import { MobileTabs } from "@/components/MobileTabs";
 import { MobileMenu } from "@/components/MobileMenu";
 import ObjectsPage from "./pages/ObjectsPage";
 import WalletPage from "./pages/WalletPage";
+import AccountSettings from "./pages/AccountSettings";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -42,11 +43,12 @@ const App = () => (
                   <main className="flex-1 overflow-auto">
                     <Routes>
                       <Route path="/" element={<Navigate to="/abandons" replace />} />
-                      <Route path="/abandons" element={<ObjectsPage />} />
-                      <Route path="/donations" element={<ObjectsPage />} />
-                      <Route path="/products" element={<ObjectsPage />} />
-                      <Route path="/wallet" element={<WalletPage />} />
-                      <Route path="*" element={<NotFound />} />
+                          <Route path="/abandons" element={<ObjectsPage />} />
+                          <Route path="/donations" element={<ObjectsPage />} />
+                          <Route path="/products" element={<ObjectsPage />} />
+                          <Route path="/wallet" element={<WalletPage />} />
+                          <Route path="/account" element={<AccountSettings />} />
+                          <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>
                 </div>
