@@ -57,7 +57,7 @@ export function MobileTabs() {
               key={tab.id}
               variant="ghost"
               onClick={() => handleTabClick(tab.path)}
-              className={`flex-1 h-14 rounded-none border-b-2 transition-colors ${
+              className={`flex-1 min-w-[80px] h-14 rounded-none border-b-2 transition-colors ${
                 isActive
                   ? "border-primary text-primary bg-primary/5"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"

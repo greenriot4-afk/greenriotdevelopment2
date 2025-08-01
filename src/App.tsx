@@ -9,6 +9,7 @@ import { SubscriptionProvider } from "@/hooks/useSubscription";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { MobileTabs } from "@/components/MobileTabs";
 import { MobileMenu } from "@/components/MobileMenu";
+import { HeaderWallet } from "@/components/HeaderWallet";
 import ObjectsPage from "./pages/ObjectsPage";
 import WalletPage from "./pages/WalletPage";
 import MarketsPage from "./pages/MarketsPage";
@@ -49,9 +50,8 @@ const App = () => (
                         className="h-12 w-auto"
                       />
                     </div>
-                    <div className="flex items-center">
-                    </div>
-                    <div className="flex-1 flex justify-end">
+                    <div className="flex items-center gap-3">
+                      <HeaderWallet />
                       <MobileMenu />
                     </div>
                   </header>
