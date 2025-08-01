@@ -3,15 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MapPin, Save, Navigation } from "lucide-react";
+import { MapPin, Save, Navigation, User, AtSign } from "lucide-react";
 import { useLocation } from "@/hooks/useLocation";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export default function AccountSettings() {
+  const { user } = useAuth();
   const { userLocation, getCurrentLocation, updateSavedLocation, isLoading } = useLocation();
   const [customLatitude, setCustomLatitude] = useState(userLocation?.latitude?.toString() || "");
   const [customLongitude, setCustomLongitude] = useState(userLocation?.longitude?.toString() || "");
   const [locationName, setLocationName] = useState(userLocation?.address || "");
+  const [displayName, setDisplayName] = useState('');
+  const [username, setUsername] = useState('');
+  const [profileLoading, setProfileLoading] = useState(false);
 
   useEffect(() => {
     if (userLocation) {
@@ -20,6 +26,32 @@ export default function AccountSettings() {
       setLocationName(userLocation.address || "");
     }
   }, [userLocation]);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('display_name, username')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) throw error;
+
+        if (data) {
+          setDisplayName(data.display_name || '');
+          setUsername(data.username || '');
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        toast.error('Error al cargar el perfil');
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
 
   const handleCurrentLocation = async () => {
     const location = await getCurrentLocation(true);
@@ -46,15 +78,104 @@ export default function AccountSettings() {
     await updateSavedLocation(lat, lng, locationName || 'Ubicación personalizada');
   };
 
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    try {
+      setProfileLoading(true);
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          display_name: displayName.trim(),
+          username: username.trim().toLowerCase()
+        })
+        .eq('user_id', user.id);
+
+      if (error) {
+        if (error.code === '23505') {
+          toast.error('Este nombre de usuario ya está en uso');
+          return;
+        }
+        throw error;
+      }
+
+      toast.success('Perfil actualizado correctamente');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error('Error al actualizar el perfil');
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
   return (
     <div className="flex-1 p-4 max-w-md mx-auto w-full">
       <div className="space-y-6">
         <div>
           <h2 className="text-xl font-semibold mb-2">Configuración de Cuenta</h2>
           <p className="text-sm text-muted-foreground">
-            Gestiona tu ubicación y preferencias de la aplicación
+            Gestiona tu perfil, ubicación y preferencias de la aplicación
           </p>
         </div>
+
+        {/* Profile Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="w-5 h-5" />
+              Perfil de Usuario
+            </CardTitle>
+            <CardDescription>
+              Configura tu nombre de usuario para los chats
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSaveProfile} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="displayName" className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Nombre de mostrar
+                </Label>
+                <Input
+                  id="displayName"
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Tu nombre completo"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="username" className="flex items-center gap-2">
+                  <AtSign className="w-4 h-4" />
+                  Nombre de usuario
+                </Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, ''))}
+                  placeholder="usuario123"
+                  maxLength={30}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Solo letras, números y guiones bajos. Será usado para los chats.
+                </p>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={profileLoading || !displayName.trim() || !username.trim()}
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {profileLoading ? 'Guardando...' : 'Guardar Perfil'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
 
         {/* Current Location Card */}
         <Card>

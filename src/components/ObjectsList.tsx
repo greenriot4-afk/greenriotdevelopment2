@@ -6,6 +6,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { MapPin, Coins, User, Wallet } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
 import { useWallet } from '@/hooks/useWallet';
+import { ChatButton } from '@/components/ChatButton';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 
@@ -195,25 +196,34 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                 </div>
               </div>
               
-              {/* Solo mostrar botón para abandonados */}
-              {objectType === 'abandoned' && (
-                <div className="flex items-center justify-center">
-                  <Button
+              <div className="space-y-2">
+                {/* Botones de acción */}
+                <div className="flex items-center gap-2">
+                  <ChatButton 
+                    userId={object.user_id}
                     size="sm"
-                    onClick={() => handlePurchaseClick(object)}
-                    disabled={object.is_sold || purchasing === object.id}
-                    className="px-4"
-                  >
-                    {purchasing === object.id ? (
-                      'Procesando...'
-                    ) : object.is_sold ? (
-                      'Agotado'
-                    ) : (
-                      getButtonText(object)
-                    )}
-                  </Button>
+                    variant="outline"
+                  />
+                  
+                  {/* Solo mostrar botón de maps para abandonados */}
+                  {objectType === 'abandoned' && (
+                    <Button
+                      size="sm"
+                      onClick={() => handlePurchaseClick(object)}
+                      disabled={object.is_sold || purchasing === object.id}
+                      className="flex-1"
+                    >
+                      {purchasing === object.id ? (
+                        'Procesando...'
+                      ) : object.is_sold ? (
+                        'Agotado'
+                      ) : (
+                        getButtonText(object)
+                      )}
+                    </Button>
+                  )}
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
         ))}

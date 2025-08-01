@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, WalletIcon, LogOut, Store, Settings } from "lucide-react";
+import { Menu, X, User, WalletIcon, LogOut, Store, Settings, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -61,6 +61,11 @@ export function MobileMenu() {
     }, 100);
   };
 
+  const handleChatClick = () => {
+    navigate('/chat');
+    setIsOpen(false);
+  };
+
   const handleMyMarketClick = () => {
     navigate('/my-market');
     setIsOpen(false);
@@ -114,6 +119,15 @@ export function MobileMenu() {
           >
             <WalletIcon className="h-4 w-4 mr-3" />
             Billetera
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-3 h-12"
+            onClick={handleChatClick}
+          >
+            <MessageCircle className="h-4 w-4 mr-3" />
+            Mis Chats
           </Button>
 
           {userHasMarket ? (

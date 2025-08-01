@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Heart, Store, User } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
+import { ChatButton } from '@/components/ChatButton';
 
 export interface CircularMarket {
   id: string;
@@ -126,7 +127,7 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
               </div>
             </div>
             
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-between">
               <div className="flex gap-2">
                 {market.accepts_donations && (
                   <Badge variant="outline" className="text-xs">
@@ -135,6 +136,12 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
                   </Badge>
                 )}
               </div>
+              
+              <ChatButton 
+                userId={market.user_id}
+                size="sm"
+                variant="outline"
+              />
             </div>
           </CardContent>
         </Card>
