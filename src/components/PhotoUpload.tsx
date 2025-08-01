@@ -84,8 +84,8 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
   };
 
   return (
-    <Card className="max-w-md mx-auto">
-      <CardHeader>
+    <Card className="w-full">
+      <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2">
           <Camera className="w-5 h-5" />
           {getTitle()}

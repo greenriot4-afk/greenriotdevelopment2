@@ -138,24 +138,28 @@ const ObjectsPage = () => {
   }
 
   return (
-    <div className="flex-1 p-6 max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
+    <div className="flex-1 p-4 max-w-md mx-auto w-full">
+      {/* Content Header */}
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <h1 className="text-3xl font-bold">{getTitle()}</h1>
-            <p className="text-muted-foreground">{getDescription()}</p>
+            <h2 className="text-xl font-semibold">{getTitle()}</h2>
+            <p className="text-sm text-muted-foreground">{getDescription()}</p>
           </div>
-          <Button onClick={() => setShowUpload(!showUpload)} className="flex items-center gap-2">
+          <Button 
+            onClick={() => setShowUpload(!showUpload)} 
+            className="flex items-center gap-2"
+            size="sm"
+          >
             <Plus className="w-4 h-4" />
             Publicar
           </Button>
         </div>
 
         {/* Location Status */}
-        <div className="flex items-center gap-2 p-3 bg-card rounded-lg border">
+        <div className="flex items-center gap-2 p-3 bg-card rounded-lg border text-sm">
           <MapPin className="w-4 h-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
+          <span className="text-muted-foreground">
             {userLocation ? 'Ubicación activada' : 'Ubicación desactivada'}
           </span>
           <Button
@@ -163,16 +167,16 @@ const ObjectsPage = () => {
             variant="outline"
             onClick={getCurrentLocation}
             disabled={locationLoading}
-            className="ml-auto"
+            className="ml-auto text-xs h-7"
           >
-            {locationLoading ? 'Obteniendo...' : userLocation ? 'Actualizar' : 'Activar ubicación'}
+            {locationLoading ? 'Obteniendo...' : userLocation ? 'Actualizar' : 'Activar'}
           </Button>
         </div>
       </div>
 
       {/* Upload Form */}
       {showUpload && (
-        <div className="mb-6 p-4 border rounded-lg bg-card">
+        <div className="mb-4 p-3 border rounded-lg bg-card">
           <PhotoUpload 
             onUpload={handleUploadObject} 
             objectType={objectType}
@@ -183,12 +187,12 @@ const ObjectsPage = () => {
 
       {/* Objects List */}
       {!userLocation ? (
-        <div className="text-center py-8">
+        <div className="text-center py-6">
           <MapPin className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-muted-foreground mb-4">
+          <p className="text-muted-foreground mb-4 text-sm">
             Activa tu ubicación para ver las distancias a los objetos
           </p>
-          <Button onClick={getCurrentLocation} disabled={locationLoading}>
+          <Button onClick={getCurrentLocation} disabled={locationLoading} size="sm">
             {locationLoading ? 'Obteniendo ubicación...' : 'Activar ubicación'}
           </Button>
         </div>
