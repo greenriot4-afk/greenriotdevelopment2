@@ -42,12 +42,26 @@ serve(async (req) => {
 
     console.log('Processing deposit request for user:', user.id);
 
-    // Parse request body
-    const { amount }: DepositRequest = await req.json();
+    // Parse request body with input validation
+    const body = await req.json();
+    const { amount }: DepositRequest = body;
 
-    // Validate amount (minimum $10)
-    if (!amount || amount < 10) {
+    // Comprehensive input validation
+    if (!amount || typeof amount !== 'number' || !Number.isFinite(amount)) {
+      throw new Error('Invalid amount format');
+    }
+
+    if (amount < 10) {
       throw new Error('Minimum deposit amount is $10');
+    }
+
+    if (amount > 10000) {
+      throw new Error('Maximum deposit amount is $10,000');
+    }
+
+    // Validate decimal places (max 2)
+    if (Number((amount % 1).toFixed(2)) !== (amount % 1)) {
+      throw new Error('Amount can have maximum 2 decimal places');
     }
 
     // Initialize Stripe

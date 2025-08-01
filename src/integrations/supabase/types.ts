@@ -477,7 +477,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      sanitize_text_input: {
+        Args: { input_text: string }
+        Returns: string
+      }
+      update_wallet_balance_atomic: {
+        Args: {
+          p_wallet_id: string
+          p_amount: number
+          p_transaction_type: string
+          p_user_id: string
+          p_description: string
+          p_object_type?: string
+        }
+        Returns: Json
+      }
+      validate_amount: {
+        Args: { amount: number }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

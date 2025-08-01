@@ -45,39 +45,53 @@ export const useWallet = () => {
       throw new Error('Usuario o wallet no disponible');
     }
 
+    // Input validation
+    if (!amount || amount <= 0 || amount > 1000000) {
+      throw new Error('Cantidad inválida');
+    }
+
     if (wallet.balance < amount) {
       throw new Error('Saldo insuficiente');
     }
 
+    // Sanitize description
+    const sanitizedDescription = description?.replace(/[<>'"&]/g, '').slice(0, 500) || 'Deducción de saldo';
+    const sanitizedObjectType = objectType?.replace(/[<>'"&]/g, '').slice(0, 50) || 'abandoned';
+
     try {
-      // Create transaction record
-      const { error: transactionError } = await supabase
-        .from('transactions')
-        .insert({
-          user_id: user.id,
-          wallet_id: wallet.id,
-          type: 'debit',
-          amount: -amount, // Negative for debit
-          status: 'completed',
-          description,
-          object_type: objectType
+      // Use atomic wallet update function to prevent race conditions
+      const { data: result, error: atomicError } = await supabase
+        .rpc('update_wallet_balance_atomic', {
+          p_wallet_id: wallet.id,
+          p_amount: amount,
+          p_transaction_type: 'debit',
+          p_user_id: user.id,
+          p_description: sanitizedDescription,
+          p_object_type: sanitizedObjectType
         });
 
-      if (transactionError) throw transactionError;
+      if (atomicError) {
+        console.error('Error in atomic wallet update:', atomicError);
+        throw new Error(atomicError.message || 'Error al procesar transacción');
+      }
 
-      // Update wallet balance
-      const newBalance = wallet.balance - amount;
-      const { error: walletError } = await supabase
-        .from('wallets')
-        .update({ balance: newBalance })
-        .eq('id', wallet.id);
+      // Type assertion for the RPC result
+      const walletResult = result as {
+        success: boolean;
+        transaction_id: string;
+        previous_balance: number;
+        new_balance: number;
+      };
 
-      if (walletError) throw walletError;
-
-      // Update local state
-      setWallet(prev => prev ? { ...prev, balance: newBalance } : null);
+      // Update local state with new balance
+      setWallet(prev => prev ? { ...prev, balance: parseFloat(walletResult.new_balance.toString()) } : null);
       
-      return { success: true };
+      return { 
+        success: true, 
+        transaction_id: walletResult.transaction_id,
+        previous_balance: walletResult.previous_balance,
+        new_balance: walletResult.new_balance
+      };
     } catch (error) {
       console.error('Error deducting balance:', error);
       throw error;

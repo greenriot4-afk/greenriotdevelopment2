@@ -41,12 +41,26 @@ serve(async (req) => {
 
     console.log('Processing withdrawal request for user:', user.id);
 
-    // Parse request body
-    const { amount }: WithdrawalRequest = await req.json();
+    // Parse request body with input validation
+    const body = await req.json();
+    const { amount }: WithdrawalRequest = body;
 
-    // Validate amount (minimum $10)
-    if (!amount || amount < 10) {
+    // Comprehensive input validation
+    if (!amount || typeof amount !== 'number' || !Number.isFinite(amount)) {
+      throw new Error('Invalid amount format');
+    }
+
+    if (amount < 10) {
       throw new Error('Minimum withdrawal amount is $10');
+    }
+
+    if (amount > 10000) {
+      throw new Error('Maximum withdrawal amount is $10,000');
+    }
+
+    // Validate decimal places (max 2)
+    if (Number((amount % 1).toFixed(2)) !== (amount % 1)) {
+      throw new Error('Amount can have maximum 2 decimal places');
     }
 
     // Get user's wallet
@@ -60,53 +74,30 @@ serve(async (req) => {
       throw new Error('Wallet not found');
     }
 
-    // Check if user has sufficient balance
-    if (wallet.balance < amount) {
-      throw new Error('Insufficient balance');
+    // Use atomic wallet update function to prevent race conditions
+    const { data: result, error: atomicError } = await supabaseClient
+      .rpc('update_wallet_balance_atomic', {
+        p_wallet_id: wallet.id,
+        p_amount: amount,
+        p_transaction_type: 'withdrawal',
+        p_user_id: user.id,
+        p_description: `Withdrawal of $${amount}`,
+        p_object_type: 'withdrawal'
+      });
+
+    if (atomicError) {
+      console.error('Atomic withdrawal failed:', atomicError);
+      throw new Error('Failed to process withdrawal: ' + atomicError.message);
     }
 
-    // Start a transaction to update wallet balance and create transaction record
-    const { data: transaction, error: transactionError } = await supabaseClient
-      .from('transactions')
-      .insert({
-        user_id: user.id,
-        wallet_id: wallet.id,
-        type: 'withdrawal',
-        amount: amount,
-        status: 'completed', // For this demo, we'll mark as completed immediately
-        description: `Withdrawal of $${amount}`
-      })
-      .select()
-      .single();
-
-    if (transactionError) {
-      throw new Error('Failed to create transaction: ' + transactionError.message);
-    }
-
-    // Update wallet balance
-    const newBalance = (parseFloat(wallet.balance) - amount).toFixed(2);
-    const { error: updateError } = await supabaseClient
-      .from('wallets')
-      .update({ balance: newBalance })
-      .eq('id', wallet.id);
-
-    if (updateError) {
-      // If wallet update fails, we should mark the transaction as failed
-      await supabaseClient
-        .from('transactions')
-        .update({ status: 'failed' })
-        .eq('id', transaction.id);
-      
-      throw new Error('Failed to update wallet balance');
-    }
-
-    console.log('Withdrawal processed successfully:', transaction.id);
+    console.log('Withdrawal processed successfully:', result.transaction_id);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        transaction_id: transaction.id,
-        new_balance: newBalance
+        transaction_id: result.transaction_id,
+        previous_balance: result.previous_balance,
+        new_balance: result.new_balance
       }),
       { 
         headers: { 
