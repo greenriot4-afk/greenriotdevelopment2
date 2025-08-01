@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Trash2, Gift, Package } from "lucide-react";
+import { Sofa, Gift, Package, Store } from "lucide-react";
 
 const tabs = [
   {
     id: "abandons",
     label: "Abandonos",
-    icon: Trash2,
+    icon: Sofa,
     path: "/abandons"
   },
   {
@@ -20,6 +20,12 @@ const tabs = [
     label: "Productos", 
     icon: Package,
     path: "/products"
+  },
+  {
+    id: "markets",
+    label: "Mercadillos",
+    icon: Store,
+    path: "/markets"
   }
 ];
 
