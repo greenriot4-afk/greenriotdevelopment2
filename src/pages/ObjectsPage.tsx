@@ -53,6 +53,7 @@ const ObjectsPage = () => {
 
   const fetchObjects = async () => {
     try {
+      console.log('fetchObjects called', { type, objectType, user: !!user });
       setLoading(true);
       const { data, error } = await supabase
         .from('objects')
@@ -61,6 +62,7 @@ const ObjectsPage = () => {
         .eq('is_sold', false)
         .order('created_at', { ascending: false });
 
+      console.log('fetchObjects result', { data: data?.length, error });
       if (error) throw error;
       setObjects((data || []) as AppObject[]);
     } catch (error) {
@@ -72,10 +74,14 @@ const ObjectsPage = () => {
   };
 
   useEffect(() => {
-    if (type && user) {
+    console.log('useEffect triggered', { type, objectType, user: !!user });
+    if (type && objectType) {
       fetchObjects();
+    } else {
+      console.log('Missing dependencies for fetchObjects', { type, objectType });
+      setLoading(false);
     }
-  }, [type, objectType, user]);
+  }, [type, objectType]);
 
   const handleUploadObject = async (data: {
     title: string;
