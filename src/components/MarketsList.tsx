@@ -80,7 +80,11 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
   return (
     <div className="space-y-4">
       {sortedMarkets.map((market) => (
-        <Card key={market.id} className="overflow-hidden">
+        <Card 
+          key={market.id} 
+          className="overflow-hidden cursor-pointer hover:bg-accent/50 transition-colors"
+          onClick={() => window.location.href = `/market-detail/${market.id}`}
+        >
           {market.image_url && (
             <div className="aspect-video relative">
               <img 
@@ -143,7 +147,19 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
                   variant="outline"
                   onClick={(e) => {
                     e.stopPropagation();
-                    // Navegar al catálogo del mercadillo
+                    const mapsUrl = `https://www.google.com/maps?q=${market.latitude},${market.longitude}`;
+                    window.open(mapsUrl, '_blank');
+                  }}
+                >
+                  <MapPin className="w-3 h-3 mr-1" />
+                  Maps
+                </Button>
+                
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
                     window.location.href = `/market-catalog/${market.id}`;
                   }}
                 >
