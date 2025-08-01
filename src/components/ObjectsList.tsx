@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { MapPin, Coins, User, Wallet } from 'lucide-react';
+import { MapPin, Coins, User, Wallet, Clock } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
 import { useWallet } from '@/hooks/useWallet';
 import { FavoriteButton } from '@/components/FavoriteButton';
@@ -43,6 +43,46 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showInsufficientFundsDialog, setShowInsufficientFundsDialog] = useState(false);
   const [selectedObject, setSelectedObject] = useState<AbandonedObject | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Update current time every minute to refresh countdown
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Helper function to check if an abandoned object is free (3+ hours old)
+  const isAbandonedObjectFree = (object: AbandonedObject): boolean => {
+    if (objectType !== 'abandoned') return false;
+    const createdAt = new Date(object.created_at);
+    const now = new Date();
+    const hoursPassed = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
+    return hoursPassed >= 3;
+  };
+
+  // Helper function to get remaining time until object becomes free
+  const getTimeUntilFree = (object: AbandonedObject): { hours: number; minutes: number } => {
+    const createdAt = new Date(object.created_at);
+    const freeTime = new Date(createdAt.getTime() + (3 * 60 * 60 * 1000)); // Add 3 hours
+    const now = new Date();
+    const msRemaining = Math.max(0, freeTime.getTime() - now.getTime());
+    
+    const hours = Math.floor(msRemaining / (1000 * 60 * 60));
+    const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return { hours, minutes };
+  };
+
+  // Helper function to format countdown text
+  const getCountdownText = (object: AbandonedObject): string => {
+    const { hours, minutes } = getTimeUntilFree(object);
+    if (hours === 0 && minutes === 0) return 'FREE NOW';
+    if (hours === 0) return `FREE in ${minutes}m`;
+    return `FREE in ${hours}h ${minutes}m`;
+  };
 
   const getDistanceText = (object: AbandonedObject) => {
     if (!userLocation) return 'Unknown distance';
@@ -68,9 +108,15 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
       return;
     }
 
+    // For abandoned objects that are free (3+ hours old), open Google Maps directly
+    if (objectType === 'abandoned' && isAbandonedObjectFree(object)) {
+      openGoogleMaps(object);
+      return;
+    }
+
     setSelectedObject(object);
 
-    // Check if user has enough balance
+    // Check if user has enough balance for paid objects
     if (hasEnoughBalance(object.price_credits)) {
       setShowConfirmDialog(true);
     } else {
@@ -131,10 +177,32 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
         </>
       );
     }
+
+    // For abandoned objects
+    if (objectType === 'abandoned') {
+      const isFree = isAbandonedObjectFree(object);
+      if (isFree) {
+        return (
+          <>
+            <MapPin className="w-3 h-3 mr-1" />
+            Abrir Google Maps GRATIS
+          </>
+        );
+      } else {
+        return (
+          <>
+            <MapPin className="w-3 h-3 mr-1" />
+            Abrir Google Maps {object.price_credits}$ 
+            <Clock className="w-3 h-3 ml-2" />
+          </>
+        );
+      }
+    }
+
     return (
       <>
         <MapPin className="w-3 h-3 mr-1" />
-        Abrir Google Maps {object.price_credits} $
+        Abrir Google Maps {object.price_credits}$
       </>
     );
   };
@@ -224,69 +292,80 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                     />
                   )}
                   
-                  {/* Solo mostrar botón de maps para abandonados */}
-                  {objectType === 'abandoned' && (
-                    <Button
-                      size="sm"
-                      onClick={() => handlePurchaseClick(object)}
-                      disabled={object.is_sold || purchasing === object.id}
-                      className="flex-1"
-                    >
-                      {purchasing === object.id ? (
-                        'Procesando...'
-                      ) : object.is_sold ? (
-                        'Agotado'
-                      ) : (
-                        getButtonText(object)
-                      )}
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                   {/* Solo mostrar botón de maps para abandonados */}
+                   {objectType === 'abandoned' && (
+                     <div className="flex flex-col gap-2 flex-1">
+                       {/* Countdown display for non-free abandoned objects */}
+                       {!isAbandonedObjectFree(object) && (
+                         <div className="text-center p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                           <p className="text-xs font-medium text-orange-700 dark:text-orange-300">
+                             {getCountdownText(object)}
+                           </p>
+                         </div>
+                       )}
+                       
+                       <Button
+                         size="sm"
+                         onClick={() => handlePurchaseClick(object)}
+                         disabled={object.is_sold || purchasing === object.id}
+                         className={`flex-1 ${isAbandonedObjectFree(object) ? 'bg-green-600 hover:bg-green-700 text-white' : ''}`}
+                       >
+                         {purchasing === object.id ? (
+                           'Procesando...'
+                         ) : object.is_sold ? (
+                           'Agotado'
+                         ) : (
+                           getButtonText(object)
+                         )}
+                       </Button>
+                     </div>
+                   )}
+                 </div>
+               </div>
+             </CardContent>
+           </Card>
+         ))}
+       </div>
 
-      {/* Confirmation Dialog - When user has enough balance */}
-      <AlertDialog open={showConfirmDialog} onOpenChange={handleDialogClose}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar Pago</AlertDialogTitle>
-            <AlertDialogDescription>
-              ¿Quieres pagar ${selectedObject?.price_credits} para abrir Google Maps con las coordenadas exactas de "{selectedObject?.title}"?
-              <br /><br />
-              <strong>⚠️ Advertencia:</strong> Comprar una coordenada no garantiza que el artículo siga allí!
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>No</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmPurchase}>Sí, pagar</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+       {/* Confirmation Dialog - When user has enough balance */}
+       <AlertDialog open={showConfirmDialog} onOpenChange={handleDialogClose}>
+         <AlertDialogContent>
+           <AlertDialogHeader>
+             <AlertDialogTitle>Confirmar Pago</AlertDialogTitle>
+             <AlertDialogDescription>
+               ¿Quieres pagar ${selectedObject?.price_credits} para abrir Google Maps con las coordenadas exactas de "{selectedObject?.title}"?
+               <br /><br />
+               <strong>⚠️ Advertencia:</strong> Comprar una coordenada no garantiza que el artículo siga allí!
+             </AlertDialogDescription>
+           </AlertDialogHeader>
+           <AlertDialogFooter>
+             <AlertDialogCancel>No</AlertDialogCancel>
+             <AlertDialogAction onClick={handleConfirmPurchase}>Sí, pagar</AlertDialogAction>
+           </AlertDialogFooter>
+         </AlertDialogContent>
+       </AlertDialog>
 
-      {/* Insufficient Funds Dialog */}
-      <AlertDialog open={showInsufficientFundsDialog} onOpenChange={handleDialogClose}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Saldo Insuficiente</AlertDialogTitle>
-            <AlertDialogDescription>
-              Para abrir Google Maps con las coordenadas exactas debes pagar ${selectedObject?.price_credits}. 
-              Tu saldo actual es: ${wallet?.balance || 0}.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction asChild>
-              <Link to="/wallet" className="flex items-center gap-2">
-                <Wallet className="w-4 h-4" />
-                Ir a Mi Wallet
-              </Link>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+       {/* Insufficient Funds Dialog */}
+       <AlertDialog open={showInsufficientFundsDialog} onOpenChange={handleDialogClose}>
+         <AlertDialogContent>
+           <AlertDialogHeader>
+             <AlertDialogTitle>Saldo Insuficiente</AlertDialogTitle>
+             <AlertDialogDescription>
+               Para abrir Google Maps con las coordenadas exactas debes pagar ${selectedObject?.price_credits}. 
+               Tu saldo actual es: ${wallet?.balance || 0}.
+             </AlertDialogDescription>
+           </AlertDialogHeader>
+           <AlertDialogFooter>
+             <AlertDialogCancel>Cancelar</AlertDialogCancel>
+             <AlertDialogAction asChild>
+               <Link to="/wallet" className="flex items-center gap-2">
+                 <Wallet className="w-4 h-4" />
+                 Ir a Mi Wallet
+               </Link>
+             </AlertDialogAction>
+           </AlertDialogFooter>
+         </AlertDialogContent>
+       </AlertDialog>
     </>
   );
 };
