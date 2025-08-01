@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation as useRouterLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { ObjectsList } from '@/components/ObjectsList';
@@ -25,13 +25,22 @@ export interface AppObject {
 }
 
 const ObjectsPage = () => {
-  const { type } = useParams<{ type: 'abandons' | 'donations' | 'products' }>();
+  const routerLocation = useRouterLocation();
   const [objects, setObjects] = useState<AppObject[]>([]);
   const [showUpload, setShowUpload] = useState(false);
   const [loading, setLoading] = useState(true);
   const { userLocation, getCurrentLocation, isLoading: locationLoading } = useLocation();
   const { user } = useAuth();
 
+  // Get the type from the current pathname
+  const getTypeFromPath = (pathname: string): 'abandons' | 'donations' | 'products' => {
+    if (pathname.includes('/abandons')) return 'abandons';
+    if (pathname.includes('/donations')) return 'donations';
+    if (pathname.includes('/products')) return 'products';
+    return 'abandons'; // default fallback
+  };
+
+  const type = getTypeFromPath(routerLocation.pathname);
   const objectType = type === 'abandons' ? 'abandoned' : type === 'donations' ? 'donation' : 'product';
   
   const getTitle = () => {
