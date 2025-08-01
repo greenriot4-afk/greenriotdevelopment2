@@ -4,13 +4,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { ObjectsList, AbandonedObject } from '@/components/ObjectsList';
 import { useLocation } from '@/hooks/useLocation';
-import { Camera, List, MapPin, Wallet } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { Camera, List, MapPin, Wallet, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Index = () => {
   const [objects, setObjects] = useState<AbandonedObject[]>([]);
   const [userCredits, setUserCredits] = useState(100); // Mock wallet balance
   const { userLocation, getCurrentLocation, isLoading: locationLoading } = useLocation();
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success('Sesión cerrada correctamente');
+  };
 
   // Mock data for demonstration
   useEffect(() => {
@@ -92,10 +99,30 @@ const Index = () => {
       <div className="container mx-auto px-4 py-6 max-w-md">
         {/* Header */}
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold mb-2">Street Finds Swap</h1>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex-1"></div>
+            <div className="flex-1 text-center">
+              <h1 className="text-2xl font-bold">Street Finds Swap</h1>
+            </div>
+            <div className="flex-1 flex justify-end">
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleSignOut}
+                className="h-8 w-8 p-0"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
           <p className="text-sm text-muted-foreground">
             Discover and share abandoned objects
           </p>
+          {user && (
+            <p className="text-xs text-muted-foreground/70 mt-1">
+              Bienvenido, {user.email}
+            </p>
+          )}
           
           {/* Wallet & Location */}
           <div className="flex items-center justify-between mt-4 p-3 bg-card rounded-lg">
