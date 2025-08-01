@@ -15,6 +15,7 @@ import Auth from "./pages/Auth";
 import MyMarketPage from "./pages/MyMarketPage";
 import ChatListPage from "./pages/ChatListPage";
 import ChatPage from "./pages/ChatPage";
+import MarketCatalogPage from "./pages/MarketCatalogPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,7 @@ const App = () => (
                           <Route path="/wallet" element={<WalletPage />} />
                           <Route path="/account" element={<AccountSettings />} />
                           <Route path="/my-market" element={<MyMarketPage />} />
+                          <Route path="/market-catalog/:marketId" element={<MarketCatalogPage />} />
                           <Route path="/chat" element={<ChatListPage />} />
                           <Route path="/chat/:conversationId" element={<ChatPage />} />
                           <Route path="*" element={<NotFound />} />

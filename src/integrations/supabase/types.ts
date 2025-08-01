@@ -130,6 +130,7 @@ export type Database = {
           is_sold: boolean | null
           latitude: number
           longitude: number
+          market_id: string | null
           price_credits: number | null
           title: string
           type: string
@@ -144,6 +145,7 @@ export type Database = {
           is_sold?: boolean | null
           latitude: number
           longitude: number
+          market_id?: string | null
           price_credits?: number | null
           title: string
           type: string
@@ -158,13 +160,22 @@ export type Database = {
           is_sold?: boolean | null
           latitude?: number
           longitude?: number
+          market_id?: string | null
           price_credits?: number | null
           title?: string
           type?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "objects_market_id_fkey"
+            columns: ["market_id"]
+            isOneToOne: false
+            referencedRelation: "circular_markets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

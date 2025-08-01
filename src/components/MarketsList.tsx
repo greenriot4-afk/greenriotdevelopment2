@@ -137,11 +137,26 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
                 )}
               </div>
               
-              <ChatButton 
-                userId={market.user_id}
-                size="sm"
-                variant="outline"
-              />
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Navegar al catálogo del mercadillo
+                    window.location.href = `/market-catalog/${market.id}`;
+                  }}
+                >
+                  <Store className="w-3 h-3 mr-1" />
+                  Catálogo
+                </Button>
+                
+                <ChatButton 
+                  userId={market.user_id}
+                  size="sm"
+                  variant="outline"
+                />
+              </div>
             </div>
           </CardContent>
         </Card>
