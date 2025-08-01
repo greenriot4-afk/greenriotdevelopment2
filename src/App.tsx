@@ -41,7 +41,7 @@ const App = () => (
               <ProtectedRoute>
                 <div className="min-h-screen flex flex-col bg-background">
                   {/* Header */}
-                  <header className="flex items-center justify-between h-14 px-4 border-b backdrop-blur" style={{ backgroundColor: '#729f31' }}>
+                  <header className="flex items-center justify-between h-14 px-4 border-b bg-primary backdrop-blur">
                     <div className="flex items-center flex-1">
                       <img 
                         src="/lovable-uploads/d8b5b7dc-f65c-45cf-acee-55fb29fdba7c.png" 

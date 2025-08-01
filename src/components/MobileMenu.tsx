@@ -101,8 +101,7 @@ export function MobileMenu() {
       </SheetTrigger>
       <SheetContent 
         side="left" 
-        className="w-80 p-0 border-0"
-        style={{ background: 'linear-gradient(135deg, #729f31, #5d7d28)' }}
+        className="w-80 p-0 border-0 bg-gradient-to-br from-primary to-primary/80"
       >
         {/* Header with user profile */}
         <div className="p-6 bg-black/20 backdrop-blur-sm">
