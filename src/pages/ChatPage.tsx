@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, Send, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useChat, Message } from '@/hooks/useChat';
+import { ImageUpload } from '@/components/ImageUpload';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
@@ -161,13 +162,26 @@ const ChatPage = () => {
 
     try {
       setSending(true);
-      const success = await sendMessage(conversationId, newMessage);
+      const success = await sendMessage(conversationId, newMessage, 'text');
       
       if (success) {
         setNewMessage('');
       }
     } catch (error) {
       console.error('Error sending message:', error);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleImageUploaded = async (imageUrl: string) => {
+    if (!conversationId) return;
+
+    try {
+      setSending(true);
+      await sendMessage(conversationId, imageUrl, 'image');
+    } catch (error) {
+      console.error('Error sending image:', error);
     } finally {
       setSending(false);
     }
@@ -227,7 +241,16 @@ const ChatPage = () => {
                 }`}
               >
                 <div className="p-3">
-                  <p className="text-sm">{message.content}</p>
+                  {message.message_type === 'image' ? (
+                    <img 
+                      src={message.content} 
+                      alt="Imagen enviada"
+                      className="max-w-full h-auto rounded-lg cursor-pointer"
+                      onClick={() => window.open(message.content, '_blank')}
+                    />
+                  ) : (
+                    <p className="text-sm">{message.content}</p>
+                  )}
                   <p
                     className={`text-xs mt-1 ${
                       message.sender_id === user?.id
@@ -250,7 +273,11 @@ const ChatPage = () => {
 
       {/* Message Input */}
       <div className="p-4 border-t bg-background">
-        <form onSubmit={handleSendMessage} className="flex gap-2">
+        <form onSubmit={handleSendMessage} className="flex gap-2 items-end">
+          <ImageUpload 
+            onImageUploaded={handleImageUploaded}
+            disabled={sending}
+          />
           <Input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}

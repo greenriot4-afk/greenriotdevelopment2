@@ -1,7 +1,7 @@
 import { useChat } from '@/hooks/useChat';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MessageCircle, ArrowLeft, User } from 'lucide-react';
+import { MessageCircle, ArrowLeft, User, Image } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
@@ -79,9 +79,17 @@ const ChatListPage = () => {
                     
                     {conversation.last_message && (
                       <div className="flex items-center justify-between mt-2">
-                        <p className="text-sm text-muted-foreground truncate mr-2">
-                          {conversation.last_message.content}
-                        </p>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground truncate mr-2">
+                          {conversation.last_message.message_type === 'image' && (
+                            <Image className="w-4 h-4 flex-shrink-0" />
+                          )}
+                          <span className="truncate">
+                            {conversation.last_message.message_type === 'image' 
+                              ? 'Imagen' 
+                              : conversation.last_message.content
+                            }
+                          </span>
+                        </div>
                         <span className="text-xs text-muted-foreground whitespace-nowrap">
                           {formatDistanceToNow(new Date(conversation.last_message.created_at), {
                             addSuffix: true,

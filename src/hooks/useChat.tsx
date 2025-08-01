@@ -52,6 +52,7 @@ export const useChat = () => {
           messages!messages_conversation_id_fkey (
             id,
             content,
+            message_type,
             sender_id,
             created_at,
             read_at
@@ -103,7 +104,7 @@ export const useChat = () => {
             conversation_id: conv.id,
             sender_id: lastMessage.sender_id,
             content: lastMessage.content,
-            message_type: 'text',
+            message_type: lastMessage.message_type || 'text',
             read_at: lastMessage.read_at,
             created_at: lastMessage.created_at
           } : undefined,
@@ -159,7 +160,7 @@ export const useChat = () => {
     }
   };
 
-  const sendMessage = async (conversationId: string, content: string): Promise<boolean> => {
+  const sendMessage = async (conversationId: string, content: string, messageType: string = 'text'): Promise<boolean> => {
     if (!user) return false;
 
     try {
@@ -169,7 +170,7 @@ export const useChat = () => {
           conversation_id: conversationId,
           sender_id: user.id,
           content: content.trim(),
-          message_type: 'text'
+          message_type: messageType
         });
 
       if (error) throw error;
