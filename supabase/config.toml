@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.test-payment-system]
 verify_jwt = false
+
+[functions.cleanup-old-abandons]
+verify_jwt = false
