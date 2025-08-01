@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, WalletIcon, LogOut, Store, Settings, MessageCircle, DollarSign, Globe } from "lucide-react";
+import { Menu, X, User, WalletIcon, LogOut, Store, Settings, MessageCircle, DollarSign, Globe, Heart, ShoppingBag, Truck, Wrench, BookOpen, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -94,104 +94,142 @@ export function MobileMenu() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-10 w-10"
+          className="h-10 w-10 text-white hover:bg-white/10"
         >
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-64">
-        <SheetHeader>
-          <div className="flex items-center justify-between">
-            <SheetTitle className="text-left">{t('menu.title')}</SheetTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleLanguage}
-              className="flex items-center gap-2"
-            >
-              <Globe className="h-4 w-4" />
-              {language.toUpperCase()}
-            </Button>
-          </div>
-        </SheetHeader>
-        
-        <div className="mt-6 space-y-1">
-          {/* User Info */}
-          {user && (
-            <div className="px-3 py-2 text-sm text-muted-foreground border-b mb-4">
-              <p className="font-medium text-foreground">{user.email}</p>
-              <p className="text-xs">{t('menu.activeUser')}</p>
+      <SheetContent 
+        side="left" 
+        className="w-80 p-0 border-0 bg-gradient-to-br from-green-500 to-green-700"
+      >
+        {/* Header with user profile */}
+        <div className="p-6 bg-green-600/50 backdrop-blur-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+              <User className="h-6 w-6 text-white" />
             </div>
-          )}
-
-          {/* Menu Items */}
+            <div>
+              <h3 className="text-white font-semibold">
+                {user?.email?.split('@')[0] || 'Usuario'}
+              </h3>
+              <p className="text-white/80 text-sm">Comprador/vendedor</p>
+            </div>
+          </div>
           <Button
             variant="ghost"
-            className="w-full justify-start px-3 h-12"
+            className="w-full justify-start mt-3 text-white hover:bg-white/10"
             onClick={handleAccountClick}
           >
-            <User className="h-4 w-4 mr-3" />
-            {t('menu.myAccount')}
+            Mi Perfil
           </Button>
+        </div>
 
+        {/* Menu Items */}
+        <div className="p-4 space-y-2">
           <Button
             variant="ghost"
-            className="w-full justify-start px-3 h-12"
-            onClick={handleWalletClick}
-          >
-            <WalletIcon className="h-4 w-4 mr-3" />
-            {t('menu.wallet')}
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-3 h-12"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
             onClick={handleChatClick}
           >
-            <MessageCircle className="h-4 w-4 mr-3" />
-            {t('menu.myChats')}
+            <MessageCircle className="h-5 w-5 mr-3" />
+            Chats
           </Button>
 
           <Button
             variant="ghost"
-            className="w-full justify-start px-3 h-12"
-            onClick={handleAffiliatesClick}
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={() => {navigate('/favorites'); setIsOpen(false);}}
           >
-            <DollarSign className="h-4 w-4 mr-3" />
-            {t('menu.affiliateProgram')}
+            <Heart className="h-5 w-5 mr-3" />
+            Favoritos
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={() => {navigate('/my-ads'); setIsOpen(false);}}
+          >
+            <ShoppingBag className="h-5 w-5 mr-3" />
+            Mis Anuncios
           </Button>
 
           {userHasMarket ? (
             <Button
               variant="ghost"
-              className="w-full justify-start px-3 h-12"
+              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
               onClick={handleMyMarketClick}
             >
-              <Settings className="h-4 w-4 mr-3" />
-              {t('menu.myCircularMarket')}
+              <Store className="h-5 w-5 mr-3" />
+              Mi Tienda
             </Button>
           ) : (
             <Button
               variant="ghost"
-              className="w-full justify-start px-3 h-12"
+              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
               onClick={handleCreateMarketClick}
             >
-              <Store className="h-4 w-4 mr-3" />
-              {t('menu.createCircularMarket')}
+              <Plus className="h-5 w-5 mr-3" />
+              Crear Tienda
             </Button>
           )}
 
-          {/* Logout */}
-          <div className="mt-6 pt-4 border-t">
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-3 h-12 text-red-600 hover:text-red-700 hover:bg-red-50"
-              onClick={handleSignOut}
-            >
-              <LogOut className="h-4 w-4 mr-3" />
-              {t('menu.signOut')}
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={() => {navigate('/transport'); setIsOpen(false);}}
+          >
+            <Truck className="h-5 w-5 mr-3" />
+            Ofrecer Transporte
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={() => {navigate('/repair'); setIsOpen(false);}}
+          >
+            <Wrench className="h-5 w-5 mr-3" />
+            Ofrecer arreglar o restaurar
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={() => {navigate('/tutorial'); setIsOpen(false);}}
+          >
+            <BookOpen className="h-5 w-5 mr-3" />
+            Tutorial
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={handleAffiliatesClick}
+          >
+            <DollarSign className="h-5 w-5 mr-3" />
+            Trae un suscriptor y gana hasta $85!
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={handleWalletClick}
+          >
+            <WalletIcon className="h-5 w-5 mr-3" />
+            Mi Wallet
+          </Button>
+        </div>
+
+        {/* Footer */}
+        <div className="absolute bottom-4 left-4 right-4">
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white/80 hover:bg-white/10"
+            onClick={handleSignOut}
+          >
+            <LogOut className="h-5 w-5 mr-3" />
+            Cerrar Sesión
+          </Button>
         </div>
       </SheetContent>
     </Sheet>
