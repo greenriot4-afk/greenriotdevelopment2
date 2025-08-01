@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Smile, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus } from "lucide-react";
+import { Menu, X, Settings, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -107,7 +107,7 @@ export function MobileMenu() {
         <div className="p-6 bg-black/20 backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-              <Smile className="h-6 w-6 text-white" />
+              <Settings className="h-6 w-6 text-white" />
             </div>
             <div>
               <h3 className="text-white font-semibold">
