@@ -101,10 +101,11 @@ export function MobileMenu() {
       </SheetTrigger>
       <SheetContent 
         side="left" 
-        className="w-80 p-0 border-0 bg-gradient-to-br from-green-500 to-green-700"
+        className="w-80 p-0 border-0"
+        style={{ background: 'linear-gradient(135deg, #729f31, #5d7d28)' }}
       >
         {/* Header with user profile */}
-        <div className="p-6 bg-green-600/50 backdrop-blur-sm">
+        <div className="p-6 bg-black/20 backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
               <User className="h-6 w-6 text-white" />
