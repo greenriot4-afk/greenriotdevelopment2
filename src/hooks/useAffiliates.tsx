@@ -64,11 +64,11 @@ export const useAffiliates = () => {
       if (error) throw error;
 
       setAffiliateCode(data);
-      toast.success('Código de afiliado creado correctamente');
+      toast.success('Affiliate code created successfully');
       return data;
     } catch (error) {
       console.error('Error creating affiliate code:', error);
-      toast.error('Error al crear el código de afiliado');
+      toast.error('Error creating affiliate code');
       return null;
     }
   };
@@ -81,10 +81,10 @@ export const useAffiliates = () => {
     const link = getAffiliateLink(code);
     try {
       await navigator.clipboard.writeText(link);
-      toast.success('Link copiado al portapapeles');
+      toast.success('Link copied to clipboard');
     } catch (error) {
       console.error('Error copying link:', error);
-      toast.error('Error al copiar el link');
+      toast.error('Error copying link');
     }
   };
 
@@ -139,7 +139,7 @@ export const useAffiliates = () => {
 
     } catch (error) {
       console.error('Error fetching affiliate data:', error);
-      toast.error('Error al cargar datos de afiliados');
+      toast.error('Error loading affiliate data');
     } finally {
       setLoading(false);
     }

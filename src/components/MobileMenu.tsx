@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, WalletIcon, LogOut, Store, Settings, MessageCircle, DollarSign } from "lucide-react";
+import { Menu, X, User, WalletIcon, LogOut, Store, Settings, MessageCircle, DollarSign, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +12,7 @@ export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [userHasMarket, setUserHasMarket] = useState(false);
   const { signOut, user } = useAuth();
+  const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -76,9 +78,13 @@ export function MobileMenu() {
     setIsOpen(false);
   };
 
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'es' : 'en');
+  };
+
   const handleSignOut = async () => {
     await signOut();
-    toast.success('Sesión cerrada correctamente');
+    toast.success(t('menu.signOut'));
     setIsOpen(false);
   };
 
@@ -95,7 +101,18 @@ export function MobileMenu() {
       </SheetTrigger>
       <SheetContent side="right" className="w-64">
         <SheetHeader>
-          <SheetTitle className="text-left">Menú</SheetTitle>
+          <div className="flex items-center justify-between">
+            <SheetTitle className="text-left">{t('menu.title')}</SheetTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleLanguage}
+              className="flex items-center gap-2"
+            >
+              <Globe className="h-4 w-4" />
+              {language.toUpperCase()}
+            </Button>
+          </div>
         </SheetHeader>
         
         <div className="mt-6 space-y-1">
@@ -103,7 +120,7 @@ export function MobileMenu() {
           {user && (
             <div className="px-3 py-2 text-sm text-muted-foreground border-b mb-4">
               <p className="font-medium text-foreground">{user.email}</p>
-              <p className="text-xs">Usuario activo</p>
+              <p className="text-xs">{t('menu.activeUser')}</p>
             </div>
           )}
 
@@ -114,7 +131,7 @@ export function MobileMenu() {
             onClick={handleAccountClick}
           >
             <User className="h-4 w-4 mr-3" />
-            Mi Cuenta
+            {t('menu.myAccount')}
           </Button>
 
           <Button
@@ -123,7 +140,7 @@ export function MobileMenu() {
             onClick={handleWalletClick}
           >
             <WalletIcon className="h-4 w-4 mr-3" />
-            Billetera
+            {t('menu.wallet')}
           </Button>
 
           <Button
@@ -132,7 +149,7 @@ export function MobileMenu() {
             onClick={handleChatClick}
           >
             <MessageCircle className="h-4 w-4 mr-3" />
-            Mis Chats
+            {t('menu.myChats')}
           </Button>
 
           <Button
@@ -141,7 +158,7 @@ export function MobileMenu() {
             onClick={handleAffiliatesClick}
           >
             <DollarSign className="h-4 w-4 mr-3" />
-            Programa de Afiliados
+            {t('menu.affiliateProgram')}
           </Button>
 
           {userHasMarket ? (
@@ -151,7 +168,7 @@ export function MobileMenu() {
               onClick={handleMyMarketClick}
             >
               <Settings className="h-4 w-4 mr-3" />
-              Mi Mercadillo Circular
+              {t('menu.myCircularMarket')}
             </Button>
           ) : (
             <Button
@@ -160,7 +177,7 @@ export function MobileMenu() {
               onClick={handleCreateMarketClick}
             >
               <Store className="h-4 w-4 mr-3" />
-              Crear Mercadillo Circular
+              {t('menu.createCircularMarket')}
             </Button>
           )}
 
@@ -172,7 +189,7 @@ export function MobileMenu() {
               onClick={handleSignOut}
             >
               <LogOut className="h-4 w-4 mr-3" />
-              Cerrar Sesión
+              {t('menu.signOut')}
             </Button>
           </div>
         </div>

@@ -1,35 +1,36 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DollarSign } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const tabs = [
   {
     id: "abandons",
-    label: "Abandonos",
+    labelKey: "nav.abandons",
     iconSrc: "/lovable-uploads/879e7bbc-f480-4a92-828d-077abd67eb7e.png",
     path: "/abandons"
   },
   {
     id: "donations", 
-    label: "Donaciones",
+    labelKey: "nav.donations",
     iconSrc: "/lovable-uploads/1c4d7d84-8efb-46de-9f25-d9f67e6b3572.png",
     path: "/donations"
   },
   {
     id: "products",
-    label: "Productos", 
+    labelKey: "nav.products", 
     iconSrc: "/lovable-uploads/6245700a-9f69-4791-b47e-aa1bd715be37.png",
     path: "/products"
   },
   {
     id: "markets",
-    label: "Mercadillos",
+    labelKey: "nav.markets",
     iconSrc: "/lovable-uploads/db565d88-e9c2-492d-bf27-7c312a6cd298.png",
     path: "/markets"
   },
   {
     id: "affiliates",
-    label: "Afiliados",
+    labelKey: "nav.affiliates",
     icon: DollarSign,
     path: "/affiliates"
   }
@@ -38,6 +39,7 @@ const tabs = [
 export function MobileTabs() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const currentPath = location.pathname;
 
   const handleTabClick = (path: string) => {
@@ -65,7 +67,7 @@ export function MobileTabs() {
                 {tab.iconSrc ? (
                   <img 
                     src={tab.iconSrc} 
-                    alt={tab.label}
+                    alt={t(tab.labelKey)}
                     className={`h-5 w-5 ${isActive ? 'opacity-100' : 'opacity-60'}`}
                   />
                 ) : tab.icon ? (
@@ -73,7 +75,7 @@ export function MobileTabs() {
                     className={`h-5 w-5 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
                   />
                 ) : null}
-                <span className="text-xs font-medium">{tab.label}</span>
+                <span className="text-xs font-medium">{t(tab.labelKey)}</span>
               </div>
             </Button>
           );

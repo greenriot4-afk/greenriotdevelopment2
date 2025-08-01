@@ -5,9 +5,10 @@ import { Separator } from '@/components/ui/separator';
 import { useAffiliates } from '@/hooks/useAffiliates';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Share2, Copy, Users, Euro, Calendar, Gift } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { es, enUS } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { useState } from 'react';
 
@@ -16,6 +17,7 @@ const PREMIUM_PRICE_USD = 19;
 
 export const AffiliateSection = () => {
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const { 
     affiliateCode, 
     referrals, 
@@ -49,7 +51,7 @@ export const AffiliateSection = () => {
       }
     } catch (error) {
       console.error('Error creating subscription:', error);
-      toast.error('Error al crear la suscripción');
+      toast.error(t('account.errorCreatingSubscription'));
     } finally {
       setSubscribing(false);
     }
@@ -61,12 +63,12 @@ export const AffiliateSection = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Share2 className="w-5 h-5" />
-            Sistema de Afiliados
+            {t('affiliate.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4">
-            <p className="text-muted-foreground">Cargando...</p>
+            <p className="text-muted-foreground">{t('affiliate.loadingData')}</p>
           </div>
         </CardContent>
       </Card>
@@ -80,10 +82,10 @@ export const AffiliateSection = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Share2 className="w-5 h-5 text-primary" />
-            Sistema de Afiliados
+            {t('affiliate.title')}
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Gana $19 por cada usuario que refiera y se suscriba al plan premium
+            {t('affiliate.description')}
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -91,7 +93,7 @@ export const AffiliateSection = () => {
           <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg">
             <div className="flex items-center gap-2">
               <Euro className="w-5 h-5 text-primary" />
-              <span className="font-medium">Ganancias totales:</span>
+              <span className="font-medium">{t('affiliate.totalEarnings')}</span>
             </div>
             <Badge variant="secondary" className="text-lg font-bold">
               ${totalEarnings.toFixed(2)}
@@ -102,18 +104,18 @@ export const AffiliateSection = () => {
           {!affiliateCode ? (
             <div className="text-center py-6 border border-dashed border-muted-foreground/25 rounded-lg">
               <Gift className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-              <h3 className="font-medium mb-2">Comienza a ganar con afiliados</h3>
+              <h3 className="font-medium mb-2">{t('affiliate.startEarning')}</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Crea tu código único y empieza a referir usuarios
+                {t('affiliate.createCode')}
               </p>
               <Button onClick={createAffiliateCode}>
-                Crear código de afiliado
+                {t('affiliate.createAffiliateCode')}
               </Button>
             </div>
           ) : (
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium">Tu código de afiliado:</label>
+                <label className="text-sm font-medium">{t('affiliate.yourCode')}</label>
                 <div className="flex gap-2 mt-1">
                   <div className="flex-1 p-3 bg-muted rounded-lg font-mono text-center text-lg font-bold">
                     {affiliateCode.code}
@@ -129,7 +131,7 @@ export const AffiliateSection = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium">Tu link de afiliado:</label>
+                <label className="text-sm font-medium">{t('affiliate.yourLink')}</label>
                 <div className="flex gap-2 mt-1">
                   <div className="flex-1 p-3 bg-muted rounded-lg text-sm break-all">
                     {getAffiliateLink(affiliateCode.code)}
@@ -156,7 +158,7 @@ export const AffiliateSection = () => {
               <Users className="w-8 h-8 text-primary" />
               <div>
                 <p className="text-2xl font-bold">{referrals.length}</p>
-                <p className="text-sm text-muted-foreground">Referencias totales</p>
+                <p className="text-sm text-muted-foreground">{t('affiliate.totalReferrals')}</p>
               </div>
             </div>
           </CardContent>
@@ -168,7 +170,7 @@ export const AffiliateSection = () => {
               <Euro className="w-8 h-8 text-primary" />
               <div>
                 <p className="text-2xl font-bold">{commissions.filter(c => c.status === 'paid').length}</p>
-                <p className="text-sm text-muted-foreground">Comisiones pagadas</p>
+                <p className="text-sm text-muted-foreground">{t('affiliate.paidCommissions')}</p>
               </div>
             </div>
           </CardContent>
@@ -179,7 +181,7 @@ export const AffiliateSection = () => {
       {referrals.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Referencias recientes</CardTitle>
+            <CardTitle className="text-lg">{t('affiliate.recentReferrals')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -190,11 +192,11 @@ export const AffiliateSection = () => {
                       <Users className="w-4 h-4 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Usuario referido</p>
+                      <p className="text-sm font-medium">{t('affiliate.referredUser')}</p>
                       <p className="text-xs text-muted-foreground">
                         {formatDistanceToNow(new Date(referral.referred_at), {
                           addSuffix: true,
-                          locale: es
+                          locale: language === 'es' ? es : enUS
                         })}
                       </p>
                     </div>
@@ -206,7 +208,7 @@ export const AffiliateSection = () => {
                       </Badge>
                     ) : (
                       <Badge variant="outline">
-                        Pendiente
+                        {t('affiliate.pending')}
                       </Badge>
                     )}
                   </div>
@@ -220,22 +222,22 @@ export const AffiliateSection = () => {
       {/* Premium Subscription CTA */}
       <Card className="border-primary/20">
         <CardHeader>
-          <CardTitle className="text-lg">¿Quieres probar el plan premium?</CardTitle>
+          <CardTitle className="text-lg">{t('affiliate.tryPremium')}</CardTitle>
           <p className="text-sm text-muted-foreground">
-            Suscríbete al plan premium para crear mercadillos circulares
+            {t('affiliate.premiumDescription')}
           </p>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Plan Premium</p>
-              <p className="text-sm text-muted-foreground">$19/mes</p>
+              <p className="font-medium">{t('affiliate.premiumPlan')}</p>
+              <p className="text-sm text-muted-foreground">{t('affiliate.premiumPrice')}</p>
             </div>
             <Button 
               onClick={handleCreatePremiumSubscription}
               disabled={subscribing}
             >
-              {subscribing ? 'Procesando...' : 'Suscribirse'}
+              {subscribing ? t('affiliate.processing') : t('affiliate.subscribe')}
             </Button>
           </div>
         </CardContent>
@@ -244,24 +246,24 @@ export const AffiliateSection = () => {
       {/* How it works */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">¿Cómo funciona?</CardTitle>
+          <CardTitle className="text-lg">{t('affiliate.howItWorks')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex gap-3">
             <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">1</div>
-            <p className="text-sm">Comparte tu link de afiliado con amigos</p>
+            <p className="text-sm">{t('affiliate.step1')}</p>
           </div>
           <div className="flex gap-3">
             <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">2</div>
-            <p className="text-sm">Cuando se registren usando tu link, quedarán vinculados a ti</p>
+            <p className="text-sm">{t('affiliate.step2')}</p>
           </div>
           <div className="flex gap-3">
             <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">3</div>
-            <p className="text-sm">Si se suscriben al plan premium en los próximos 30 días, recibes $19</p>
+            <p className="text-sm">{t('affiliate.step3')}</p>
           </div>
           <div className="flex gap-3">
             <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">4</div>
-            <p className="text-sm">Las comisiones se depositan automáticamente en tu wallet</p>
+            <p className="text-sm">{t('affiliate.step4')}</p>
           </div>
         </CardContent>
       </Card>

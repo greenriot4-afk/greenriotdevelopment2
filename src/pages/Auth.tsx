@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { useAffiliates } from '@/hooks/useAffiliates';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Gift } from 'lucide-react';
 
 export default function Auth() {
@@ -23,6 +24,7 @@ export default function Auth() {
   const { toast } = useToast();
   const { user, signIn, signUp } = useAuth();
   const { processReferralSignup } = useAffiliates();
+  const { t } = useLanguage();
 
   // Redirigir si ya está autenticado
   if (user) {
@@ -34,7 +36,7 @@ export default function Auth() {
     if (!email || !password) {
       toast({
         title: "Error",
-        description: "Por favor completa todos los campos",
+        description: t('error.fillAllFields'),
         variant: "destructive",
       });
       return;
@@ -45,16 +47,16 @@ export default function Auth() {
     
     if (error) {
       toast({
-        title: "Error al iniciar sesión",
+        title: t('error.signInError'),
         description: error.message === "Invalid login credentials" 
-          ? "Credenciales inválidas. Verifica tu email y contraseña."
+          ? t('error.invalidCredentials')
           : error.message,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "¡Bienvenido!",
-        description: "Has iniciado sesión correctamente",
+        title: t('auth.welcome'),
+        description: t('auth.signedInSuccessfully'),
       });
     }
     setLoading(false);
@@ -65,7 +67,7 @@ export default function Auth() {
     if (!email || !password || !confirmPassword || !displayName) {
       toast({
         title: "Error",
-        description: "Por favor completa todos los campos",
+        description: t('error.fillAllFields'),
         variant: "destructive",
       });
       return;
@@ -74,7 +76,7 @@ export default function Auth() {
     if (password !== confirmPassword) {
       toast({
         title: "Error",
-        description: "Las contraseñas no coinciden",
+        description: t('error.passwordsDontMatch'),
         variant: "destructive",
       });
       return;
@@ -83,7 +85,7 @@ export default function Auth() {
     if (password.length < 6) {
       toast({
         title: "Error",
-        description: "La contraseña debe tener al menos 6 caracteres",
+        description: t('error.passwordTooShort'),
         variant: "destructive",
       });
       return;
@@ -95,13 +97,13 @@ export default function Auth() {
     if (error) {
       if (error.message.includes("already registered")) {
         toast({
-          title: "Error al registrarse",
-          description: "Este email ya está registrado. Intenta iniciar sesión.",
+          title: t('error.signUpError'),
+          description: t('error.emailAlreadyRegistered'),
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Error al registrarse",
+          title: t('error.signUpError'),
           description: error.message,
           variant: "destructive",
         });
@@ -113,10 +115,10 @@ export default function Auth() {
       }
       
       toast({
-        title: "¡Registro exitoso!",
+        title: t('auth.registrationSuccessful'),
         description: affiliateCode 
-          ? "Revisa tu email para confirmar tu cuenta. ¡Has sido referido por un afiliado!"
-          : "Revisa tu email para confirmar tu cuenta",
+          ? `${t('auth.checkEmailToConfirm')} ${t('auth.referredByAffiliate')}`
+          : t('auth.checkEmailToConfirm'),
       });
     }
     setLoading(false);
@@ -133,18 +135,18 @@ export default function Auth() {
               className="h-12 w-auto"
             />
           </div>
-          <p className="text-muted-foreground mt-2">Gana o ahorra. Salva el planeta</p>
+          <p className="text-muted-foreground mt-2">{t('auth.slogan')}</p>
           
           {affiliateCode && (
             <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <Gift className="w-4 h-4 text-primary" />
                 <Badge variant="secondary" className="text-primary">
-                  ¡Referido por afiliado!
+                  {t('auth.referredByAffiliateTitle')}
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                Has sido invitado por un usuario. Si te suscribes al plan premium en los próximos 30 días, ¡tu referidor recibirá una comisión!
+                {t('auth.affiliateBonus')}
               </p>
             </div>
           )}
@@ -152,33 +154,33 @@ export default function Auth() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Autenticación</CardTitle>
+            <CardTitle>{t('auth.title')}</CardTitle>
             <CardDescription>
-              Inicia sesión o regístrate para comenzar
+              {t('auth.description')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Iniciar Sesión</TabsTrigger>
-                <TabsTrigger value="signup">Registrarse</TabsTrigger>
+                <TabsTrigger value="signin">{t('auth.signIn')}</TabsTrigger>
+                <TabsTrigger value="signup">{t('auth.signUp')}</TabsTrigger>
               </TabsList>
               
               <TabsContent value="signin">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+                    <Label htmlFor="signin-email">{t('auth.email')}</Label>
                     <Input
                       id="signin-email"
                       type="email"
-                      placeholder="tu@email.com"
+                      placeholder={t('auth.yourEmail')}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Contraseña</Label>
+                    <Label htmlFor="signin-password">{t('auth.password')}</Label>
                     <Input
                       id="signin-password"
                       type="password"
@@ -189,7 +191,7 @@ export default function Auth() {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
+                    {loading ? t('auth.signingIn') : t('auth.signIn')}
                   </Button>
                 </form>
               </TabsContent>
@@ -197,29 +199,29 @@ export default function Auth() {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Nombre</Label>
+                    <Label htmlFor="signup-name">{t('auth.name')}</Label>
                     <Input
                       id="signup-name"
                       type="text"
-                      placeholder="Tu nombre"
+                      placeholder={t('auth.yourName')}
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email">{t('auth.email')}</Label>
                     <Input
                       id="signup-email"
                       type="email"
-                      placeholder="tu@email.com"
+                      placeholder={t('auth.yourEmail')}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Contraseña</Label>
+                    <Label htmlFor="signup-password">{t('auth.password')}</Label>
                     <Input
                       id="signup-password"
                       type="password"
@@ -230,7 +232,7 @@ export default function Auth() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirmar Contraseña</Label>
+                    <Label htmlFor="confirm-password">{t('auth.confirmPassword')}</Label>
                     <Input
                       id="confirm-password"
                       type="password"
@@ -241,7 +243,7 @@ export default function Auth() {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Registrando..." : "Registrarse"}
+                    {loading ? t('auth.registering') : t('auth.register')}
                   </Button>
                 </form>
               </TabsContent>
