@@ -203,22 +203,6 @@ const ObjectsPage = () => {
           <p className="text-sm text-muted-foreground">{getDescription()}</p>
         </div>
 
-        {/* Location Status */}
-        <div className="flex items-center gap-2 p-3 bg-card rounded-lg border text-sm">
-          <MapPin className="w-4 h-4 text-muted-foreground" />
-          <span className="text-muted-foreground">
-            {userLocation ? 'Ubicación activada' : 'Ubicación desactivada'}
-          </span>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => getCurrentLocation()}
-            disabled={locationLoading}
-            className="ml-auto text-xs h-7"
-          >
-            {locationLoading ? 'Obteniendo...' : userLocation ? 'Actualizar' : 'Activar'}
-          </Button>
-        </div>
       </div>
 
       {/* Upload Form */}
