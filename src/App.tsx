@@ -20,6 +20,7 @@ import ChatPage from "./pages/ChatPage";
 import MarketCatalogPage from "./pages/MarketCatalogPage";
 import MarketDetailPage from "./pages/MarketDetailPage";
 import AffiliatePage from "./pages/AffiliatePage";
+import TestingPage from "./pages/TestingPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -72,6 +73,7 @@ const App = () => (
                           <Route path="/chat" element={<ChatListPage />} />
                           <Route path="/chat/:conversationId" element={<ChatPage />} />
                           <Route path="/affiliates" element={<AffiliatePage />} />
+                          <Route path="/testing" element={<TestingPage />} />
                           <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>
