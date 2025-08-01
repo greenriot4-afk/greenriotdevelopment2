@@ -4,7 +4,8 @@ import { CreateMarketForm } from '@/components/CreateMarketForm';
 import { MarketsList, CircularMarket } from '@/components/MarketsList';
 import { useLocation } from '@/hooks/useLocation';
 import { useAuth } from '@/hooks/useAuth';
-import { MapPin, Plus } from 'lucide-react';
+import { useSubscription } from '@/hooks/useSubscription';
+import { MapPin, Plus, Crown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -14,6 +15,7 @@ const MarketsPage = () => {
   const [loading, setLoading] = useState(true);
   const { userLocation, getCurrentLocation, isLoading: locationLoading } = useLocation();
   const { user } = useAuth();
+  const { subscribed, createSubscription, loading: subscriptionLoading } = useSubscription();
 
   const fetchMarkets = async () => {
     try {
@@ -52,6 +54,11 @@ const MarketsPage = () => {
     try {
       if (!user) {
         toast.error('Debes iniciar sesión para crear un mercadillo');
+        return;
+      }
+
+      if (!subscribed) {
+        toast.error('Necesitas una suscripción Premium para crear mercadillos');
         return;
       }
 
@@ -109,15 +116,27 @@ const MarketsPage = () => {
               Tiendas de segunda mano y garages sales cerca de ti
             </p>
           </div>
-          <Button 
-            onClick={() => setShowCreateForm(!showCreateForm)} 
-            className="flex items-center gap-2"
-            size="sm"
-            data-create-market
-          >
-            <Plus className="w-4 h-4" />
-            Crear
-          </Button>
+          {!subscribed ? (
+            <Button 
+              onClick={createSubscription} 
+              className="flex items-center gap-2"
+              size="sm"
+              disabled={subscriptionLoading}
+            >
+              <Crown className="w-4 h-4" />
+              {subscriptionLoading ? 'Cargando...' : 'Premium $19/mes'}
+            </Button>
+          ) : (
+            <Button 
+              onClick={() => setShowCreateForm(!showCreateForm)} 
+              className="flex items-center gap-2"
+              size="sm"
+              data-create-market
+            >
+              <Plus className="w-4 h-4" />
+              Crear
+            </Button>
+          )}
         </div>
 
         {/* Location Status */}

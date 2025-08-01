@@ -3,15 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MapPin, Save, Navigation, User, AtSign } from "lucide-react";
+import { MapPin, Save, Navigation, User, AtSign, Crown, CreditCard } from "lucide-react";
 import { useLocation } from "@/hooks/useLocation";
 import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export default function AccountSettings() {
   const { user } = useAuth();
   const { userLocation, getCurrentLocation, updateSavedLocation, isLoading } = useLocation();
+  const { subscribed, subscriptionTier, subscriptionEnd, createSubscription, manageSubscription } = useSubscription();
   const [customLatitude, setCustomLatitude] = useState(userLocation?.latitude?.toString() || "");
   const [customLongitude, setCustomLongitude] = useState(userLocation?.longitude?.toString() || "");
   const [locationName, setLocationName] = useState(userLocation?.address || "");
@@ -174,6 +176,61 @@ export default function AccountSettings() {
                 {profileLoading ? 'Guardando...' : 'Guardar Perfil'}
               </Button>
             </form>
+          </CardContent>
+        </Card>
+
+        {/* Subscription Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Crown className="w-5 h-5" />
+              Suscripción Premium
+            </CardTitle>
+            <CardDescription>
+              Gestiona tu suscripción para crear mercadillos circulares
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {subscribed ? (
+              <>
+                <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Crown className="w-4 h-4 text-green-600" />
+                    <p className="font-medium text-green-900">Suscripción Activa</p>
+                  </div>
+                  <p className="text-sm text-green-700">Plan: {subscriptionTier}</p>
+                  {subscriptionEnd && (
+                    <p className="text-sm text-green-700">
+                      Renueva: {new Date(subscriptionEnd).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  onClick={manageSubscription}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Gestionar Suscripción
+                </Button>
+              </>
+            ) : (
+              <>
+                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="font-medium text-blue-900">Premium - $19/mes</p>
+                  <p className="text-sm text-blue-700 mt-1">
+                    Crea y gestiona mercadillos circulares ilimitados
+                  </p>
+                </div>
+                <Button
+                  onClick={createSubscription}
+                  className="w-full"
+                >
+                  <Crown className="w-4 h-4 mr-2" />
+                  Suscribirse a Premium
+                </Button>
+              </>
+            )}
           </CardContent>
         </Card>
 
