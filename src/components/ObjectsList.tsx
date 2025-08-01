@@ -76,6 +76,30 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     return { hours, minutes };
   };
 
+  // Helper function to get time until object gets deleted (48 hours)
+  const getTimeUntilDeletion = (object: AbandonedObject): { hours: number; minutes: number } => {
+    const createdAt = new Date(object.created_at);
+    const deletionTime = new Date(createdAt.getTime() + (48 * 60 * 60 * 1000)); // Add 48 hours
+    const now = new Date();
+    const msRemaining = Math.max(0, deletionTime.getTime() - now.getTime());
+    
+    const hours = Math.floor(msRemaining / (1000 * 60 * 60));
+    const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return { hours, minutes };
+  };
+
+  // Helper function to format deletion countdown text
+  const getDeletionCountdownText = (object: AbandonedObject): string => {
+    const { hours, minutes } = getTimeUntilDeletion(object);
+    if (hours === 0 && minutes === 0) return 'Se eliminará pronto';
+    if (hours < 1) return `Se elimina en ${minutes}m`;
+    if (hours < 24) return `Se elimina en ${hours}h ${minutes}m`;
+    const days = Math.floor(hours / 24);
+    const remainingHours = hours % 24;
+    return `Se elimina en ${days}d ${remainingHours}h`;
+  };
+
   // Helper function to format countdown text
   const getCountdownText = (object: AbandonedObject): string => {
     const { hours, minutes } = getTimeUntilFree(object);
@@ -274,11 +298,16 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                       <MapPin className="w-3 h-3" />
                       {getDistanceText(object)}
                     </div>
-                    <span>{getDateText(object)}</span>
-                  </div>
-                </div>
-                <UserLikes targetUserId={object.user_id} size="sm" />
-              </div>
+                     <span>{getDateText(object)}</span>
+                     {objectType === 'abandoned' && (
+                       <span className="text-xs text-red-500 dark:text-red-400">
+                         {getDeletionCountdownText(object)}
+                       </span>
+                     )}
+                   </div>
+                 </div>
+                 <UserLikes targetUserId={object.user_id} size="sm" />
+               </div>
               
               <div className="space-y-2">
                 {/* Botones de acción */}

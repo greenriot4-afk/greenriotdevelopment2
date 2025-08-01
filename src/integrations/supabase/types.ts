@@ -481,6 +481,10 @@ export type Database = {
         Args: { input_text: string }
         Returns: string
       }
+      trigger_abandons_cleanup: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       update_wallet_balance_atomic: {
         Args: {
           p_wallet_id: string
