@@ -36,9 +36,16 @@ const App = () => (
               <ProtectedRoute>
                 <div className="min-h-screen flex flex-col bg-background">
                   {/* Header */}
-                  <header className="flex items-center justify-between h-14 px-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                  <header className="flex items-center justify-between h-14 px-4 border-b bg-primary backdrop-blur">
                     <div className="flex-1" />
-                    <h1 className="font-bold text-lg text-center flex-1">Street Finds</h1>
+                    <div className="flex items-center justify-center flex-1">
+                      <img 
+                        src="/lovable-uploads/d8b5b7dc-f65c-45cf-acee-55fb29fdba7c.png" 
+                        alt="Greenriot" 
+                        className="h-8 w-auto"
+                      />
+                      <h1 className="font-bold text-lg text-primary-foreground ml-2">GREENRIOT</h1>
+                    </div>
                     <div className="flex-1 flex justify-end">
                       <MobileMenu />
                     </div>

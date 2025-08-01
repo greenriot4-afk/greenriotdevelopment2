@@ -1,30 +1,29 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sofa, Gift, Package, Store } from "lucide-react";
 
 const tabs = [
   {
     id: "abandons",
     label: "Abandonos",
-    icon: Sofa,
+    iconSrc: "/lovable-uploads/879e7bbc-f480-4a92-828d-077abd67eb7e.png",
     path: "/abandons"
   },
   {
     id: "donations", 
     label: "Donaciones",
-    icon: Gift,
+    iconSrc: "/lovable-uploads/1c4d7d84-8efb-46de-9f25-d9f67e6b3572.png",
     path: "/donations"
   },
   {
     id: "products",
     label: "Productos", 
-    icon: Package,
+    iconSrc: "/lovable-uploads/6245700a-9f69-4791-b47e-aa1bd715be37.png",
     path: "/products"
   },
   {
     id: "markets",
     label: "Mercadillos",
-    icon: Store,
+    iconSrc: "/lovable-uploads/db565d88-e9c2-492d-bf27-7c312a6cd298.png",
     path: "/markets"
   }
 ];
@@ -43,7 +42,6 @@ export function MobileTabs() {
       <div className="flex w-full max-w-md">
         {tabs.map((tab) => {
           const isActive = currentPath === tab.path;
-          const Icon = tab.icon;
           
           return (
             <Button
@@ -57,7 +55,11 @@ export function MobileTabs() {
               }`}
             >
               <div className="flex flex-col items-center gap-1">
-                <Icon className="h-4 w-4" />
+                <img 
+                  src={tab.iconSrc} 
+                  alt={tab.label}
+                  className={`h-5 w-5 ${isActive ? 'opacity-100' : 'opacity-60'}`}
+                />
                 <span className="text-xs font-medium">{tab.label}</span>
               </div>
             </Button>
