@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X, User, WalletIcon, LogOut } from "lucide-react";
+import { Menu, X, User, WalletIcon, LogOut, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -11,12 +11,6 @@ export function MobileMenu() {
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
 
-  const handleSignOut = async () => {
-    await signOut();
-    toast.success('Sesión cerrada correctamente');
-    setIsOpen(false);
-  };
-
   const handleWalletClick = () => {
     navigate('/wallet');
     setIsOpen(false);
@@ -24,6 +18,24 @@ export function MobileMenu() {
 
   const handleAccountClick = () => {
     navigate('/account');
+    setIsOpen(false);
+  };
+
+  const handleCreateMarketClick = () => {
+    navigate('/markets');
+    setIsOpen(false);
+    // Show create form automatically when navigating to markets
+    setTimeout(() => {
+      const createButton = document.querySelector('[data-create-market]') as HTMLButtonElement;
+      if (createButton) {
+        createButton.click();
+      }
+    }, 100);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success('Sesión cerrada correctamente');
     setIsOpen(false);
   };
 
@@ -69,6 +81,15 @@ export function MobileMenu() {
           >
             <WalletIcon className="h-4 w-4 mr-3" />
             Billetera
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-3 h-12"
+            onClick={handleCreateMarketClick}
+          >
+            <Store className="h-4 w-4 mr-3" />
+            Crear Mercadillo Circular
           </Button>
 
           {/* Logout */}

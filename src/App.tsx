@@ -9,6 +9,7 @@ import { MobileTabs } from "@/components/MobileTabs";
 import { MobileMenu } from "@/components/MobileMenu";
 import ObjectsPage from "./pages/ObjectsPage";
 import WalletPage from "./pages/WalletPage";
+import MarketsPage from "./pages/MarketsPage";
 import AccountSettings from "./pages/AccountSettings";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -46,6 +47,7 @@ const App = () => (
                           <Route path="/abandons" element={<ObjectsPage />} />
                           <Route path="/donations" element={<ObjectsPage />} />
                           <Route path="/products" element={<ObjectsPage />} />
+                          <Route path="/markets" element={<MarketsPage />} />
                           <Route path="/wallet" element={<WalletPage />} />
                           <Route path="/account" element={<AccountSettings />} />
                           <Route path="*" element={<NotFound />} />

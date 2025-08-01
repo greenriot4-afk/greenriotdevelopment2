@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      circular_markets: {
+        Row: {
+          accepts_donations: boolean | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          latitude: number
+          location_name: string | null
+          longitude: number
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accepts_donations?: boolean | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          latitude: number
+          location_name?: string | null
+          longitude: number
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accepts_donations?: boolean | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          latitude?: number
+          location_name?: string | null
+          longitude?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       objects: {
         Row: {
           created_at: string

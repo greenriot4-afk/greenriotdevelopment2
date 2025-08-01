@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, Gift, Package, X } from "lucide-react";
+import { Plus, Sofa, Gift, Package, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface FloatingActionButtonProps {
@@ -15,7 +15,7 @@ export function FloatingActionButton({ onUpload }: FloatingActionButtonProps) {
     {
       type: 'abandoned' as const,
       label: 'Subir Abandono',
-      icon: Trash2,
+      icon: Sofa,
       color: 'bg-red-500 hover:bg-red-600'
     },
     {
