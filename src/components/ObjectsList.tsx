@@ -189,35 +189,31 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                   <MapPin className="w-3 h-3" />
                   {getDistanceText(object)}
                 </div>
-                {objectType !== 'donation' && (
-                  <div className="flex items-center gap-1 text-sm font-medium">
-                    <Coins className="w-3 h-3 text-yellow-500" />
-                    ${object.price_credits}
-                  </div>
-                )}
-              </div>
-              
-              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <User className="w-3 h-3" />
                   {getDateText(object)}
                 </div>
-                
-                <Button
-                  size="sm"
-                  onClick={() => handlePurchaseClick(object)}
-                  disabled={object.is_sold || purchasing === object.id}
-                  className="px-4"
-                >
-                  {purchasing === object.id ? (
-                    'Procesando...'
-                  ) : object.is_sold ? (
-                    'Agotado'
-                  ) : (
-                    getButtonText(object)
-                  )}
-                </Button>
               </div>
+              
+              {/* Solo mostrar botón para abandonados */}
+              {objectType === 'abandoned' && (
+                <div className="flex items-center justify-center">
+                  <Button
+                    size="sm"
+                    onClick={() => handlePurchaseClick(object)}
+                    disabled={object.is_sold || purchasing === object.id}
+                    className="px-4"
+                  >
+                    {purchasing === object.id ? (
+                      'Procesando...'
+                    ) : object.is_sold ? (
+                      'Agotado'
+                    ) : (
+                      getButtonText(object)
+                    )}
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}

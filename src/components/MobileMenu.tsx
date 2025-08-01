@@ -1,15 +1,43 @@
-import { useState } from "react";
-import { Menu, X, User, WalletIcon, LogOut, Store } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, User, WalletIcon, LogOut, Store, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [userHasMarket, setUserHasMarket] = useState(false);
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkUserMarket = async () => {
+      if (!user) {
+        setUserHasMarket(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('circular_markets')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .limit(1);
+
+        if (error) throw error;
+        setUserHasMarket(data && data.length > 0);
+      } catch (error) {
+        console.error('Error checking user market:', error);
+        setUserHasMarket(false);
+      }
+    };
+
+    checkUserMarket();
+  }, [user]);
 
   const handleWalletClick = () => {
     navigate('/wallet');
@@ -31,6 +59,12 @@ export function MobileMenu() {
         createButton.click();
       }
     }, 100);
+  };
+
+  const handleMyMarketClick = () => {
+    // Por ahora navegar a markets, luego se puede crear una página específica
+    navigate('/markets');
+    setIsOpen(false);
   };
 
   const handleSignOut = async () => {
@@ -83,14 +117,25 @@ export function MobileMenu() {
             Billetera
           </Button>
 
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-3 h-12"
-            onClick={handleCreateMarketClick}
-          >
-            <Store className="h-4 w-4 mr-3" />
-            Crear Mercadillo Circular
-          </Button>
+          {userHasMarket ? (
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-3 h-12"
+              onClick={handleMyMarketClick}
+            >
+              <Settings className="h-4 w-4 mr-3" />
+              Mi Mercadillo Circular
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-3 h-12"
+              onClick={handleCreateMarketClick}
+            >
+              <Store className="h-4 w-4 mr-3" />
+              Crear Mercadillo Circular
+            </Button>
+          )}
 
           {/* Logout */}
           <div className="mt-6 pt-4 border-t">

@@ -126,7 +126,7 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
               </div>
             </div>
             
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-center">
               <div className="flex gap-2">
                 {market.accepts_donations && (
                   <Badge variant="outline" className="text-xs">
@@ -135,14 +135,6 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
                   </Badge>
                 )}
               </div>
-              
-              <Button
-                size="sm"
-                onClick={() => onMarketClick(market.id)}
-                className="px-4"
-              >
-                Ver en Maps
-              </Button>
             </div>
           </CardContent>
         </Card>
