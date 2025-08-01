@@ -228,7 +228,7 @@ export default function AccountSettings() {
                   variant="outline"
                 >
                   <Navigation className="w-4 h-4 mr-2" />
-                  {isLoading ? 'Obteniendo...' : 'Usar Ubicación Actual'}
+                  {isLoading ? 'Obteniendo...' : 'Actualizar Ubicación'}
                 </Button>
               </CardContent>
             </Card>

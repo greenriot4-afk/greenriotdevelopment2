@@ -26,8 +26,98 @@ import FavoritesPage from "./pages/FavoritesPage";
 import TestingPage from "./pages/TestingPage";
 import { UserProfilePage } from "./pages/UserProfilePage";
 import NotFound from "./pages/NotFound";
+import { LocationPermissionDialog } from "@/components/LocationPermissionDialog";
+import { useFirstLogin } from "@/hooks/useFirstLogin";
 
 const queryClient = new QueryClient();
+
+const AppContent = () => {
+  const { showLocationDialog, isGettingLocation, handleLocationAccept, handleLocationDecline } = useFirstLogin();
+
+  return (
+    <>
+      <LocationPermissionDialog
+        isOpen={showLocationDialog}
+        onAccept={handleLocationAccept}
+        onDecline={handleLocationDecline}
+        isLoading={isGettingLocation}
+      />
+      
+      <div className="min-h-screen flex flex-col bg-background">
+        {/* Header */}
+        <header className="flex items-center justify-between h-14 px-4 border-b bg-primary backdrop-blur">
+          <div className="flex items-center">
+            <img 
+              src="/lovable-uploads/d8b5b7dc-f65c-45cf-acee-55fb29fdba7c.png" 
+              alt="Greenriot" 
+              className="h-12 w-auto"
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <HeaderWallet />
+            <MobileMenu />
+          </div>
+        </header>
+
+        {/* Mobile Navigation Tabs */}
+        <MobileTabs />
+
+        {/* Main Content */}
+        <main className="flex-1 overflow-auto">
+          <Routes>
+            <Route path="/" element={<Navigate to="/abandons" replace />} />
+            <Route path="/abandons" element={<ObjectsPage />} />
+            <Route path="/donations" element={<ObjectsPage />} />
+            <Route path="/products" element={<ObjectsPage />} />
+            <Route path="/markets" element={<MarketsPage />} />
+            <Route path="/affiliates" element={<AffiliatePage />} />
+            <Route path="/market-detail/:marketId" element={<MarketDetailPage />} />
+            <Route path="/market-catalog/:marketId" element={<MarketCatalogPage />} />
+            <Route path="/profile/:userId" element={<UserProfilePage />} />
+            
+            {/* Protected routes - require authentication */}
+            <Route path="/wallet" element={
+              <ProtectedRoute>
+                <WalletPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/account" element={
+              <ProtectedRoute>
+                <AccountSettings />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-market" element={
+              <ProtectedRoute>
+                <MyMarketPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/chat" element={
+              <ProtectedRoute>
+                <ChatListPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/chat/:conversationId" element={
+              <ProtectedRoute>
+                <ChatPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/favorites" element={
+              <ProtectedRoute>
+                <FavoritesPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/testing" element={
+              <ProtectedRoute>
+                <TestingPage />
+              </ProtectedRoute>
+            } />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+      </div>
+    </>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -41,80 +131,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/auth" element={<Auth />} />
-            <Route path="/*" element={
-              <div className="min-h-screen flex flex-col bg-background">
-                {/* Header */}
-                <header className="flex items-center justify-between h-14 px-4 border-b bg-primary backdrop-blur">
-                  <div className="flex items-center">
-                    <img 
-                      src="/lovable-uploads/d8b5b7dc-f65c-45cf-acee-55fb29fdba7c.png" 
-                      alt="Greenriot" 
-                      className="h-12 w-auto"
-                    />
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <HeaderWallet />
-                    <MobileMenu />
-                  </div>
-                </header>
-
-                {/* Mobile Navigation Tabs */}
-                <MobileTabs />
-
-                {/* Main Content */}
-                <main className="flex-1 overflow-auto">
-                  <Routes>
-                    <Route path="/" element={<Navigate to="/abandons" replace />} />
-                    <Route path="/abandons" element={<ObjectsPage />} />
-                    <Route path="/donations" element={<ObjectsPage />} />
-                    <Route path="/products" element={<ObjectsPage />} />
-                    <Route path="/markets" element={<MarketsPage />} />
-                    <Route path="/affiliates" element={<AffiliatePage />} />
-                    <Route path="/market-detail/:marketId" element={<MarketDetailPage />} />
-                    <Route path="/market-catalog/:marketId" element={<MarketCatalogPage />} />
-                    <Route path="/profile/:userId" element={<UserProfilePage />} />
-                    
-                    {/* Protected routes - require authentication */}
-                    <Route path="/wallet" element={
-                      <ProtectedRoute>
-                        <WalletPage />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/account" element={
-                      <ProtectedRoute>
-                        <AccountSettings />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/my-market" element={
-                      <ProtectedRoute>
-                        <MyMarketPage />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/chat" element={
-                      <ProtectedRoute>
-                        <ChatListPage />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/chat/:conversationId" element={
-                      <ProtectedRoute>
-                        <ChatPage />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/favorites" element={
-                      <ProtectedRoute>
-                        <FavoritesPage />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="/testing" element={
-                      <ProtectedRoute>
-                        <TestingPage />
-                      </ProtectedRoute>
-                    } />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </main>
-              </div>
-            } />
+            <Route path="/*" element={<AppContent />} />
           </Routes>
         </BrowserRouter>
         </TooltipProvider>
