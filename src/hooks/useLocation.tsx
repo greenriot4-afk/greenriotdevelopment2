@@ -19,8 +19,52 @@ export const useLocation = () => {
   useEffect(() => {
     if (user) {
       loadSavedLocation();
+    } else {
+      // For non-authenticated users, load default location from inigoloperena@gmail.com
+      loadDefaultLocation();
     }
   }, [user]);
+
+  const loadDefaultLocation = async () => {
+    try {
+      // For non-authenticated users, use a default location from inigoloperena@gmail.com profile
+      // We'll use a hardcoded approach since we can't directly query auth.users
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('latitude, longitude, location_name')
+        .limit(1)
+        .order('created_at', { ascending: true });
+
+      if (error || !data || data.length === 0) {
+        console.log('No default location found');
+        // Set a default location (Madrid, Spain) as fallback
+        setUserLocation({
+          latitude: 40.4168,
+          longitude: -3.7038,
+          address: 'Madrid, España'
+        });
+        return;
+      }
+
+      const profile = data[0];
+      if (profile.latitude && profile.longitude) {
+        setUserLocation({
+          latitude: profile.latitude,
+          longitude: profile.longitude,
+          address: profile.location_name || undefined
+        });
+        console.log('Loaded default location for guest users:', profile);
+      }
+    } catch (error) {
+      console.error('Error loading default location:', error);
+      // Set fallback location
+      setUserLocation({
+        latitude: 40.4168,
+        longitude: -3.7038,
+        address: 'Madrid, España'
+      });
+    }
+  };
 
   const loadSavedLocation = async () => {
     try {

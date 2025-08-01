@@ -31,7 +31,7 @@ const ObjectsPage = () => {
   const [objects, setObjects] = useState<AppObject[]>([]);
   const [showUpload, setShowUpload] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { userLocation, getCurrentLocation, isLoading: locationLoading } = useLocation();
+  const { userLocation, getCurrentLocation, isLoading: locationLoading, calculateDistance } = useLocation();
   const { user } = useAuth();
 
   // Get the type from the current pathname
@@ -86,15 +86,34 @@ const ObjectsPage = () => {
             .eq('user_id', object.user_id)
             .single();
 
-          return {
-            ...object,
-            user_display_name: profile?.display_name || 'Usuario',
-            username: profile?.username || ''
-          };
-        })
-      );
+           return {
+             ...object,
+             type: object.type as 'abandoned' | 'donation' | 'product',
+             description: object.description || undefined,
+             is_sold: object.is_sold || false,
+             user_display_name: profile?.display_name || 'Usuario',
+             username: profile?.username || ''
+           };
+         })
+       );
 
-      setObjects(enrichedObjects as AppObject[]);
+      // Sort objects by distance if user location is available
+      let sortedObjects = enrichedObjects as AppObject[];
+      if (userLocation) {
+        sortedObjects = enrichedObjects.sort((a, b) => {
+          const distanceA = calculateDistance(
+            userLocation.latitude, userLocation.longitude,
+            a.latitude, a.longitude
+          );
+          const distanceB = calculateDistance(
+            userLocation.latitude, userLocation.longitude,
+            b.latitude, b.longitude
+          );
+          return distanceA - distanceB;
+        });
+      }
+
+      setObjects(sortedObjects);
     } catch (error) {
       console.error('Error fetching objects:', error);
       toast.error('Error al cargar los objetos');
@@ -111,7 +130,7 @@ const ObjectsPage = () => {
       console.log('Missing dependencies for fetchObjects', { type, objectType });
       setLoading(false);
     }
-  }, [type, objectType]);
+  }, [type, objectType, userLocation]); // Add userLocation dependency to re-sort when location changes
 
   const handleUploadObject = async (data: {
     title: string;
@@ -214,24 +233,12 @@ const ObjectsPage = () => {
       )}
 
       {/* Objects List */}
-      {!userLocation ? (
-        <div className="text-center py-6">
-          <MapPin className="w-8 h-8 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-muted-foreground mb-4 text-sm">
-            Activa tu ubicación para ver las distancias a los objetos
-          </p>
-          <Button onClick={() => getCurrentLocation()} disabled={locationLoading} size="sm">
-            {locationLoading ? 'Obteniendo ubicación...' : 'Activar ubicación'}
-          </Button>
-        </div>
-      ) : (
-        <ObjectsList
-          objects={objects}
-          onPurchaseCoordinates={handlePurchaseCoordinates}
-          userLocation={userLocation}
-          objectType={objectType}
-        />
-      )}
+      <ObjectsList
+        objects={objects}
+        onPurchaseCoordinates={handlePurchaseCoordinates}
+        userLocation={userLocation}
+        objectType={objectType}
+      />
 
       {/* Floating Action Button */}
       <FloatingActionButton onUpload={handleFloatingUpload} />

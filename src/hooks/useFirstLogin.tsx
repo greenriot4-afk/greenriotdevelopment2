@@ -11,6 +11,7 @@ export const useFirstLogin = () => {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   useEffect(() => {
+    // Only show location dialog for authenticated users
     if (!user) return;
 
     const checkFirstLogin = async () => {
@@ -20,7 +21,7 @@ export const useFirstLogin = () => {
           .from('profiles')
           .select('latitude, longitude')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         // If no location data, this is likely their first login
         if (!profile?.latitude || !profile?.longitude) {
