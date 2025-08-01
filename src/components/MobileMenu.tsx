@@ -100,7 +100,7 @@ export function MobileMenu() {
         </Button>
       </SheetTrigger>
       <SheetContent 
-        side="left" 
+        side="right" 
         className="w-80 p-0 border-0 bg-gradient-to-br from-primary to-primary/80"
       >
         {/* Header with user profile */}
@@ -121,12 +121,21 @@ export function MobileMenu() {
             className="w-full justify-start mt-3 text-white hover:bg-white/10"
             onClick={handleAccountClick}
           >
-            Mi Perfil
+            Mi cuenta
           </Button>
         </div>
 
         {/* Menu Items */}
         <div className="p-4 space-y-2">
+          <Button
+            variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={handleWalletClick}
+          >
+            <WalletIcon className="h-5 w-5 mr-3" />
+            Mi wallet
+          </Button>
+
           <Button
             variant="ghost"
             className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
@@ -136,42 +145,13 @@ export function MobileMenu() {
             Chats
           </Button>
 
-          {userHasMarket ? (
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-              onClick={handleMyMarketClick}
-            >
-              <Store className="h-5 w-5 mr-3" />
-              Mi Tienda
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-              onClick={handleCreateMarketClick}
-            >
-              <Plus className="h-5 w-5 mr-3" />
-              Crear Tienda
-            </Button>
-          )}
-
           <Button
             variant="ghost"
             className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
             onClick={handleAffiliatesClick}
           >
             <DollarSign className="h-5 w-5 mr-3" />
-            Trae un suscriptor y gana hasta $85!
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={handleWalletClick}
-          >
-            <WalletIcon className="h-5 w-5 mr-3" />
-            Mi Wallet
+            Trae un mercadillo circular: Ayuda al planeta y gana 19$!
           </Button>
         </div>
 
