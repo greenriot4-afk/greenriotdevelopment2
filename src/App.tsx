@@ -12,8 +12,8 @@ import WalletPage from "./pages/WalletPage";
 import MarketsPage from "./pages/MarketsPage";
 import AccountSettings from "./pages/AccountSettings";
 import Auth from "./pages/Auth";
-import NotFound from "./pages/NotFound";
 import MyMarketPage from "./pages/MyMarketPage";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
