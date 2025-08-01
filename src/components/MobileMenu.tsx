@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, WalletIcon, LogOut, Store, Settings, MessageCircle, DollarSign, Globe, Heart, ShoppingBag, Truck, Wrench, BookOpen, Plus } from "lucide-react";
+import { Menu, X, User, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -136,24 +136,6 @@ export function MobileMenu() {
             Chats
           </Button>
 
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={() => {navigate('/favorites'); setIsOpen(false);}}
-          >
-            <Heart className="h-5 w-5 mr-3" />
-            Favoritos
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={() => {navigate('/my-ads'); setIsOpen(false);}}
-          >
-            <ShoppingBag className="h-5 w-5 mr-3" />
-            Mis Anuncios
-          </Button>
-
           {userHasMarket ? (
             <Button
               variant="ghost"
@@ -173,33 +155,6 @@ export function MobileMenu() {
               Crear Tienda
             </Button>
           )}
-
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={() => {navigate('/transport'); setIsOpen(false);}}
-          >
-            <Truck className="h-5 w-5 mr-3" />
-            Ofrecer Transporte
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={() => {navigate('/repair'); setIsOpen(false);}}
-          >
-            <Wrench className="h-5 w-5 mr-3" />
-            Ofrecer arreglar o restaurar
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={() => {navigate('/tutorial'); setIsOpen(false);}}
-          >
-            <BookOpen className="h-5 w-5 mr-3" />
-            Tutorial
-          </Button>
 
           <Button
             variant="ghost"
