@@ -1,1 +1,16 @@
 project_id = "zrhjykyualhbwjlpjckh"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://lovable.dev"]
+jwt_expiry = 3600
+
+[functions.create-deposit-session]
+verify_jwt = true
+
+[functions.process-withdrawal]
+verify_jwt = true
+
+[functions.stripe-webhook]
+verify_jwt = false

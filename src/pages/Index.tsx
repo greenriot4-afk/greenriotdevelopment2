@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { ObjectsList, AbandonedObject } from '@/components/ObjectsList';
+import Wallet from '@/components/Wallet';
 import { useLocation } from '@/hooks/useLocation';
 import { useAuth } from '@/hooks/useAuth';
-import { Camera, List, MapPin, Wallet, LogOut } from 'lucide-react';
+import { Camera, List, MapPin, Wallet as WalletIcon, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Index = () => {
@@ -127,7 +128,7 @@ const Index = () => {
           {/* Wallet & Location */}
           <div className="flex items-center justify-between mt-4 p-3 bg-card rounded-lg">
             <div className="flex items-center gap-2">
-              <Wallet className="w-4 h-4 text-yellow-500" />
+              <WalletIcon className="w-4 h-4 text-yellow-500" />
               <span className="text-sm font-medium">{userCredits} credits</span>
             </div>
             <Button
@@ -144,7 +145,7 @@ const Index = () => {
 
         {/* Main Content */}
         <Tabs defaultValue="discover" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="discover" className="flex items-center gap-2">
               <List className="w-4 h-4" />
               Discover
@@ -152,6 +153,10 @@ const Index = () => {
             <TabsTrigger value="share" className="flex items-center gap-2">
               <Camera className="w-4 h-4" />
               Share
+            </TabsTrigger>
+            <TabsTrigger value="wallet" className="flex items-center gap-2">
+              <WalletIcon className="w-4 h-4" />
+              Wallet
             </TabsTrigger>
           </TabsList>
           
@@ -177,6 +182,10 @@ const Index = () => {
           
           <TabsContent value="share" className="mt-6">
             <PhotoUpload onUpload={handleUploadObject} />
+          </TabsContent>
+          
+          <TabsContent value="wallet" className="mt-6">
+            <Wallet />
           </TabsContent>
         </Tabs>
       </div>
