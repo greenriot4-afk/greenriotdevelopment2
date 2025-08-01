@@ -13,6 +13,7 @@ import MarketsPage from "./pages/MarketsPage";
 import AccountSettings from "./pages/AccountSettings";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import MyMarketPage from "./pages/MyMarketPage";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
                           <Route path="/markets" element={<MarketsPage />} />
                           <Route path="/wallet" element={<WalletPage />} />
                           <Route path="/account" element={<AccountSettings />} />
+                          <Route path="/my-market" element={<MyMarketPage />} />
                           <Route path="*" element={<NotFound />} />
                     </Routes>
                   </main>

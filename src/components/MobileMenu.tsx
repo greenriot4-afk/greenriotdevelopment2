@@ -62,8 +62,7 @@ export function MobileMenu() {
   };
 
   const handleMyMarketClick = () => {
-    // Por ahora navegar a markets, luego se puede crear una página específica
-    navigate('/markets');
+    navigate('/my-market');
     setIsOpen(false);
   };
 

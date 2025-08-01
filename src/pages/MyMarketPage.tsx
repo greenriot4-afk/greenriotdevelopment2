@@ -1,0 +1,283 @@
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, MapPin, Heart, Edit, Trash2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { CircularMarket } from '@/components/MarketsList';
+
+const MyMarketPage = () => {
+  const [market, setMarket] = useState<CircularMarket | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const fetchUserMarket = async () => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('circular_markets')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // No market found
+          navigate('/markets');
+          toast.error('No tienes un mercadillo creado');
+          return;
+        }
+        throw error;
+      }
+
+      setMarket(data as CircularMarket);
+    } catch (error) {
+      console.error('Error fetching user market:', error);
+      toast.error('Error al cargar tu mercadillo');
+      navigate('/markets');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserMarket();
+  }, [user]);
+
+  const handleToggleActive = async (isActive: boolean) => {
+    if (!market || !user) return;
+
+    try {
+      const { error } = await supabase
+        .from('circular_markets')
+        .update({ is_active: isActive })
+        .eq('id', market.id)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      setMarket(prev => prev ? { ...prev, is_active: isActive } : null);
+      toast.success(isActive ? 'Mercadillo activado' : 'Mercadillo desactivado');
+    } catch (error) {
+      console.error('Error updating market status:', error);
+      toast.error('Error al actualizar el estado');
+    }
+  };
+
+  const handleToggleDonations = async (acceptsDonations: boolean) => {
+    if (!market || !user) return;
+
+    try {
+      const { error } = await supabase
+        .from('circular_markets')
+        .update({ accepts_donations: acceptsDonations })
+        .eq('id', market.id)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      setMarket(prev => prev ? { ...prev, accepts_donations: acceptsDonations } : null);
+      toast.success(acceptsDonations ? 'Donaciones activadas' : 'Donaciones desactivadas');
+    } catch (error) {
+      console.error('Error updating donations setting:', error);
+      toast.error('Error al actualizar las donaciones');
+    }
+  };
+
+  const handleDeleteMarket = async () => {
+    if (!market || !user) return;
+
+    const confirmed = window.confirm('¿Estás seguro de que quieres eliminar tu mercadillo? Esta acción no se puede deshacer.');
+    if (!confirmed) return;
+
+    try {
+      const { error } = await supabase
+        .from('circular_markets')
+        .delete()
+        .eq('id', market.id)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast.success('Mercadillo eliminado correctamente');
+      navigate('/markets');
+    } catch (error) {
+      console.error('Error deleting market:', error);
+      toast.error('Error al eliminar el mercadillo');
+    }
+  };
+
+  const openInMaps = () => {
+    if (!market) return;
+    const mapsUrl = `https://www.google.com/maps?q=${market.latitude},${market.longitude}`;
+    window.open(mapsUrl, '_blank');
+  };
+
+  if (loading) {
+    return (
+      <div className="flex-1 p-4 max-w-md mx-auto w-full">
+        <div className="text-center py-8">Cargando tu mercadillo...</div>
+      </div>
+    );
+  }
+
+  if (!market) {
+    return (
+      <div className="flex-1 p-4 max-w-md mx-auto w-full">
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">No se encontró tu mercadillo</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 p-4 max-w-md mx-auto w-full">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate('/markets')}
+        >
+          <ArrowLeft className="w-4 h-4" />
+        </Button>
+        <div>
+          <h1 className="text-xl font-semibold">Mi Mercadillo</h1>
+          <p className="text-sm text-muted-foreground">Gestiona tu mercadillo circular</p>
+        </div>
+      </div>
+
+      {/* Market Info Card */}
+      <Card className="mb-4 overflow-hidden">
+        {market.image_url && (
+          <div className="aspect-video relative">
+            <img 
+              src={market.image_url} 
+              alt={market.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute top-2 left-2">
+              <Badge variant={market.is_active ? "default" : "secondary"}>
+                {market.is_active ? 'Activo' : 'Inactivo'}
+              </Badge>
+            </div>
+            {market.accepts_donations && (
+              <div className="absolute top-2 right-2">
+                <Badge variant="default" className="bg-green-500">
+                  <Heart className="w-3 h-3 mr-1" />
+                  Donaciones
+                </Badge>
+              </div>
+            )}
+          </div>
+        )}
+        
+        <CardHeader>
+          <CardTitle>{market.title}</CardTitle>
+          {market.description && (
+            <p className="text-sm text-muted-foreground">{market.description}</p>
+          )}
+          {market.location_name && (
+            <p className="text-sm text-muted-foreground flex items-center gap-1">
+              <MapPin className="w-3 h-3" />
+              {market.location_name}
+            </p>
+          )}
+        </CardHeader>
+
+        <CardContent>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={openInMaps}
+            className="w-full mb-3"
+          >
+            <MapPin className="w-3 h-3 mr-2" />
+            Ver en Google Maps
+          </Button>
+          
+          <p className="text-xs text-muted-foreground text-center">
+            Creado {new Date(market.created_at).toLocaleDateString()}
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Settings */}
+      <div className="space-y-4">
+        {/* Active Status */}
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-medium">Estado del mercadillo</h3>
+                <p className="text-sm text-muted-foreground">
+                  {market.is_active ? 'Visible para otros usuarios' : 'Oculto para otros usuarios'}
+                </p>
+              </div>
+              <Switch
+                checked={market.is_active}
+                onCheckedChange={handleToggleActive}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Donations */}
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-medium">Aceptar donaciones</h3>
+                <p className="text-sm text-muted-foreground">
+                  Permite que otros usuarios sepan que aceptas donaciones
+                </p>
+              </div>
+              <Switch
+                checked={market.accepts_donations}
+                onCheckedChange={handleToggleDonations}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Actions */}
+        <div className="space-y-2">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              // TODO: Implementar edición del mercadillo
+              toast.info('Función de edición próximamente');
+            }}
+          >
+            <Edit className="w-4 h-4 mr-2" />
+            Editar información
+          </Button>
+          
+          <Button
+            variant="destructive"
+            className="w-full"
+            onClick={handleDeleteMarket}
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Eliminar mercadillo
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MyMarketPage;
