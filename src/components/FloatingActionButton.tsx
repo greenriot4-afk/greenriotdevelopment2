@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, Sofa, Gift, Package, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuthAction } from "@/hooks/useAuthAction";
 
 interface FloatingActionButtonProps {
   onUpload: (type: 'abandoned' | 'donation' | 'product') => void;
@@ -10,6 +11,7 @@ interface FloatingActionButtonProps {
 export function FloatingActionButton({ onUpload }: FloatingActionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { requireAuth } = useAuthAction();
 
   const options = [
     {
@@ -33,21 +35,23 @@ export function FloatingActionButton({ onUpload }: FloatingActionButtonProps) {
   ];
 
   const handleOptionClick = (type: 'abandoned' | 'donation' | 'product') => {
-    // Navigate to the correct page first
-    const routeMap = {
-      abandoned: '/abandons',
-      donation: '/donations',
-      product: '/products'
-    };
-    
-    navigate(routeMap[type]);
-    
-    // Then trigger the upload
-    setTimeout(() => {
-      onUpload(type);
-    }, 100);
-    
-    setIsOpen(false);
+    requireAuth(() => {
+      // Navigate to the correct page first
+      const routeMap = {
+        abandoned: '/abandons',
+        donation: '/donations',
+        product: '/products'
+      };
+      
+      navigate(routeMap[type]);
+      
+      // Then trigger the upload
+      setTimeout(() => {
+        onUpload(type);
+      }, 100);
+      
+      setIsOpen(false);
+    }, 'Debes crear una cuenta para publicar contenido');
   };
 
   return (

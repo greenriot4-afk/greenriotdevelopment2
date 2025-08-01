@@ -12,6 +12,7 @@ import { UserLikes } from '@/components/UserLikes';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuthAction } from '@/hooks/useAuthAction';
 
 export interface AbandonedObject {
   id: string;
@@ -39,6 +40,7 @@ interface ObjectsListProps {
 export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, objectType }: ObjectsListProps) => {
   const { calculateDistance } = useLocation();
   const { wallet, hasEnoughBalance, deductBalance } = useWallet();
+  const { requireAuth, isAuthenticated } = useAuthAction();
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showInsufficientFundsDialog, setShowInsufficientFundsDialog] = useState(false);
@@ -126,26 +128,29 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
   };
 
   const handlePurchaseClick = (object: AbandonedObject) => {
-    // For donations, open Google Maps directly (no payment required)
-    if (objectType === 'donation') {
-      openGoogleMaps(object);
-      return;
-    }
+    // Always require authentication for Google Maps functionality
+    requireAuth(() => {
+      // For donations, open Google Maps directly (no payment required)
+      if (objectType === 'donation') {
+        openGoogleMaps(object);
+        return;
+      }
 
-    // For abandoned objects that are free (3+ hours old), open Google Maps directly
-    if (objectType === 'abandoned' && isAbandonedObjectFree(object)) {
-      openGoogleMaps(object);
-      return;
-    }
+      // For abandoned objects that are free (3+ hours old), open Google Maps directly
+      if (objectType === 'abandoned' && isAbandonedObjectFree(object)) {
+        openGoogleMaps(object);
+        return;
+      }
 
-    setSelectedObject(object);
+      setSelectedObject(object);
 
-    // Check if user has enough balance for paid objects
-    if (hasEnoughBalance(object.price_credits)) {
-      setShowConfirmDialog(true);
-    } else {
-      setShowInsufficientFundsDialog(true);
-    }
+      // Check if user has enough balance for paid objects
+      if (hasEnoughBalance(object.price_credits)) {
+        setShowConfirmDialog(true);
+      } else {
+        setShowInsufficientFundsDialog(true);
+      }
+    }, 'Debes crear una cuenta para ver las coordenadas');
   };
 
   const handleConfirmPurchase = async () => {
@@ -307,14 +312,15 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
               <div className="space-y-2">
                 {/* Botones de acción */}
                 <div className="flex items-center gap-2">
-                  {/* Solo mostrar botón de chat para donaciones y productos */}
-                  {objectType !== 'abandoned' && (
-                    <ChatButton 
-                      userId={object.user_id}
-                      size="sm"
-                      variant="outline"
-                    />
-                  )}
+                   {/* Solo mostrar botón de chat para donaciones y productos */}
+                   {objectType !== 'abandoned' && (
+                     <ChatButton 
+                       userId={object.user_id}
+                       size="sm"
+                       variant="outline"
+                       requireAuth={true}
+                     />
+                   )}
                   
                    {/* Solo mostrar botón de maps para abandonados */}
                    {objectType === 'abandoned' && (

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAuthAction } from "@/hooks/useAuthAction";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +14,7 @@ export function MobileMenu() {
   const [userHasMarket, setUserHasMarket] = useState(false);
   const { signOut, user } = useAuth();
   const { language, setLanguage, t } = useLanguage();
+  const { requireAuth } = useAuthAction();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,45 +44,59 @@ export function MobileMenu() {
   }, [user]);
 
   const handleWalletClick = () => {
-    navigate('/wallet');
-    setIsOpen(false);
+    requireAuth(() => {
+      navigate('/wallet');
+      setIsOpen(false);
+    });
   };
 
   const handleAccountClick = () => {
-    navigate('/account');
-    setIsOpen(false);
+    requireAuth(() => {
+      navigate('/account');
+      setIsOpen(false);
+    });
   };
 
   const handleCreateMarketClick = () => {
-    navigate('/markets');
-    setIsOpen(false);
-    // Show create form automatically when navigating to markets
-    setTimeout(() => {
-      const createButton = document.querySelector('[data-create-market]') as HTMLButtonElement;
-      if (createButton) {
-        createButton.click();
-      }
-    }, 100);
+    requireAuth(() => {
+      navigate('/markets');
+      setIsOpen(false);
+      // Show create form automatically when navigating to markets
+      setTimeout(() => {
+        const createButton = document.querySelector('[data-create-market]') as HTMLButtonElement;
+        if (createButton) {
+          createButton.click();
+        }
+      }, 100);
+    });
   };
 
   const handleChatClick = () => {
-    navigate('/chat');
-    setIsOpen(false);
+    requireAuth(() => {
+      navigate('/chat');
+      setIsOpen(false);
+    });
   };
 
   const handleMyMarketClick = () => {
-    navigate('/my-market');
-    setIsOpen(false);
+    requireAuth(() => {
+      navigate('/my-market');
+      setIsOpen(false);
+    });
   };
 
   const handleAffiliatesClick = () => {
-    navigate('/affiliates');
-    setIsOpen(false);
+    requireAuth(() => {
+      navigate('/affiliates');
+      setIsOpen(false);
+    });
   };
 
   const handleFavoritesClick = () => {
-    navigate('/favorites');
-    setIsOpen(false);
+    requireAuth(() => {
+      navigate('/favorites');
+      setIsOpen(false);
+    });
   };
 
   const toggleLanguage = () => {
@@ -90,6 +106,11 @@ export function MobileMenu() {
   const handleSignOut = async () => {
     await signOut();
     toast.success(t('menu.signOut'));
+    setIsOpen(false);
+  };
+
+  const handleAuthRedirect = () => {
+    navigate('/auth');
     setIsOpen(false);
   };
 
@@ -108,27 +129,43 @@ export function MobileMenu() {
         side="right" 
         className="w-80 p-0 border-0 bg-gradient-to-br from-primary to-primary/80"
       >
-        {/* Header with user profile */}
+        {/* Header with user profile or auth prompt */}
         <div className="p-6 bg-black/20 backdrop-blur-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-              <User className="h-6 w-6 text-white" />
+          {user ? (
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                <User className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold">
+                  {user?.email?.split('@')[0] || t('menu.user')}
+                </h3>
+              </div>
             </div>
-            <div>
-              <h3 className="text-white font-semibold">
-                {user?.email?.split('@')[0] || t('menu.user')}
-              </h3>
-              
+          ) : (
+            <div className="text-center">
+              <h3 className="text-white font-semibold mb-2">¡Únete a Greenriot!</h3>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleAuthRedirect}
+                className="w-full"
+              >
+                Iniciar Sesión / Registro
+              </Button>
             </div>
-          </div>
-          <Button
-            variant="ghost"
-            className="w-full justify-start mt-3 text-white hover:bg-white/10"
-            onClick={handleAccountClick}
-          >
-            <Settings className="h-5 w-5 mr-3" />
-            {t('menu.myAccount')}
-          </Button>
+          )}
+          
+          {user && (
+            <Button
+              variant="ghost"
+              className="w-full justify-start mt-3 text-white hover:bg-white/10"
+              onClick={handleAccountClick}
+            >
+              <Settings className="h-5 w-5 mr-3" />
+              {t('menu.myAccount')}
+            </Button>
+          )}
         </div>
 
         {/* Language Toggle */}
@@ -185,16 +222,29 @@ export function MobileMenu() {
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-4 left-4 right-4">
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white/80 hover:bg-white/10"
-            onClick={handleSignOut}
-          >
-            <LogOut className="h-5 w-5 mr-3" />
-            {t('menu.signOut')}
-          </Button>
-        </div>
+        {user ? (
+          <div className="absolute bottom-4 left-4 right-4">
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-4 h-12 text-white/80 hover:bg-white/10"
+              onClick={handleSignOut}
+            >
+              <LogOut className="h-5 w-5 mr-3" />
+              {t('menu.signOut')}
+            </Button>
+          </div>
+        ) : (
+          <div className="absolute bottom-4 left-4 right-4">
+            <Button
+              variant="secondary"
+              className="w-full"
+              onClick={handleAuthRedirect}
+            >
+              <User className="h-5 w-5 mr-3" />
+              Crear Cuenta
+            </Button>
+          </div>
+        )}
       </SheetContent>
     </Sheet>
   );

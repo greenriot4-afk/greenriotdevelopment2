@@ -1,15 +1,26 @@
 import { WalletIcon } from 'lucide-react';
 import { useWallet } from '@/hooks/useWallet';
+import { useAuth } from '@/hooks/useAuth';
+import { useAuthAction } from '@/hooks/useAuthAction';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 export const HeaderWallet = () => {
   const { wallet, loading } = useWallet();
+  const { user } = useAuth();
+  const { requireAuth } = useAuthAction();
   const navigate = useNavigate();
 
   const handleWalletClick = () => {
-    navigate('/wallet');
+    requireAuth(() => {
+      navigate('/wallet');
+    });
   };
+
+  // Don't show wallet for non-authenticated users
+  if (!user) {
+    return null;
+  }
 
   if (loading) {
     return (

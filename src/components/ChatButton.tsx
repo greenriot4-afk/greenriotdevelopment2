@@ -4,22 +4,30 @@ import { useChat } from '@/hooks/useChat';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useAuthAction } from '@/hooks/useAuthAction';
 
 interface ChatButtonProps {
   userId: string;
   username?: string;
   size?: 'sm' | 'default';
   variant?: 'default' | 'outline' | 'ghost';
+  requireAuth?: boolean;
 }
 
-export const ChatButton = ({ userId, username, size = 'sm', variant = 'outline' }: ChatButtonProps) => {
+export const ChatButton = ({ userId, username, size = 'sm', variant = 'outline', requireAuth = false }: ChatButtonProps) => {
   const { user } = useAuth();
   const { createOrGetConversation } = useChat();
   const navigate = useNavigate();
+  const { requireAuth: authAction } = useAuthAction();
 
   const handleChatClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     
+    if (requireAuth && !user) {
+      authAction(() => {}, 'Debes crear una cuenta para chatear');
+      return;
+    }
+
     if (!user) {
       toast.error('Debes iniciar sesión para chatear');
       return;
