@@ -73,7 +73,8 @@ export const useLocation = () => {
     try {
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 30000, // Increased timeout for better accuracy
+        maximumAge: 0, // Don't use cached location
       });
 
       const location = {
@@ -92,6 +93,41 @@ export const useLocation = () => {
     } catch (error) {
       console.error('Error getting location:', error);
       toast.error('Error al obtener la ubicación');
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // High precision location for critical operations (like sharing objects)
+  const getHighPrecisionLocation = async (): Promise<UserLocation | null> => {
+    setIsLoading(true);
+    try {
+      // First attempt with maximum precision settings
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 60000, // Extended timeout for best accuracy
+        maximumAge: 0, // Never use cached location
+      });
+
+      // Check accuracy - if poor, show warning
+      const accuracy = position.coords.accuracy;
+      if (accuracy > 10) {
+        toast.error(`Precisión GPS: ±${accuracy.toFixed(0)}m. Muévete a cielo abierto para mejor precisión.`);
+      } else {
+        toast.success(`Precisión GPS excelente: ±${accuracy.toFixed(0)}m`);
+      }
+
+      const location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+
+      setUserLocation(location);
+      return location;
+    } catch (error) {
+      console.error('Error getting high precision location:', error);
+      toast.error('Error al obtener ubicación precisa. Verifica permisos GPS.');
       return null;
     } finally {
       setIsLoading(false);
@@ -125,6 +161,7 @@ export const useLocation = () => {
     userLocation,
     setUserLocation,
     getCurrentLocation,
+    getHighPrecisionLocation,
     updateSavedLocation,
     calculateDistance,
     isLoading,
