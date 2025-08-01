@@ -124,7 +124,7 @@ const MarketsPage = () => {
               disabled={subscriptionLoading}
             >
               <Crown className="w-4 h-4" />
-              {subscriptionLoading ? 'Cargando...' : 'Premium $19/mes'}
+              {subscriptionLoading ? 'Cargando...' : 'Create circular market $19/month'}
             </Button>
           ) : (
             <Button 
