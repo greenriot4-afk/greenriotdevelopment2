@@ -16,12 +16,14 @@ interface PhotoUploadProps {
     longitude: number;
     price: number;
   }) => Promise<void>;
+  objectType: 'abandoned' | 'donation' | 'product';
+  onCancel?: () => void;
 }
 
-export const PhotoUpload = ({ onUpload }: PhotoUploadProps) => {
+export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState(50);
+  const [price, setPrice] = useState(objectType === 'donation' ? 0 : 50);
   const [photo, setPhoto] = useState<PhotoWithLocation | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   
@@ -72,12 +74,21 @@ export const PhotoUpload = ({ onUpload }: PhotoUploadProps) => {
     }
   };
 
+  const getTitle = () => {
+    switch (objectType) {
+      case 'abandoned': return 'Compartir Objeto Abandonado';
+      case 'donation': return 'Publicar Donación';
+      case 'product': return 'Vender Producto';
+      default: return 'Publicar Objeto';
+    }
+  };
+
   return (
     <Card className="max-w-md mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Camera className="w-5 h-5" />
-          Share an Abandoned Object
+          {getTitle()}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -138,32 +149,48 @@ export const PhotoUpload = ({ onUpload }: PhotoUploadProps) => {
             />
           </div>
 
-          {/* Price */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Coordinate Price (Credits)</label>
-            <Input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(Math.max(1, parseInt(e.target.value) || 1))}
-              min={1}
-              max={1000}
-            />
-          </div>
+          {/* Price - only for abandoned and product */}
+          {objectType !== 'donation' && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                {objectType === 'product' ? 'Precio (Créditos)' : 'Precio de Coordenadas (Créditos)'}
+              </label>
+              <Input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(Math.max(1, parseInt(e.target.value) || 1))}
+                min={1}
+                max={1000}
+              />
+            </div>
+          )}
 
-          <Button 
-            type="submit" 
-            className="w-full" 
-            disabled={isUploading || !photo}
-          >
+          <div className="flex gap-2">
+            {onCancel && (
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={onCancel}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+            )}
+            <Button 
+              type="submit" 
+              className="flex-1" 
+              disabled={isUploading || !photo}
+            >
             {isUploading ? (
-              'Uploading...'
+              'Publicando...'
             ) : (
               <>
                 <Upload className="w-4 h-4 mr-2" />
-                Share Object
+                Publicar
               </>
             )}
           </Button>
+          </div>
         </form>
       </CardContent>
     </Card>

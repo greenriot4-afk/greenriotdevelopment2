@@ -7,8 +7,9 @@ import { useLocation } from '@/hooks/useLocation';
 
 export interface AbandonedObject {
   id: string;
+  type?: 'abandoned' | 'donation' | 'product';
   title: string;
-  description: string;
+  description?: string;
   image_url: string;
   latitude: number;
   longitude: number;
@@ -22,9 +23,10 @@ interface ObjectsListProps {
   objects: AbandonedObject[];
   onPurchaseCoordinates: (objectId: string, price: number) => Promise<void>;
   userLocation: { latitude: number; longitude: number } | null;
+  objectType: 'abandoned' | 'donation' | 'product';
 }
 
-export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation }: ObjectsListProps) => {
+export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, objectType }: ObjectsListProps) => {
   const { calculateDistance } = useLocation();
   const [purchasing, setPurchasing] = useState<string | null>(null);
 
@@ -54,12 +56,29 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation }: Ob
     }
   };
 
+  const getEmptyMessage = () => {
+    switch (objectType) {
+      case 'abandoned': return 'No se encontraron objetos abandonados cerca.';
+      case 'donation': return 'No se encontraron donaciones disponibles.';
+      case 'product': return 'No se encontraron productos en venta.';
+      default: return 'No se encontraron objetos.';
+    }
+  };
+
+  const getButtonText = () => {
+    switch (objectType) {
+      case 'donation': return 'Ver Ubicación';
+      case 'product': return 'Comprar';
+      default: return 'Comprar Coordenadas';
+    }
+  };
+
   if (objects.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-muted-foreground">No abandoned objects found nearby.</p>
+        <p className="text-muted-foreground">{getEmptyMessage()}</p>
         <p className="text-sm text-muted-foreground mt-2">
-          Be the first to share something in your area!
+          ¡Sé el primero en compartir algo en tu área!
         </p>
       </div>
     );
@@ -95,10 +114,12 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation }: Ob
                 <MapPin className="w-3 h-3" />
                 {getDistanceText(object)}
               </div>
-              <div className="flex items-center gap-1 text-sm font-medium">
-                <Coins className="w-3 h-3 text-yellow-500" />
-                {object.price_credits} credits
-              </div>
+              {objectType !== 'donation' && (
+                <div className="flex items-center gap-1 text-sm font-medium">
+                  <Coins className="w-3 h-3 text-yellow-500" />
+                  {object.price_credits} créditos
+                </div>
+              )}
             </div>
             
             <div className="flex items-center justify-between">
@@ -114,11 +135,11 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation }: Ob
                 className="px-4"
               >
                 {purchasing === object.id ? (
-                  'Purchasing...'
+                  'Procesando...'
                 ) : object.is_sold ? (
-                  'Sold Out'
+                  'Agotado'
                 ) : (
-                  'Buy Coordinates'
+                  getButtonText()
                 )}
               </Button>
             </div>

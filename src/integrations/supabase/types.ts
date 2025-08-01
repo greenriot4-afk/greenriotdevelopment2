@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      objects: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string
+          is_sold: boolean | null
+          latitude: number
+          longitude: number
+          price_credits: number | null
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url: string
+          is_sold?: boolean | null
+          latitude: number
+          longitude: number
+          price_credits?: number | null
+          title: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string
+          is_sold?: boolean | null
+          latitude?: number
+          longitude?: number
+          price_credits?: number | null
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -47,6 +92,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          object_type: string | null
           status: string
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
@@ -60,6 +106,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          object_type?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
@@ -73,6 +120,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          object_type?: string | null
           status?: string
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
