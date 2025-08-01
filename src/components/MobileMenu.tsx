@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus } from "lucide-react";
+import { Menu, X, Smile, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -107,13 +107,13 @@ export function MobileMenu() {
         <div className="p-6 bg-black/20 backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-              <User className="h-6 w-6 text-white" />
+              <Smile className="h-6 w-6 text-white" />
             </div>
             <div>
               <h3 className="text-white font-semibold">
                 {user?.email?.split('@')[0] || 'Usuario'}
               </h3>
-              <p className="text-white/80 text-sm">Comprador/vendedor</p>
+              
             </div>
           </div>
           <Button
@@ -147,11 +147,14 @@ export function MobileMenu() {
 
           <Button
             variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            className="w-full justify-start px-4 py-3 text-white hover:bg-white/10 h-auto"
             onClick={handleAffiliatesClick}
           >
-            <DollarSign className="h-5 w-5 mr-3" />
-            Trae un mercadillo circular: Ayuda al planeta y gana 19$!
+            <DollarSign className="h-5 w-5 mr-3 mt-1 flex-shrink-0" />
+            <span className="text-left leading-tight">
+              Trae un mercadillo circular:<br />
+              Ayuda al planeta y gana 19$!
+            </span>
           </Button>
         </div>
 
