@@ -11,6 +11,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAffiliates } from '@/hooks/useAffiliates';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Gift } from 'lucide-react';
+import { FcGoogle } from 'react-icons/fc';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -124,6 +126,25 @@ export default function Auth() {
     setLoading(false);
   };
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/`
+      }
+    });
+    
+    if (error) {
+      toast({
+        title: t('error.signInError'),
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20 p-4">
       <div className="w-full max-w-md">
@@ -166,7 +187,30 @@ export default function Auth() {
                 <TabsTrigger value="signup">{t('auth.signUp')}</TabsTrigger>
               </TabsList>
               
+              
               <TabsContent value="signin">
+                <div className="space-y-4">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleGoogleSignIn}
+                    disabled={loading}
+                  >
+                    <FcGoogle className="mr-2 h-4 w-4" />
+                    {t('auth.signInWithGoogle')}
+                  </Button>
+                  
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">
+                        {t('auth.orContinueWith')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signin-email">{t('auth.email')}</Label>
@@ -196,7 +240,30 @@ export default function Auth() {
                 </form>
               </TabsContent>
               
+              
               <TabsContent value="signup">
+                <div className="space-y-4">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleGoogleSignIn}
+                    disabled={loading}
+                  >
+                    <FcGoogle className="mr-2 h-4 w-4" />
+                    {t('auth.signUpWithGoogle')}
+                  </Button>
+                  
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">
+                        {t('auth.orContinueWith')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signup-name">{t('auth.name')}</Label>
