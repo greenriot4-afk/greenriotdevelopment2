@@ -1,0 +1,270 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { useAffiliates } from '@/hooks/useAffiliates';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { Share2, Copy, Users, Euro, Calendar, Gift } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { toast } from 'sonner';
+import { useState } from 'react';
+
+// Precio por defecto - se puede cambiar aquí
+const PREMIUM_PRICE_EUR = 19.99;
+
+export const AffiliateSection = () => {
+  const { user } = useAuth();
+  const { 
+    affiliateCode, 
+    referrals, 
+    commissions, 
+    loading, 
+    totalEarnings,
+    createAffiliateCode,
+    getAffiliateLink,
+    copyAffiliateLink 
+  } = useAffiliates();
+  
+  const [subscribing, setSubscribing] = useState(false);
+
+  const handleCreatePremiumSubscription = async () => {
+    if (!user) return;
+
+    try {
+      setSubscribing(true);
+      
+      const { data, error } = await supabase.functions.invoke('create-premium-subscription', {
+        body: { 
+          priceInCents: Math.round(PREMIUM_PRICE_EUR * 100) // Convert to cents
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.url) {
+        // Open Stripe checkout in new tab
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error creating subscription:', error);
+      toast.error('Error al crear la suscripción');
+    } finally {
+      setSubscribing(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Share2 className="w-5 h-5" />
+            Sistema de Afiliados
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4">
+            <p className="text-muted-foreground">Cargando...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Share2 className="w-5 h-5 text-primary" />
+            Sistema de Afiliados
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Gana €{PREMIUM_PRICE_EUR} por cada usuario que refiera y se suscriba al plan premium
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Ganancias totales */}
+          <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg">
+            <div className="flex items-center gap-2">
+              <Euro className="w-5 h-5 text-primary" />
+              <span className="font-medium">Ganancias totales:</span>
+            </div>
+            <Badge variant="secondary" className="text-lg font-bold">
+              €{totalEarnings.toFixed(2)}
+            </Badge>
+          </div>
+
+          {/* Affiliate Code Section */}
+          {!affiliateCode ? (
+            <div className="text-center py-6 border border-dashed border-muted-foreground/25 rounded-lg">
+              <Gift className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+              <h3 className="font-medium mb-2">Comienza a ganar con afiliados</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Crea tu código único y empieza a referir usuarios
+              </p>
+              <Button onClick={createAffiliateCode}>
+                Crear código de afiliado
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Tu código de afiliado:</label>
+                <div className="flex gap-2 mt-1">
+                  <div className="flex-1 p-3 bg-muted rounded-lg font-mono text-center text-lg font-bold">
+                    {affiliateCode.code}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copyAffiliateLink(affiliateCode.code)}
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Tu link de afiliado:</label>
+                <div className="flex gap-2 mt-1">
+                  <div className="flex-1 p-3 bg-muted rounded-lg text-sm break-all">
+                    {getAffiliateLink(affiliateCode.code)}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copyAffiliateLink(affiliateCode.code)}
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <Users className="w-8 h-8 text-primary" />
+              <div>
+                <p className="text-2xl font-bold">{referrals.length}</p>
+                <p className="text-sm text-muted-foreground">Referencias totales</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <Euro className="w-8 h-8 text-primary" />
+              <div>
+                <p className="text-2xl font-bold">{commissions.filter(c => c.status === 'paid').length}</p>
+                <p className="text-sm text-muted-foreground">Comisiones pagadas</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Referrals */}
+      {referrals.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Referencias recientes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {referrals.slice(0, 5).map((referral) => (
+                <div key={referral.id} className="flex items-center justify-between py-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Users className="w-4 h-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Usuario referido</p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatDistanceToNow(new Date(referral.referred_at), {
+                          addSuffix: true,
+                          locale: es
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    {referral.commission_paid ? (
+                      <Badge variant="secondary" className="text-green-600">
+                        €{referral.commission_amount}
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline">
+                        Pendiente
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Premium Subscription CTA */}
+      <Card className="border-primary/20">
+        <CardHeader>
+          <CardTitle className="text-lg">¿Quieres probar el plan premium?</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Suscríbete al plan premium para crear mercadillos circulares
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium">Plan Premium</p>
+              <p className="text-sm text-muted-foreground">€{PREMIUM_PRICE_EUR}/mes</p>
+            </div>
+            <Button 
+              onClick={handleCreatePremiumSubscription}
+              disabled={subscribing}
+            >
+              {subscribing ? 'Procesando...' : 'Suscribirse'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* How it works */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">¿Cómo funciona?</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex gap-3">
+            <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">1</div>
+            <p className="text-sm">Comparte tu link de afiliado con amigos</p>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">2</div>
+            <p className="text-sm">Cuando se registren usando tu link, quedarán vinculados a ti</p>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">3</div>
+            <p className="text-sm">Si se suscriben al plan premium en los próximos 30 días, recibes €{PREMIUM_PRICE_EUR}</p>
+          </div>
+          <div className="flex gap-3">
+            <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">4</div>
+            <p className="text-sm">Las comisiones se depositan automáticamente en tu wallet</p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};

@@ -1,14 +1,20 @@
-import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Navigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useAffiliates } from '@/hooks/useAffiliates';
+import { Gift } from 'lucide-react';
 
 export default function Auth() {
+  const [searchParams] = useSearchParams();
+  const affiliateCode = searchParams.get('ref');
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -16,6 +22,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const { user, signIn, signUp } = useAuth();
+  const { processReferralSignup } = useAffiliates();
 
   // Redirigir si ya está autenticado
   if (user) {
@@ -100,9 +107,16 @@ export default function Auth() {
         });
       }
     } else {
+      // Process affiliate referral if there's a code
+      if (affiliateCode && user) {
+        await processReferralSignup(affiliateCode, user.id);
+      }
+      
       toast({
         title: "¡Registro exitoso!",
-        description: "Revisa tu email para confirmar tu cuenta",
+        description: affiliateCode 
+          ? "Revisa tu email para confirmar tu cuenta. ¡Has sido referido por un afiliado!"
+          : "Revisa tu email para confirmar tu cuenta",
       });
     }
     setLoading(false);
@@ -112,8 +126,22 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Street Finds Swap</h1>
+          <h1 className="text-3xl font-bold text-foreground">GREENRIOT</h1>
           <p className="text-muted-foreground mt-2">Descubre y comparte objetos abandonados</p>
+          
+          {affiliateCode && (
+            <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Gift className="w-4 h-4 text-primary" />
+                <Badge variant="secondary" className="text-primary">
+                  ¡Referido por afiliado!
+                </Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Has sido invitado por un usuario. Si te suscribes al plan premium en los próximos 30 días, ¡tu referidor recibirá una comisión!
+              </p>
+            </div>
+          )}
         </div>
 
         <Card>

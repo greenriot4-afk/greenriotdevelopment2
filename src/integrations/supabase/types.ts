@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      affiliate_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          is_active: boolean
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
+      affiliate_commissions: {
+        Row: {
+          affiliate_user_id: string
+          amount: number
+          created_at: string
+          id: string
+          processed_at: string | null
+          referral_id: string
+          status: string
+          stripe_session_id: string | null
+        }
+        Insert: {
+          affiliate_user_id: string
+          amount: number
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          referral_id: string
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Update: {
+          affiliate_user_id?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          referral_id?: string
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_commissions_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "referrals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       circular_markets: {
         Row: {
           accepts_donations: boolean | null
@@ -216,6 +281,42 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          affiliate_code: string
+          affiliate_user_id: string
+          commission_amount: number | null
+          commission_paid: boolean
+          created_at: string
+          id: string
+          referred_at: string
+          referred_user_id: string
+          subscription_date: string | null
+        }
+        Insert: {
+          affiliate_code: string
+          affiliate_user_id: string
+          commission_amount?: number | null
+          commission_paid?: boolean
+          created_at?: string
+          id?: string
+          referred_at?: string
+          referred_user_id: string
+          subscription_date?: string | null
+        }
+        Update: {
+          affiliate_code?: string
+          affiliate_user_id?: string
+          commission_amount?: number | null
+          commission_paid?: boolean
+          created_at?: string
+          id?: string
+          referred_at?: string
+          referred_user_id?: string
+          subscription_date?: string | null
         }
         Relationships: []
       }
