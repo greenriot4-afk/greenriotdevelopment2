@@ -22,6 +22,8 @@ export interface AppObject {
   is_sold: boolean;
   user_id: string;
   created_at: string;
+  user_display_name?: string;
+  username?: string;
 }
 
 const ObjectsPage = () => {
@@ -74,7 +76,25 @@ const ObjectsPage = () => {
 
       console.log('fetchObjects result', { data: data?.length, error });
       if (error) throw error;
-      setObjects((data || []) as AppObject[]);
+
+      // Enrich objects with user profile data
+      const enrichedObjects = await Promise.all(
+        (data || []).map(async (object) => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('display_name, username')
+            .eq('user_id', object.user_id)
+            .single();
+
+          return {
+            ...object,
+            user_display_name: profile?.display_name || 'Usuario',
+            username: profile?.username || ''
+          };
+        })
+      );
+
+      setObjects(enrichedObjects as AppObject[]);
     } catch (error) {
       console.error('Error fetching objects:', error);
       toast.error('Error al cargar los objetos');

@@ -7,8 +7,10 @@ import { MapPin, Coins, User, Wallet } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
 import { useWallet } from '@/hooks/useWallet';
 import { ChatButton } from '@/components/ChatButton';
+import { UserLikes } from '@/components/UserLikes';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface AbandonedObject {
   id: string;
@@ -22,6 +24,8 @@ export interface AbandonedObject {
   is_sold: boolean;
   user_id: string;
   created_at: string;
+  user_display_name?: string;
+  username?: string;
 }
 
 interface ObjectsListProps {
@@ -185,15 +189,25 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
             </CardHeader>
             
             <CardContent>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <MapPin className="w-3 h-3" />
-                  {getDistanceText(object)}
+              {/* User info and likes */}
+              <div className="flex items-center justify-between mb-3 p-2 bg-muted/30 rounded-lg">
+                <div className="flex flex-col gap-1">
+                  <Link 
+                    to={`/profile/${object.user_id}`}
+                    className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
+                  >
+                    <User className="w-3 h-3" />
+                    {object.user_display_name || 'Usuario'}
+                  </Link>
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3" />
+                      {getDistanceText(object)}
+                    </div>
+                    <span>{getDateText(object)}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <User className="w-3 h-3" />
-                  {getDateText(object)}
-                </div>
+                <UserLikes targetUserId={object.user_id} size="sm" />
               </div>
               
               <div className="space-y-2">
