@@ -76,7 +76,7 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
 
   const getTitle = () => {
     switch (objectType) {
-      case 'abandoned': return 'Compartir Objeto Abandonado';
+      case 'abandoned': return 'Compartir Objeto Abandono';
       case 'donation': return 'Publicar Donación';
       case 'product': return 'Vender Producto';
       default: return 'Publicar Objeto';
@@ -153,7 +153,7 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
           {objectType !== 'donation' && (
             <div className="space-y-2">
               <label className="text-sm font-medium">
-                {objectType === 'product' ? 'Precio (Créditos)' : 'Precio de Coordenadas (Créditos)'}
+                {objectType === 'product' ? 'Precio ($)' : 'Precio de Coordenadas ($)'}
               </label>
               <Input
                 type="number"

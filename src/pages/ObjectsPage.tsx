@@ -3,9 +3,10 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { PhotoUpload } from '@/components/PhotoUpload';
 import { ObjectsList } from '@/components/ObjectsList';
+import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { useLocation } from '@/hooks/useLocation';
 import { useAuth } from '@/hooks/useAuth';
-import { MapPin, Plus } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -35,7 +36,7 @@ const ObjectsPage = () => {
   
   const getTitle = () => {
     switch (type) {
-      case 'abandons': return 'Objetos Abandonados';
+      case 'abandons': return 'Objetos Abandonos';
       case 'donations': return 'Donaciones';
       case 'products': return 'Productos';
       default: return 'Objetos';
@@ -44,7 +45,7 @@ const ObjectsPage = () => {
 
   const getDescription = () => {
     switch (type) {
-      case 'abandons': return 'Descubre objetos abandonados en tu área';
+      case 'abandons': return 'Descubre objetos abandonos en tu área';
       case 'donations': return 'Encuentra donaciones disponibles';
       case 'products': return 'Explora productos en venta';
       default: return '';
@@ -125,14 +126,16 @@ const ObjectsPage = () => {
   };
 
   const handlePurchaseCoordinates = async (objectId: string, price: number) => {
-    // This would integrate with the wallet system
+    // Open Google Maps with the object's coordinates
     const object = objects.find(obj => obj.id === objectId);
     if (object) {
-      toast.success(
-        `Coordenadas adquiridas! Ubicación: ${object.latitude.toFixed(6)}, ${object.longitude.toFixed(6)}`,
-        { duration: 10000 }
-      );
+      const mapsUrl = `https://www.google.com/maps?q=${object.latitude},${object.longitude}`;
+      window.open(mapsUrl, '_blank');
     }
+  };
+
+  const handleFloatingUpload = (objectType: 'abandoned' | 'donation' | 'product') => {
+    setShowUpload(true);
   };
 
   if (loading) {
@@ -147,19 +150,9 @@ const ObjectsPage = () => {
     <div className="flex-1 p-4 max-w-md mx-auto w-full">
       {/* Content Header */}
       <div className="mb-4">
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <h2 className="text-xl font-semibold">{getTitle()}</h2>
-            <p className="text-sm text-muted-foreground">{getDescription()}</p>
-          </div>
-          <Button 
-            onClick={() => setShowUpload(!showUpload)} 
-            className="flex items-center gap-2"
-            size="sm"
-          >
-            <Plus className="w-4 h-4" />
-            Publicar
-          </Button>
+        <div className="mb-3">
+          <h2 className="text-xl font-semibold">{getTitle()}</h2>
+          <p className="text-sm text-muted-foreground">{getDescription()}</p>
         </div>
 
         {/* Location Status */}
@@ -210,6 +203,9 @@ const ObjectsPage = () => {
           objectType={objectType}
         />
       )}
+
+      {/* Floating Action Button */}
+      <FloatingActionButton onUpload={handleFloatingUpload} />
     </div>
   );
 };

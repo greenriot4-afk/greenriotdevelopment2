@@ -58,7 +58,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
 
   const getEmptyMessage = () => {
     switch (objectType) {
-      case 'abandoned': return 'No se encontraron objetos abandonados cerca.';
+      case 'abandoned': return 'No se encontraron objetos abandonos cerca.';
       case 'donation': return 'No se encontraron donaciones disponibles.';
       case 'product': return 'No se encontraron productos en venta.';
       default: return 'No se encontraron objetos.';
@@ -66,11 +66,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
   };
 
   const getButtonText = () => {
-    switch (objectType) {
-      case 'donation': return 'Ver Ubicación';
-      case 'product': return 'Comprar';
-      default: return 'Comprar Coordenadas';
-    }
+    return 'Abrir Google Maps';
   };
 
   if (objects.length === 0) {
@@ -117,7 +113,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
               {objectType !== 'donation' && (
                 <div className="flex items-center gap-1 text-sm font-medium">
                   <Coins className="w-3 h-3 text-yellow-500" />
-                  {object.price_credits} créditos
+                  ${object.price_credits}
                 </div>
               )}
             </div>

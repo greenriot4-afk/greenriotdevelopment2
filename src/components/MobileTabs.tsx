@@ -5,7 +5,7 @@ import { Trash2, Gift, Package } from "lucide-react";
 const tabs = [
   {
     id: "abandons",
-    label: "Abandonados",
+    label: "Abandonos",
     icon: Trash2,
     path: "/abandons"
   },
