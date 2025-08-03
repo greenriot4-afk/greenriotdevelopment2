@@ -175,6 +175,27 @@ export default function Wallet() {
     });
   };
 
+  const syncStripeStatus = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.functions.invoke('sync-stripe-status');
+      
+      if (error) {
+        toast.error('Error syncing with Stripe: ' + error.message);
+        return;
+      }
+      
+      toast.success(`Synced ${data.updated} transactions with Stripe`);
+      fetchWallet();
+      fetchTransactions();
+    } catch (error) {
+      console.error('Error syncing Stripe status:', error);
+      toast.error('Failed to sync with Stripe');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4 space-y-6">
       {/* Wallet Balance Card */}
@@ -191,6 +212,15 @@ export default function Wallet() {
             {wallet ? formatCurrency(wallet.balance) : '$0.00'}
           </div>
           <p className="text-muted-foreground">Available Balance</p>
+          <Button 
+            onClick={syncStripeStatus} 
+            disabled={loading} 
+            variant="outline" 
+            size="sm" 
+            className="mt-3"
+          >
+            {loading ? 'Syncing...' : 'Sync with Stripe'}
+          </Button>
         </CardContent>
       </Card>
 

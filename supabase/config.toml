@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.cleanup-old-abandons]
 verify_jwt = false
+
+[functions.sync-stripe-status]
+verify_jwt = true
