@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.sync-stripe-status]
 verify_jwt = true
+
+[functions.check-stripe-session]
+verify_jwt = true

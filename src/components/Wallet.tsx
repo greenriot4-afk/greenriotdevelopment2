@@ -196,6 +196,41 @@ export default function Wallet() {
     }
   };
 
+  const checkLastStripeSession = async () => {
+    try {
+      setLoading(true);
+      
+      // Get the most recent transaction with stripe_session_id
+      const latestTransaction = transactions.find(t => 
+        t.type === 'deposit' && 
+        t.stripe_session_id && 
+        t.status === 'pending'
+      );
+      
+      if (!latestTransaction) {
+        toast.error('No recent transaction with Stripe session found');
+        return;
+      }
+      
+      const { data, error } = await supabase.functions.invoke('check-stripe-session', {
+        body: { session_id: latestTransaction.stripe_session_id }
+      });
+      
+      if (error) {
+        toast.error('Error checking Stripe: ' + error.message);
+        return;
+      }
+      
+      console.log('Stripe session details:', data);
+      toast.success(`Session status: ${data.status}, Payment: ${data.payment_status}`);
+    } catch (error) {
+      console.error('Error checking Stripe session:', error);
+      toast.error('Failed to check Stripe session');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4 space-y-6">
       {/* Wallet Balance Card */}
@@ -212,15 +247,24 @@ export default function Wallet() {
             {wallet ? formatCurrency(wallet.balance) : '$0.00'}
           </div>
           <p className="text-muted-foreground">Available Balance</p>
-          <Button 
-            onClick={syncStripeStatus} 
-            disabled={loading} 
-            variant="outline" 
-            size="sm" 
-            className="mt-3"
-          >
-            {loading ? 'Syncing...' : 'Sync with Stripe'}
-          </Button>
+          <div className="flex gap-2 justify-center mt-3">
+            <Button 
+              onClick={syncStripeStatus} 
+              disabled={loading} 
+              variant="outline" 
+              size="sm"
+            >
+              {loading ? 'Syncing...' : 'Sync with Stripe'}
+            </Button>
+            <Button 
+              onClick={checkLastStripeSession} 
+              disabled={loading} 
+              variant="outline" 
+              size="sm"
+            >
+              Check Session
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
