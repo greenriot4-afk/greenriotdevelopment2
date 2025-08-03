@@ -6,6 +6,7 @@ import { useAffiliates } from '@/hooks/useAffiliates';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useWallet } from '@/hooks/useWallet';
 import { Share2, Copy, Users, Euro, Calendar, Gift } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
@@ -18,6 +19,7 @@ const PREMIUM_PRICE_USD = 19;
 export const AffiliateSection = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
+  const { formatCurrency } = useWallet();
   const { 
     affiliateCode, 
     referrals, 
@@ -115,7 +117,7 @@ export const AffiliateSection = () => {
               <span className="font-medium">{t('affiliate.totalEarnings')}</span>
             </div>
             <Badge variant="secondary" className="text-lg font-bold">
-              ${totalEarnings.toFixed(2)}
+              {formatCurrency(totalEarnings)}
             </Badge>
           </div>
 
@@ -223,7 +225,7 @@ export const AffiliateSection = () => {
                   <div className="text-right">
                     {referral.commission_paid ? (
                       <Badge variant="secondary" className="text-green-600">
-                        ${referral.commission_amount}
+                        {formatCurrency(referral.commission_amount)}
                       </Badge>
                     ) : (
                       <Badge variant="outline">
