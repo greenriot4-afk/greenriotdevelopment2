@@ -184,10 +184,27 @@ serve(async (req) => {
       throw new Error('Failed to process platform commission');
     }
 
+    // 4. Delete the object immediately after successful payment (only for abandoned objects)
+    if (objectType === 'abandoned') {
+      const { error: deleteError } = await supabaseClient
+        .from('objects')
+        .delete()
+        .eq('id', objectId);
+
+      if (deleteError) {
+        console.error('Failed to delete object after payment:', deleteError);
+        // Don't throw error here as payment was successful - log the issue
+        console.log('Object deletion failed but payment was processed successfully');
+      } else {
+        console.log(`Successfully deleted abandoned object: ${objectId}`);
+      }
+    }
+
     console.log('Payment processed successfully:', {
       buyerTransaction: buyerResult,
       sellerTransaction: sellerResult,
-      companyCommission: companyResult
+      companyCommission: companyResult,
+      objectDeleted: objectType === 'abandoned'
     });
 
     return new Response(

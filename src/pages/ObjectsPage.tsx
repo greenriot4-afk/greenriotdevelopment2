@@ -262,6 +262,12 @@ const ObjectsPage = () => {
     }
   };
 
+  const handleObjectRemoved = (objectId: string) => {
+    // Remove the object from the local state immediately
+    setObjects(prevObjects => prevObjects.filter(obj => obj.id !== objectId));
+    toast.success('El anuncio ha sido eliminado tras la compra exitosa');
+  };
+
   const handleFloatingUpload = (objectType: 'abandoned' | 'donation' | 'product') => {
     setShowUpload(true);
   };
@@ -301,6 +307,7 @@ const ObjectsPage = () => {
         onPurchaseCoordinates={handlePurchaseCoordinates}
         userLocation={userLocation}
         objectType={objectType}
+        onObjectRemoved={handleObjectRemoved}
       />
 
       {/* Floating Action Button */}

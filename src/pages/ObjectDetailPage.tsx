@@ -90,19 +90,19 @@ export default function ObjectDetailPage() {
           amount: object.price_credits,
           description: `Coordenadas de ${object.title}`,
           objectType: object.type,
-          currency: 'USD'
+          currency: 'USD',
+          objectId: object.id
         }
       });
 
       if (result.error) throw result.error;
 
-      await deductBalance(object.price_credits, `Coordenadas de ${object.title}`, object.type);
-      
-      // Abrir Google Maps con las coordenadas
-      const mapsUrl = `https://www.google.com/maps?q=${object.latitude},${object.longitude}`;
-      window.open(mapsUrl, '_blank');
-      
-      toast.success('¡Coordenadas adquiridas! Se han abierto en Google Maps.');
+      // Redirect to Stripe checkout
+      if (result.data?.url) {
+        window.location.href = result.data.url;
+      } else {
+        toast.success('¡Coordenadas adquiridas! Se han abierto en Google Maps.');
+      }
     } catch (error) {
       console.error('Error purchasing coordinates:', error);
       toast.error('Error al procesar el pago');

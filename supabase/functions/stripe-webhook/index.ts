@@ -46,83 +46,149 @@ serve(async (req) => {
       const session = event.data.object as Stripe.Checkout.Session;
       console.log('Processing completed checkout session:', sanitizeString(session.id));
 
-      // Validate required metadata
-      if (!session.metadata?.transaction_id || !session.metadata?.user_id) {
-        console.error('Missing required metadata in session');
-        throw new Error('Invalid session metadata');
-      }
-
-      const transactionId = sanitizeString(session.metadata.transaction_id);
-      const userId = sanitizeString(session.metadata.user_id);
-
-      // Get the transaction with validation
-      const { data: transaction, error: getTransactionError } = await supabaseClient
-        .from('transactions')
-        .select('amount, wallet_id, user_id, status')
-        .eq('id', transactionId)
-        .eq('user_id', userId) // Additional security check
-        .single();
-
-      if (getTransactionError || !transaction) {
-        console.error('Failed to get transaction:', getTransactionError);
-        throw new Error('Transaction not found or access denied');
-      }
-
-      // Prevent double processing
-      if (transaction.status === 'completed') {
-        console.log('Transaction already processed:', transactionId);
-        return new Response(JSON.stringify({ received: true, already_processed: true }), {
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      // Validate amount is positive
-      const amount = parseFloat(transaction.amount.toString());
-      if (amount <= 0) {
-        throw new Error('Invalid transaction amount');
-      }
-
-      // Use atomic wallet update function to prevent race conditions
-      const { data: result, error: updateError } = await supabaseClient
-        .rpc('update_wallet_balance_atomic', {
-          p_wallet_id: transaction.wallet_id,
-          p_amount: amount,
-          p_transaction_type: 'credit',
-          p_user_id: userId,
-          p_description: `Stripe deposit: ${sanitizeString(session.id)}`,
-          p_object_type: 'deposit'
-        });
-
-      if (updateError) {
-        console.error('Failed to update wallet atomically:', updateError);
+      // Check if this is a coordinate purchase
+      const isCoordinatePurchase = session.metadata?.type === 'coordinate_purchase';
+      
+      if (isCoordinatePurchase) {
+        // Handle coordinate purchase - eliminate object after successful payment
+        const userId = sanitizeString(session.metadata?.user_id || '');
+        const objectId = sanitizeString(session.metadata?.object_id || '');
+        const amount = parseFloat(session.metadata?.amount || '0');
         
-        // Mark transaction as failed
-        await supabaseClient
+        if (!userId || !objectId || amount <= 0) {
+          console.error('Missing required metadata for coordinate purchase');
+          throw new Error('Invalid coordinate purchase metadata');
+        }
+
+        console.log(`Processing coordinate purchase: objectId=${objectId}, userId=${userId}, amount=${amount}`);
+        
+        // First, deduct from user's wallet
+        const currency = sanitizeString(session.metadata?.currency || 'USD');
+        
+        // Get or create user wallet
+        const { data: walletId } = await supabaseClient
+          .rpc('get_or_create_wallet', {
+            p_user_id: userId,
+            p_currency: currency
+          });
+
+        if (!walletId) {
+          throw new Error('Failed to get user wallet');
+        }
+
+        // Use atomic wallet update to deduct balance
+        const { data: walletResult, error: walletError } = await supabaseClient
+          .rpc('update_wallet_balance_atomic', {
+            p_wallet_id: walletId,
+            p_amount: amount,
+            p_transaction_type: 'debit',
+            p_user_id: userId,
+            p_description: `Coordinate purchase: ${objectId}`,
+            p_object_type: 'coordinate',
+            p_currency: currency
+          });
+
+        if (walletError) {
+          console.error('Failed to deduct from wallet:', walletError);
+          throw walletError;
+        }
+
+        console.log('Successfully deducted from wallet:', walletResult);
+
+        // Delete the object immediately after successful payment
+        const { error: deleteError } = await supabaseClient
+          .from('objects')
+          .delete()
+          .eq('id', objectId);
+
+        if (deleteError) {
+          console.error('Failed to delete object:', deleteError);
+          // Don't throw error here as payment was successful - log the issue
+          console.log('Object deletion failed but payment was processed successfully');
+        } else {
+          console.log(`Successfully deleted object: ${objectId}`);
+        }
+
+      } else {
+        // Handle regular deposit
+        // Validate required metadata
+        if (!session.metadata?.transaction_id || !session.metadata?.user_id) {
+          console.error('Missing required metadata in session');
+          throw new Error('Invalid session metadata');
+        }
+
+        const transactionId = sanitizeString(session.metadata.transaction_id);
+        const userId = sanitizeString(session.metadata.user_id);
+
+        // Get the transaction with validation
+        const { data: transaction, error: getTransactionError } = await supabaseClient
+          .from('transactions')
+          .select('amount, wallet_id, user_id, status')
+          .eq('id', transactionId)
+          .eq('user_id', userId) // Additional security check
+          .single();
+
+        if (getTransactionError || !transaction) {
+          console.error('Failed to get transaction:', getTransactionError);
+          throw new Error('Transaction not found or access denied');
+        }
+
+        // Prevent double processing
+        if (transaction.status === 'completed') {
+          console.log('Transaction already processed:', transactionId);
+          return new Response(JSON.stringify({ received: true, already_processed: true }), {
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
+        // Validate amount is positive
+        const amount = parseFloat(transaction.amount.toString());
+        if (amount <= 0) {
+          throw new Error('Invalid transaction amount');
+        }
+
+        // Use atomic wallet update function to prevent race conditions
+        const { data: result, error: updateError } = await supabaseClient
+          .rpc('update_wallet_balance_atomic', {
+            p_wallet_id: transaction.wallet_id,
+            p_amount: amount,
+            p_transaction_type: 'credit',
+            p_user_id: userId,
+            p_description: `Stripe deposit: ${sanitizeString(session.id)}`,
+            p_object_type: 'deposit'
+          });
+
+        if (updateError) {
+          console.error('Failed to update wallet atomically:', updateError);
+          
+          // Mark transaction as failed
+          await supabaseClient
+            .from('transactions')
+            .update({ 
+              status: 'failed',
+              description: `Failed: ${updateError.message}`
+            })
+            .eq('id', transactionId);
+            
+          throw updateError;
+        }
+
+        // Update transaction with Stripe payment intent
+        const { error: transactionUpdateError } = await supabaseClient
           .from('transactions')
           .update({ 
-            status: 'failed',
-            description: `Failed: ${updateError.message}`
+            status: 'completed',
+            stripe_payment_intent_id: sanitizeString(session.payment_intent?.toString() || ''),
+            stripe_session_id: sanitizeString(session.id)
           })
           .eq('id', transactionId);
-          
-        throw updateError;
+
+        if (transactionUpdateError) {
+          console.error('Failed to update transaction status:', transactionUpdateError);
+        }
+
+        console.log('Successfully processed deposit:', result);
       }
-
-      // Update transaction with Stripe payment intent
-      const { error: transactionUpdateError } = await supabaseClient
-        .from('transactions')
-        .update({ 
-          status: 'completed',
-          stripe_payment_intent_id: sanitizeString(session.payment_intent?.toString() || ''),
-          stripe_session_id: sanitizeString(session.id)
-        })
-        .eq('id', transactionId);
-
-      if (transactionUpdateError) {
-        console.error('Failed to update transaction status:', transactionUpdateError);
-      }
-
-      console.log('Successfully processed deposit:', result);
     }
 
     return new Response(JSON.stringify({ received: true }), {

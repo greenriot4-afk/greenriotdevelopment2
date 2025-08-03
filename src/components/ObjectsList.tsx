@@ -35,9 +35,10 @@ interface ObjectsListProps {
   onPurchaseCoordinates: (objectId: string, price: number) => Promise<void>;
   userLocation: { latitude: number; longitude: number } | null;
   objectType: 'abandoned' | 'donation' | 'product';
+  onObjectRemoved?: (objectId: string) => void; // New prop to handle object removal
 }
 
-export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, objectType }: ObjectsListProps) => {
+export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, objectType, onObjectRemoved }: ObjectsListProps) => {
   const navigate = useNavigate();
   const { calculateDistance } = useLocation();
   const { wallet, hasEnoughBalance, deductBalance, fetchWallet } = useWallet();
@@ -217,6 +218,11 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
       setTimeout(() => {
         fetchWallet();
       }, 500);
+
+      // If object was an abandoned item and was deleted, remove it from the list
+      if (objectType === 'abandoned' && onObjectRemoved) {
+        onObjectRemoved(selectedObject.id);
+      }
       
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error al procesar el pago';

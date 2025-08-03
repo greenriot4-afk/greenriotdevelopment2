@@ -34,7 +34,7 @@ serve(async (req) => {
       throw new Error(`Authentication failed: ${userError?.message || 'User not found'}`);
     }
 
-    const { amount, description, objectType = 'coordinate', currency = 'USD', taxIncluded = false } = await req.json();
+    const { amount, description, objectType = 'coordinate', currency = 'USD', taxIncluded = false, objectId } = await req.json();
     
     if (!amount || amount <= 0) {
       throw new Error('Invalid amount');
@@ -63,9 +63,7 @@ serve(async (req) => {
     const isEuropeanUser = currency === 'EUR';
 
     // Create Stripe checkout session with automatic tax calculation
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
+    const sessionConfig: any = {
       payment_method_types: ['card'],
       line_items: [
         {
@@ -101,9 +99,19 @@ serve(async (req) => {
         amount: amount.toString(),
         currency: currency,
         type: 'coordinate_purchase',
-        object_type: objectType
+        object_type: objectType,
+        object_id: objectId || ''
       }
-    });
+    };
+
+    // Add customer info - either existing customer ID or email for new customers
+    if (customerId) {
+      sessionConfig.customer = customerId;
+    } else {
+      sessionConfig.customer_email = user.email;
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     // Create service role client
     const serviceSupabase = createClient(
