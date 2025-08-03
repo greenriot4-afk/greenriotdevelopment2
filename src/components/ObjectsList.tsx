@@ -180,8 +180,16 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
       console.log('Edge function response:', { data, error });
 
       if (error) {
-        console.error('Edge function error:', error);
-        throw new Error(error.message || 'Error al procesar el pago');
+        console.error('Edge function error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        
+        // Try to get more details from the error
+        const errorMessage = error.message || error.details || 'Error al procesar el pago';
+        throw new Error(errorMessage);
       }
 
       if (data?.error) {

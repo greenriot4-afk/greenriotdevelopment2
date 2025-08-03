@@ -13,8 +13,13 @@ serve(async (req) => {
   }
 
   try {
+    console.log('=== Starting coordinate purchase process ===');
+    
     const authHeader = req.headers.get('authorization');
+    console.log('Auth header present:', !!authHeader);
+    
     if (!authHeader) {
+      console.error('No authorization header found');
       throw new Error('No authorization header');
     }
 
@@ -23,6 +28,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
+    console.log('Service client initialized');
 
     // Get user from JWT using anon key
     const userClient = createClient(
@@ -34,9 +40,13 @@ serve(async (req) => {
         },
       }
     );
+    console.log('User client initialized');
 
     const { data: { user }, error: userError } = await userClient.auth.getUser();
+    console.log('User auth result:', { userId: user?.id, error: userError?.message });
+    
     if (userError || !user) {
+      console.error('User authentication failed:', userError);
       throw new Error('Invalid user token');
     }
 
@@ -75,18 +85,24 @@ serve(async (req) => {
     });
 
     // Get buyer's wallet
+    console.log('Fetching buyer wallet for user:', user.id);
     const { data: buyerWallet, error: buyerWalletError } = await supabaseClient
       .from('wallets')
       .select('*')
       .eq('user_id', user.id)
       .single();
 
+    console.log('Buyer wallet result:', { wallet: buyerWallet, error: buyerWalletError?.message });
+
     if (buyerWalletError || !buyerWallet) {
+      console.error('Buyer wallet error:', buyerWalletError);
       throw new Error('Buyer wallet not found');
     }
 
     // Check if buyer has enough balance
+    console.log('Balance check:', { required: amount, available: buyerWallet.balance });
     if (buyerWallet.balance < amount) {
+      console.error('Insufficient balance:', { required: amount, available: buyerWallet.balance });
       throw new Error('Insufficient balance');
     }
 
