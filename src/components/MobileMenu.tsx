@@ -211,6 +211,26 @@ export function MobileMenu() {
 
           <Button
             variant="ghost"
+            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+            onClick={handleCreateMarketClick}
+          >
+            <Plus className="h-5 w-5 mr-3" />
+            Crear Mercadillo
+          </Button>
+
+          {userHasMarket && (
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+              onClick={handleMyMarketClick}
+            >
+              <Store className="h-5 w-5 mr-3" />
+              Mi Mercadillo
+            </Button>
+          )}
+
+          <Button
+            variant="ghost"
             className="w-full justify-start px-4 py-3 text-white hover:bg-white/10 h-auto"
             onClick={handleAffiliatesClick}
           >
