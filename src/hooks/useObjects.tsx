@@ -38,16 +38,20 @@ export const useObjects = ({ objectType, userLocation, calculateDistance }: UseO
         return objects;
       }
 
-      console.log('fetchObjects called - using materialized view', { objectType, forceRefresh });
+      console.log('fetchObjects called - using optimized query', { objectType, forceRefresh });
       setLoading(true);
       
-      // Use the ultra-fast materialized view
+      // Use optimized query with proper join
       const { data: objectsData, error: objectsError } = await supabase
-        .from('objects_with_profiles')
-        .select('*')
+        .from('objects')
+        .select(`
+          *,
+          profiles!inner(display_name, username)
+        `)
         .eq('type', objectType)
+        .eq('is_sold', false)
         .order('created_at', { ascending: false })
-        .limit(100); // Increased limit since it's much faster now
+        .limit(100);
 
       if (objectsError) {
         console.error('Materialized view query error:', objectsError);
@@ -62,14 +66,14 @@ export const useObjects = ({ objectType, userLocation, calculateDistance }: UseO
         return [];
       }
 
-      // Transform the data to match expected interface - no additional queries needed!
+      // Transform the data to match expected interface
       const enrichedObjects = objectsData.map((object) => ({
         ...object,
         type: object.type as 'abandoned' | 'donation' | 'product',
         description: object.description || undefined,
         is_sold: object.is_sold || false,
-        user_display_name: object.user_display_name || 'Usuario',
-        username: object.username || ''
+        user_display_name: object.profiles?.display_name || 'Usuario',
+        username: object.profiles?.username || ''
       }));
 
       // Sort objects by distance if user location is available
