@@ -38,27 +38,24 @@ export const useObjects = ({ objectType, userLocation, calculateDistance }: UseO
         return objects;
       }
 
-      console.log('fetchObjects called - using optimized query', { objectType, forceRefresh });
+      console.log('fetchObjects called - using simple approach', { objectType, forceRefresh });
       setLoading(true);
       
-      // Use optimized query with proper join
+      // Simple, reliable query for objects
       const { data: objectsData, error: objectsError } = await supabase
         .from('objects')
-        .select(`
-          *,
-          profiles!inner(display_name, username)
-        `)
+        .select('*')
         .eq('type', objectType)
         .eq('is_sold', false)
         .order('created_at', { ascending: false })
-        .limit(100);
+        .limit(50);
 
       if (objectsError) {
-        console.error('Materialized view query error:', objectsError);
+        console.error('Objects query error:', objectsError);
         throw objectsError;
       }
 
-      console.log('Objects fetched from materialized view:', objectsData?.length);
+      console.log('Objects fetched successfully:', objectsData?.length);
 
       if (!objectsData || objectsData.length === 0) {
         setObjects([]);
@@ -66,14 +63,14 @@ export const useObjects = ({ objectType, userLocation, calculateDistance }: UseO
         return [];
       }
 
-      // Transform the data to match expected interface
+      // Transform the data with default user info (skip profiles for now)
       const enrichedObjects = objectsData.map((object) => ({
         ...object,
         type: object.type as 'abandoned' | 'donation' | 'product',
         description: object.description || undefined,
         is_sold: object.is_sold || false,
-        user_display_name: object.profiles?.display_name || 'Usuario',
-        username: object.profiles?.username || ''
+        user_display_name: 'Usuario',
+        username: ''
       }));
 
       // Sort objects by distance if user location is available
