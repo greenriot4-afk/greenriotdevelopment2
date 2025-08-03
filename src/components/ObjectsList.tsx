@@ -10,7 +10,7 @@ import { FavoriteButton } from '@/components/FavoriteButton';
 import { ChatButton } from '@/components/ChatButton';
 import { UserLikes } from '@/components/UserLikes';
 import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthAction } from '@/hooks/useAuthAction';
 
@@ -38,6 +38,7 @@ interface ObjectsListProps {
 }
 
 export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, objectType }: ObjectsListProps) => {
+  const navigate = useNavigate();
   const { calculateDistance } = useLocation();
   const { wallet, hasEnoughBalance, deductBalance, fetchWallet } = useWallet();
   const { requireAuth, isAuthenticated } = useAuthAction();
@@ -315,7 +316,11 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     <>
       <div className="space-y-4">
         {objects.map((object) => (
-          <Card key={object.id} className="overflow-hidden">
+          <Card 
+            key={object.id} 
+            className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+            onClick={() => navigate(`/object/${object.id}`)}
+          >
             <div className="aspect-video relative">
               <img 
                 src={object.image_url} 
@@ -361,7 +366,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
               
               <div className="space-y-2">
                 {/* Botones de acción */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                    {/* Solo mostrar botón de chat para donaciones y productos */}
                    {objectType !== 'abandoned' && (
                      <ChatButton 
@@ -384,10 +389,13 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                          </div>
                        )}
                        
-                       <Button
-                         size="sm"
-                         onClick={() => handlePurchaseClick(object)}
-                         disabled={object.is_sold || purchasing === object.id}
+                        <Button
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePurchaseClick(object);
+                          }}
+                          disabled={object.is_sold || purchasing === object.id}
                          className="flex-1"
                        >
                          {purchasing === object.id ? (

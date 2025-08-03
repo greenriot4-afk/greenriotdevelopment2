@@ -12,6 +12,7 @@ import { MobileTabs } from "@/components/MobileTabs";
 import { MobileMenu } from "@/components/MobileMenu";
 import { HeaderWallet } from "@/components/HeaderWallet";
 import ObjectsPage from "./pages/ObjectsPage";
+import ObjectDetailPage from "./pages/ObjectDetailPage";
 import WalletPage from "./pages/WalletPage";
 import MarketsPage from "./pages/MarketsPage";
 import AccountSettings from "./pages/AccountSettings";
@@ -69,6 +70,7 @@ const AppContent = () => {
             <Route path="/abandons" element={<ObjectsPage />} />
             <Route path="/donations" element={<ObjectsPage />} />
             <Route path="/products" element={<ObjectsPage />} />
+            <Route path="/object/:objectId" element={<ObjectDetailPage />} />
             <Route path="/markets" element={<MarketsPage />} />
             <Route path="/affiliates" element={<AffiliatePage />} />
             <Route path="/market-detail/:marketId" element={<MarketDetailPage />} />
