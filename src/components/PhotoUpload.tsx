@@ -313,13 +313,16 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
                     setPrice(0);
                   } else {
                     const numVal = parseInt(val);
-                    setPrice(isNaN(numVal) ? 1 : Math.max(1, numVal));
+                    setPrice(isNaN(numVal) ? 1 : Math.max(1, Math.min(20, numVal)));
                   }
                 }}
                 min={1}
-                max={1000}
+                max={20}
                 placeholder="1"
               />
+              <p className="text-xs text-muted-foreground">
+                Precio entre $1 y $20. Este precio se cobrará a otros usuarios para acceder a la ubicación del objeto.
+              </p>
             </div>
           )}
 
