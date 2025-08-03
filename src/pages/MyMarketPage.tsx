@@ -256,9 +256,9 @@ const MyMarketPage = () => {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-medium">Aceptar donaciones</h3>
+                    <h3 className="font-medium">Trabajamos donaciones</h3>
                     <p className="text-sm text-muted-foreground">
-                      Permite que otros usuarios sepan que aceptas donaciones
+                      Pon en tu descripción de qué forma trabajas las donaciones: qué tipo de objetos aceptas, en qué estado... ¡Haz tu donaciones también! Son un buen reclamo para traer clientes a tu mercadillo.
                     </p>
                   </div>
                   <Switch
