@@ -80,22 +80,38 @@ const ObjectsPage = () => {
       // Enrich objects with user profile data
       const enrichedObjects = await Promise.all(
         (data || []).map(async (object) => {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('display_name, username')
-            .eq('user_id', object.user_id)
-            .single();
+          try {
+            const { data: profile, error: profileError } = await supabase
+              .from('profiles')
+              .select('display_name, username')
+              .eq('user_id', object.user_id)
+              .maybeSingle(); // Use maybeSingle instead of single to handle missing profiles
 
-           return {
-             ...object,
-             type: object.type as 'abandoned' | 'donation' | 'product',
-             description: object.description || undefined,
-             is_sold: object.is_sold || false,
-             user_display_name: profile?.display_name || 'Usuario',
-             username: profile?.username || ''
-           };
-         })
-       );
+            if (profileError) {
+              console.warn('Error fetching profile for user:', object.user_id, profileError);
+            }
+
+            return {
+              ...object,
+              type: object.type as 'abandoned' | 'donation' | 'product',
+              description: object.description || undefined,
+              is_sold: object.is_sold || false,
+              user_display_name: profile?.display_name || 'Usuario',
+              username: profile?.username || ''
+            };
+          } catch (profileError) {
+            console.warn('Failed to enrich object with profile data:', profileError);
+            return {
+              ...object,
+              type: object.type as 'abandoned' | 'donation' | 'product',
+              description: object.description || undefined,
+              is_sold: object.is_sold || false,
+              user_display_name: 'Usuario',
+              username: ''
+            };
+          }
+        })
+      );
 
       // Sort objects by distance if user location is available
       let sortedObjects = enrichedObjects as AppObject[];
@@ -114,9 +130,11 @@ const ObjectsPage = () => {
       }
 
       setObjects(sortedObjects);
+      console.log('Objects loaded successfully:', sortedObjects.length);
     } catch (error) {
       console.error('Error fetching objects:', error);
       toast.error('Error al cargar los objetos');
+      setObjects([]); // Set empty array on error
     } finally {
       setLoading(false);
     }

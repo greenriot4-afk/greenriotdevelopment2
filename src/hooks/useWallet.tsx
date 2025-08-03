@@ -24,17 +24,30 @@ export const useWallet = () => {
     }
 
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from('wallets')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle(); // Use maybeSingle to handle cases where wallet doesn't exist
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching wallet:', error);
+        throw error;
+      }
+
+      if (!data) {
+        // Wallet doesn't exist, this is normal for new users
+        console.log('No wallet found for user, this is normal for new users');
+        setWallet(null);
+        return;
+      }
+
       setWallet(data);
     } catch (error) {
       console.error('Error fetching wallet:', error);
-      toast.error('Error al cargar el wallet');
+      // Don't show toast error for wallet fetch failures - just log them
+      setWallet(null);
     } finally {
       setLoading(false);
     }
