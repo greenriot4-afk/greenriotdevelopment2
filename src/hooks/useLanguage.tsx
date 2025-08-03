@@ -69,7 +69,7 @@ const translations = {
     
     // Affiliate System
     'affiliate.title': 'Affiliate System',
-    'affiliate.description': 'Earn $19 for each user you refer who subscribes to the premium plan',
+    'affiliate.description': 'Earn $19 for each user you refer who create a circular market. Planet wins and you too',
     'affiliate.totalEarnings': 'Total earnings:',
     'affiliate.startEarning': 'Start earning with affiliates',
     'affiliate.createCode': 'Create your unique code and start referring users',
