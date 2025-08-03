@@ -25,14 +25,28 @@ export const useWallet = () => {
 
     try {
       setLoading(true);
+      
+      // Get fresh session to avoid auth errors
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) {
+        setWallet(null);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('wallets')
         .select('*')
         .eq('user_id', user.id)
-        .maybeSingle(); // Use maybeSingle to handle cases where wallet doesn't exist
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching wallet:', error);
+        // For auth errors, don't throw - just set wallet to null
+        if (error.code === 'refresh_token_not_found' || error.message?.includes('refresh')) {
+          setWallet(null);
+          return;
+        }
         throw error;
       }
 
@@ -117,6 +131,17 @@ export const useWallet = () => {
 
   useEffect(() => {
     fetchWallet();
+  }, [user]);
+
+  // Auto-refresh wallet when user session changes or every 30 seconds
+  useEffect(() => {
+    if (!user) return;
+    
+    const interval = setInterval(() => {
+      fetchWallet();
+    }, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(interval);
   }, [user]);
 
   return {
