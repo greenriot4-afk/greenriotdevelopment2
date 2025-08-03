@@ -36,6 +36,22 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Check if user is authenticated
+  if (!user) {
+    return (
+      <Card className="w-full">
+        <CardContent className="p-6 text-center">
+          <p className="text-muted-foreground">Debes iniciar sesión para publicar objetos</p>
+          {onCancel && (
+            <Button onClick={onCancel} variant="outline" className="mt-4">
+              Cerrar
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
+
   // For abandoned items, only camera is allowed
   const allowGallery = objectType !== 'abandoned';
 
