@@ -132,14 +132,7 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
             </div>
             
             <div className="flex items-center justify-between">
-              <div className="flex gap-2">
-                {market.accepts_donations && (
-                  <Badge variant="outline" className="text-xs">
-                    <Heart className="w-2 h-2 mr-1" />
-                    Acepta donaciones
-                  </Badge>
-                )}
-              </div>
+              <div></div>
               
               <div className="flex gap-2">
                 <Button
