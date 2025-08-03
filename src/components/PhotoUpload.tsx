@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -54,6 +54,13 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
 
   // For abandoned items, only camera is allowed
   const allowGallery = objectType !== 'abandoned';
+
+  // Auto-open camera for abandoned items
+  useEffect(() => {
+    if (objectType === 'abandoned' && user && !photo && !isCameraLoading) {
+      handleCapturePhoto();
+    }
+  }, [objectType, user]);
 
   const handleCapturePhoto = async () => {
     const photoData = await capturePhotoWithLocation();
@@ -129,7 +136,8 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
       return;
     }
     
-    if (!title.trim()) {
+    // Title is optional for abandoned items
+    if (objectType !== 'abandoned' && !title.trim()) {
       toast.error('Por favor ingresa un título');
       return;
     }
@@ -244,18 +252,22 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
 
           {/* Title */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Título *</label>
+            <label className="text-sm font-medium">
+              Título {objectType === 'abandoned' ? '(opcional)' : '*'}
+            </label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="ej., Carrito de Compras Oxidado"
-              required
+              required={objectType !== 'abandoned'}
             />
           </div>
 
           {/* Description */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Descripción</label>
+            <label className="text-sm font-medium">
+              Descripción {objectType === 'abandoned' ? '(opcional)' : ''}
+            </label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
