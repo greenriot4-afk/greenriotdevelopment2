@@ -295,8 +295,168 @@ export const useCamera = () => {
     }
   };
 
+  const selectFromGallery = async (): Promise<PhotoWithLocation | null> => {
+    setIsLoading(true);
+    try {
+      console.log('Starting gallery selection with location...');
+      
+      // Check if we're running in a Capacitor environment
+      const { Capacitor } = await import('@capacitor/core');
+      const isNative = Capacitor.isNativePlatform();
+      
+      let photo;
+      let position;
+
+      if (isNative) {
+        // Native platform - request permissions first
+        console.log('Requesting camera permissions for gallery...');
+        
+        try {
+          // Request camera permissions for gallery access
+          const cameraPermissions = await Camera.requestPermissions({ permissions: ['photos'] });
+          console.log('Gallery permissions:', cameraPermissions);
+          
+          if (cameraPermissions.photos === 'denied') {
+            toast.error('Se necesitan permisos de galería. Actívalos en configuración.');
+            setIsLoading(false);
+            return null;
+          }
+
+          // Request location permissions
+          const locationPermissions = await Geolocation.requestPermissions();
+          console.log('Location permissions:', locationPermissions);
+          
+          if (locationPermissions.location === 'denied') {
+            toast.error('Se necesitan permisos de ubicación. Actívalos en configuración.');
+            setIsLoading(false);
+            return null;
+          }
+
+          // Select from gallery
+          console.log('Selecting from gallery...');
+          photo = await Camera.getPhoto({
+            resultType: CameraResultType.DataUrl,
+            source: CameraSource.Photos,
+            quality: 80,
+            width: 1024,
+            height: 1024,
+          });
+
+        } catch (cameraError) {
+          console.error('Gallery error:', cameraError);
+          toast.error('Error al acceder a la galería. Verifica los permisos.');
+          setIsLoading(false);
+          return null;
+        }
+      } else {
+        // Web platform - use file input
+        try {
+          const fileInput = document.createElement('input');
+          fileInput.type = 'file';
+          fileInput.accept = 'image/*';
+          
+          const photoDataUrl = await new Promise<string | null>((resolve) => {
+            fileInput.onchange = (e) => {
+              const file = (e.target as HTMLInputElement).files?.[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  resolve(reader.result as string);
+                };
+                reader.readAsDataURL(file);
+              } else {
+                resolve(null);
+              }
+            };
+            fileInput.click();
+          });
+
+          if (!photoDataUrl) {
+            console.log('User cancelled gallery selection');
+            setIsLoading(false);
+            return null;
+          }
+
+          photo = { dataUrl: photoDataUrl };
+        } catch (webError) {
+          console.error('Web gallery error:', webError);
+          toast.error('Error al acceder a la galería.');
+          setIsLoading(false);
+          return null;
+        }
+      }
+
+      if (!photo || !photo.dataUrl) {
+        console.error('No photo data received from gallery');
+        toast.error('No se pudo seleccionar la imagen');
+        setIsLoading(false);
+        return null;
+      }
+
+      console.log('Photo selected successfully, getting location...');
+
+      // Get current location with extended timeout
+      try {
+        if (isNative) {
+          position = await Geolocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 30000,
+          });
+        } else {
+          // Web geolocation API
+          position = await new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+              reject(new Error('Geolocation not supported'));
+              return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+              (pos) => resolve({ coords: pos.coords }),
+              (err) => reject(err),
+              {
+                enableHighAccuracy: true,
+                timeout: 30000,
+                maximumAge: 0
+              }
+            );
+          });
+        }
+      } catch (locationError) {
+        console.error('Location error:', locationError);
+        toast.error('No se pudo obtener la ubicación. Verifica los permisos GPS.');
+        setIsLoading(false);
+        return null;
+      }
+
+      const result = {
+        image: photo.dataUrl,
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      };
+
+      console.log('Photo from gallery with location selected successfully');
+      setIsLoading(false);
+      return result;
+    } catch (error: any) {
+      console.error('Error selecting from gallery with location:', error);
+      
+      let errorMessage = 'Error al seleccionar imagen de galería';
+      
+      if (error.message?.includes('permissions')) {
+        errorMessage = 'Se necesitan permisos de galería y ubicación';
+      } else if (error.message?.includes('timeout')) {
+        errorMessage = 'Tiempo de espera agotado. Inténtalo en un lugar con mejor señal GPS';
+      }
+      
+      toast.error(errorMessage);
+      setIsLoading(false);
+      return null;
+    }
+  };
+
   return {
     capturePhotoWithLocation,
+    selectFromGallery,
     isLoading,
   };
 };

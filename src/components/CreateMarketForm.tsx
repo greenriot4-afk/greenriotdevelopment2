@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Camera, MapPin, Upload, Store } from 'lucide-react';
+import { Camera, MapPin, Upload, Store, Image, ImagePlus } from 'lucide-react';
 import { useCamera, PhotoWithLocation } from '@/hooks/useCamera';
 import { useLocation } from '@/hooks/useLocation';
 import { toast } from 'sonner';
@@ -30,15 +30,26 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
   const [photo, setPhoto] = useState<PhotoWithLocation | null>(null);
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showImageOptions, setShowImageOptions] = useState(false);
   
-  const { capturePhotoWithLocation, isLoading: isCameraLoading } = useCamera();
+  const { capturePhotoWithLocation, selectFromGallery, isLoading: isCameraLoading } = useCamera();
   const { userLocation, getCurrentLocation, isLoading: locationLoading } = useLocation();
 
   const handleCapturePhoto = async () => {
     const photoData = await capturePhotoWithLocation();
     if (photoData) {
       setPhoto(photoData);
+      setShowImageOptions(false);
       toast.success('Foto capturada con ubicación!');
+    }
+  };
+
+  const handleSelectFromGallery = async () => {
+    const photoData = await selectFromGallery();
+    if (photoData) {
+      setPhoto(photoData);
+      setShowImageOptions(false);
+      toast.success('Imagen seleccionada con ubicación!');
     }
   };
 
@@ -125,31 +136,62 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Photo Capture */}
+          {/* Portada Mercadillo */}
           <div className="space-y-2">
-            <Label>Foto del Mercadillo *</Label>
-            <Button
-              type="button"
-              onClick={handleCapturePhoto}
-              disabled={isCameraLoading}
-              className="w-full"
-              variant="outline"
-            >
-              {isCameraLoading ? (
-                'Capturando...'
-              ) : (
-                <>
-                  <Camera className="w-4 h-4 mr-2" />
-                  Capturar Foto & Ubicación
-                </>
-              )}
-            </Button>
+            <Label>Portada mercadillo *</Label>
+            
+            {!showImageOptions ? (
+              <Button
+                type="button"
+                onClick={() => setShowImageOptions(true)}
+                disabled={isCameraLoading}
+                className="w-full"
+                variant="outline"
+              >
+                <ImagePlus className="w-4 h-4 mr-2" />
+                Portada mercadillo
+              </Button>
+            ) : (
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    type="button"
+                    onClick={handleSelectFromGallery}
+                    disabled={isCameraLoading}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                  >
+                    <Image className="w-4 h-4" />
+                    Galería
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleCapturePhoto}
+                    disabled={isCameraLoading}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                  >
+                    <Camera className="w-4 h-4" />
+                    Cámara
+                  </Button>
+                </div>
+                <Button
+                  type="button"
+                  onClick={() => setShowImageOptions(false)}
+                  variant="ghost"
+                  size="sm"
+                  className="w-full"
+                >
+                  Cancelar
+                </Button>
+              </div>
+            )}
             
             {photo && (
               <div className="space-y-2">
                 <img 
                   src={photo.image} 
-                  alt="Foto del mercadillo" 
+                  alt="Portada del mercadillo" 
                   className="w-full h-48 object-cover rounded-lg"
                 />
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -170,7 +212,7 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
                 onCheckedChange={(checked) => setUseCurrentLocation(!!checked)}
               />
               <Label htmlFor="useCurrentLocation" className="text-sm">
-                Usar mi ubicación actual (sobrescribe la ubicación de la foto)
+                Usar mi ubicación actual
               </Label>
             </div>
             {useCurrentLocation && userLocation && (
