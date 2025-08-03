@@ -67,6 +67,8 @@ const ObjectsPage = () => {
     try {
       console.log('fetchObjects called', { type, objectType, user: !!user });
       setLoading(true);
+      
+      console.log('About to query objects with:', { objectType });
       const { data, error } = await supabase
         .from('objects')
         .select('*')
@@ -75,7 +77,10 @@ const ObjectsPage = () => {
         .order('created_at', { ascending: false });
 
       console.log('fetchObjects result', { data: data?.length, error });
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase query error:', error);
+        throw error;
+      }
 
       // Enrich objects with user profile data
       const enrichedObjects = await Promise.all(
