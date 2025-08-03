@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { MapPin, Coins, User, Wallet, Clock } from 'lucide-react';
+import { MapPin, Coins, User, Wallet, Clock, Store, UserCircle } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
 import { useWallet } from '@/hooks/useWallet';
 import { FavoriteButton } from '@/components/FavoriteButton';
@@ -28,6 +28,7 @@ export interface AbandonedObject {
   created_at: string;
   user_display_name?: string;
   username?: string;
+  market_id?: string; // Para identificar si viene de un mercadillo
 }
 
 interface ObjectsListProps {
@@ -351,8 +352,17 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                     to={`/profile/${object.user_id}`}
                     className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
                   >
-                    <User className="w-3 h-3" />
+                    {object.market_id ? (
+                      <Store className="w-3 h-3 text-green-600" />
+                    ) : (
+                      <UserCircle className="w-3 h-3 text-blue-600" />
+                    )}
                     {object.user_display_name || 'Usuario'}
+                    {object.market_id && (
+                      <Badge variant="outline" className="text-xs ml-1 bg-green-50 text-green-700 border-green-300">
+                        Mercadillo
+                      </Badge>
+                    )}
                   </Link>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1">

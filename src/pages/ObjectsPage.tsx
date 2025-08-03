@@ -24,6 +24,7 @@ export interface AppObject {
   created_at: string;
   user_display_name?: string;
   username?: string;
+  market_id?: string; // Para identificar si viene de un mercadillo
 }
 
 const ObjectsPage = () => {

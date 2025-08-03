@@ -18,7 +18,7 @@ export interface Product {
   image_url: string;
   latitude: number;
   longitude: number;
-  market_id: string;
+  market_id?: string;
   user_id: string;
   is_sold?: boolean;
 }
@@ -93,7 +93,7 @@ export const ProductForm = ({ product, marketId, onSubmit, onCancel }: ProductFo
         image_url: photo.image,
         latitude: photo.latitude,
         longitude: photo.longitude,
-        market_id: marketId,
+        market_id: marketId || undefined, // Si no hay marketId, será undefined para productos personales
       });
       
       // Reset form if it's a new product

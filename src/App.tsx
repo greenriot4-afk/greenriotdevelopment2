@@ -18,6 +18,7 @@ import MarketsPage from "./pages/MarketsPage";
 import AccountSettings from "./pages/AccountSettings";
 import Auth from "./pages/Auth";
 import MyMarketPage from "./pages/MyMarketPage";
+import MyAdsPage from "./pages/MyAdsPage";
 import ChatListPage from "./pages/ChatListPage";
 import ChatPage from "./pages/ChatPage";
 import MarketCatalogPage from "./pages/MarketCatalogPage";
@@ -91,6 +92,11 @@ const AppContent = () => {
             <Route path="/my-market" element={
               <ProtectedRoute>
                 <MyMarketPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-ads" element={
+              <ProtectedRoute>
+                <MyAdsPage />
               </ProtectedRoute>
             } />
             <Route path="/chat" element={
