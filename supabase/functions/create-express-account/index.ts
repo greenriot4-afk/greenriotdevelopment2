@@ -83,6 +83,7 @@ serve(async (req) => {
       console.log('Stripe key exists:', !!Deno.env.get('STRIPE_SECRET_KEY'));
       
       try {
+        console.log('About to call stripe.accounts.create...');
         account = await stripe.accounts.create({
           type: 'express',
           email: user.email,
@@ -94,9 +95,15 @@ serve(async (req) => {
         accountId = account.id;
         console.log('Created account successfully:', accountId);
       } catch (stripeError) {
-        console.error('Stripe account creation error:', stripeError.message);
-        console.error('Stripe error details:', JSON.stringify(stripeError));
-        throw new Error(`Stripe error: ${stripeError.message}`);
+        console.error('=== STRIPE ERROR DETAILS ===');
+        console.error('Error type:', stripeError.type);
+        console.error('Error code:', stripeError.code);
+        console.error('Error message:', stripeError.message);
+        console.error('Error param:', stripeError.param);
+        console.error('Full error:', JSON.stringify(stripeError, null, 2));
+        
+        // Return specific Stripe error for debugging
+        throw new Error(`Stripe Connect Error: ${stripeError.code} - ${stripeError.message}`);
       }
     } else {
       // Retrieve existing account
