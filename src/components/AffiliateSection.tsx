@@ -249,7 +249,7 @@ export const AffiliateSection = () => {
       {/* Premium Subscription CTA */}
       <Card className="border-primary/20">
         <CardHeader>
-          <CardTitle className="text-lg">{t('affiliate.tryPremium')}</CardTitle>
+          <CardTitle className="text-lg">Want to create a circular market?</CardTitle>
           <p className="text-sm text-muted-foreground">
             {t('affiliate.premiumDescription')}
           </p>
