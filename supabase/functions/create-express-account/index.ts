@@ -16,7 +16,11 @@ serve(async (req) => {
     console.log('=== Starting Express account creation ===');
     
     const authHeader = req.headers.get('authorization');
+    console.log('Auth header present:', !!authHeader);
+    console.log('Auth header value (first 20 chars):', authHeader?.substring(0, 20));
+    
     if (!authHeader) {
+      console.error('CRITICAL: No authorization header found');
       throw new Error('No authorization header');
     }
 
