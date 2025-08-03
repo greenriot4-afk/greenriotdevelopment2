@@ -148,8 +148,9 @@ serve(async (req) => {
     }
 
     // 2. Add to seller (only if not the same user)
+    let sellerResult = null;
     if (sellerId !== user.id) {
-      const { data: sellerResult, error: sellerError } = await supabaseClient
+      const { data: result, error: sellerError } = await supabaseClient
         .rpc('update_wallet_balance_atomic', {
           p_wallet_id: sellerWallet.id,
           p_amount: sellerAmount,
@@ -164,14 +165,30 @@ serve(async (req) => {
         // Note: In a real system, we'd want to rollback the buyer transaction here
         throw new Error('Failed to process seller payment');
       }
-
-      console.log('Payment processed successfully:', {
-        buyerTransaction: buyerResult,
-        sellerTransaction: sellerResult
-      });
+      
+      sellerResult = result;
     } else {
       console.log('Buyer and seller are the same user, no seller credit needed');
     }
+
+    // 3. Add platform commission to company wallet (20%)
+    const { data: companyResult, error: companyError } = await supabaseClient
+      .rpc('update_company_wallet_balance_atomic', {
+        p_amount: platformFee,
+        p_description: `Comisión 20% - Venta coordenadas: ${object.title}`
+      });
+
+    if (companyError) {
+      console.error('Failed to add commission to company wallet:', companyError);
+      // Note: In a real system, we'd want to rollback the previous transactions here
+      throw new Error('Failed to process platform commission');
+    }
+
+    console.log('Payment processed successfully:', {
+      buyerTransaction: buyerResult,
+      sellerTransaction: sellerResult,
+      companyCommission: companyResult
+    });
 
     return new Response(
       JSON.stringify({ 

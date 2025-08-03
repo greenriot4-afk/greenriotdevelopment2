@@ -124,6 +124,27 @@ export type Database = {
         }
         Relationships: []
       }
+      company_wallet: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -564,6 +585,10 @@ export type Database = {
       }
       trigger_abandons_cleanup: {
         Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      update_company_wallet_balance_atomic: {
+        Args: { p_amount: number; p_description: string }
         Returns: Json
       }
       update_wallet_balance_atomic: {
