@@ -32,15 +32,38 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
 
     try {
       setLoading(true);
-      const { data, error } = await supabase.functions.invoke('check-subscription');
       
-      if (error) throw error;
+      // Get a fresh session to avoid stale token issues
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) {
+        console.warn('No valid session for subscription check');
+        setSubscribed(false);
+        setSubscriptionTier(null);
+        setSubscriptionEnd(null);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-subscription', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      });
+      
+      if (error) {
+        console.warn('Subscription check failed:', error);
+        // Don't throw on subscription errors - just set to unsubscribed
+        setSubscribed(false);
+        setSubscriptionTier(null);
+        setSubscriptionEnd(null);
+        return;
+      }
 
       setSubscribed(data.subscribed || false);
       setSubscriptionTier(data.subscription_tier || null);
       setSubscriptionEnd(data.subscription_end || null);
     } catch (error) {
-      console.error('Error checking subscription:', error);
+      console.warn('Error checking subscription:', error);
+      // Gracefully handle errors - subscription check failures shouldn't break the app
       setSubscribed(false);
       setSubscriptionTier(null);
       setSubscriptionEnd(null);
@@ -83,10 +106,10 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
     checkSubscription();
   }, [user]);
 
-  // Auto-refresh subscription status
+  // Auto-refresh subscription status less frequently to reduce server load
   useEffect(() => {
     if (user) {
-      const interval = setInterval(checkSubscription, 30000); // Check every 30 seconds
+      const interval = setInterval(checkSubscription, 300000); // Check every 5 minutes instead of 30 seconds
       return () => clearInterval(interval);
     }
   }, [user]);
