@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           id: string
           is_active: boolean
+          level: Database["public"]["Enums"]["affiliate_level"]
           user_id: string
         }
         Insert: {
@@ -27,6 +28,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean
+          level?: Database["public"]["Enums"]["affiliate_level"]
           user_id: string
         }
         Update: {
@@ -34,12 +36,14 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean
+          level?: Database["public"]["Enums"]["affiliate_level"]
           user_id?: string
         }
         Relationships: []
       }
       affiliate_commissions: {
         Row: {
+          affiliate_level: Database["public"]["Enums"]["affiliate_level"] | null
           affiliate_user_id: string
           amount: number
           created_at: string
@@ -50,6 +54,9 @@ export type Database = {
           stripe_session_id: string | null
         }
         Insert: {
+          affiliate_level?:
+            | Database["public"]["Enums"]["affiliate_level"]
+            | null
           affiliate_user_id: string
           amount: number
           created_at?: string
@@ -60,6 +67,9 @@ export type Database = {
           stripe_session_id?: string | null
         }
         Update: {
+          affiliate_level?:
+            | Database["public"]["Enums"]["affiliate_level"]
+            | null
           affiliate_user_id?: string
           amount?: number
           created_at?: string
@@ -623,6 +633,12 @@ export type Database = {
       }
     }
     Functions: {
+      get_affiliate_commission_percentage: {
+        Args: {
+          affiliate_level: Database["public"]["Enums"]["affiliate_level"]
+        }
+        Returns: number
+      }
       get_or_create_wallet: {
         Args: { p_user_id: string; p_currency?: string }
         Returns: string
@@ -670,7 +686,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      affiliate_level: "level_1" | "level_2" | "level_3"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -797,6 +813,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      affiliate_level: ["level_1", "level_2", "level_3"],
+    },
   },
 } as const

@@ -8,6 +8,7 @@ export interface AffiliateCode {
   code: string;
   created_at: string;
   is_active: boolean;
+  level: 'level_1' | 'level_2' | 'level_3';
 }
 
 export interface Referral {
@@ -27,6 +28,7 @@ export interface Commission {
   processed_at: string | null;
   created_at: string;
   referral_id: string;
+  affiliate_level?: 'level_1' | 'level_2' | 'level_3';
 }
 
 export const useAffiliates = () => {
@@ -36,6 +38,19 @@ export const useAffiliates = () => {
   const [commissions, setCommissions] = useState<Commission[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalEarnings, setTotalEarnings] = useState(0);
+
+  const getAffiliateLevelInfo = (level: 'level_1' | 'level_2' | 'level_3') => {
+    switch (level) {
+      case 'level_1':
+        return { name: 'Nivel 1', percentage: '100%', description: 'Comisión completa' };
+      case 'level_2':
+        return { name: 'Nivel 2', percentage: '50%', description: 'Comisión media' };
+      case 'level_3':
+        return { name: 'Nivel 3', percentage: '25%', description: 'Comisión básica' };
+      default:
+        return { name: 'Nivel 3', percentage: '25%', description: 'Comisión básica' };
+    }
+  };
 
   const generateAffiliateCode = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -194,6 +209,7 @@ export const useAffiliates = () => {
     getAffiliateLink,
     copyAffiliateLink,
     fetchAffiliateData,
-    processReferralSignup
+    processReferralSignup,
+    getAffiliateLevelInfo
   };
 };

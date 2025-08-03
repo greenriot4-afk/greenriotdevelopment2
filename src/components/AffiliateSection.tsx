@@ -26,7 +26,8 @@ export const AffiliateSection = () => {
     totalEarnings,
     createAffiliateCode,
     getAffiliateLink,
-    copyAffiliateLink 
+    copyAffiliateLink,
+    getAffiliateLevelInfo
   } = useAffiliates();
   
   const [subscribing, setSubscribing] = useState(false);
@@ -89,6 +90,24 @@ export const AffiliateSection = () => {
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Nivel del afiliado */}
+          {affiliateCode && (
+            <div className="flex items-center justify-between p-4 bg-secondary/10 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Gift className="w-5 h-5 text-secondary" />
+                <span className="font-medium">Nivel de Afiliado</span>
+              </div>
+              <div className="text-right">
+                <Badge variant="outline" className="text-sm font-bold">
+                  {getAffiliateLevelInfo(affiliateCode.level).name}
+                </Badge>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {getAffiliateLevelInfo(affiliateCode.level).percentage} comisión
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Ganancias totales */}
           <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg">
             <div className="flex items-center gap-2">

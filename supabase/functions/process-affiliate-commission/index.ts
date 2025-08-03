@@ -87,12 +87,43 @@ serve(async (req) => {
       affiliateUserId: referral.affiliate_user_id 
     });
 
+    // Get affiliate code and level
+    const { data: affiliateCode, error: affiliateError } = await supabaseService
+      .from('affiliate_codes')
+      .select('level')
+      .eq('user_id', referral.affiliate_user_id)
+      .eq('code', referral.affiliate_code)
+      .single();
+
+    if (affiliateError) {
+      throw affiliateError;
+    }
+
+    const affiliateLevel = affiliateCode.level || 'level_3';
+    logStep("Affiliate level retrieved", { affiliateLevel });
+
     // Get subscription amount
     const subscription = await stripe.subscriptions.retrieve(session.subscription.id);
     const amount = subscription.items.data[0].price.unit_amount || 0;
-    const commissionAmount = amount / 100; // Convert from cents to euros
+    const baseAmount = amount / 100; // Convert from cents to euros
 
-    logStep("Commission amount calculated", { amount, commissionAmount });
+    // Calculate commission based on affiliate level
+    const { data: commissionPercentageResult, error: percentageError } = await supabaseService
+      .rpc('get_affiliate_commission_percentage', { affiliate_level: affiliateLevel });
+
+    if (percentageError) {
+      throw percentageError;
+    }
+
+    const commissionPercentage = commissionPercentageResult || 0.25; // Default to 25%
+    const commissionAmount = baseAmount * commissionPercentage;
+
+    logStep("Commission amount calculated", { 
+      baseAmount, 
+      affiliateLevel,
+      commissionPercentage, 
+      commissionAmount 
+    });
 
     // Update referral with subscription info
     const { error: updateReferralError } = await supabaseService
@@ -116,7 +147,8 @@ serve(async (req) => {
         referral_id: referral.id,
         amount: commissionAmount,
         status: 'pending',
-        stripe_session_id: sessionId
+        stripe_session_id: sessionId,
+        affiliate_level: affiliateLevel
       })
       .select()
       .single();
@@ -168,13 +200,17 @@ serve(async (req) => {
 
     logStep("Commission processed successfully", { 
       affiliateUserId: referral.affiliate_user_id,
+      affiliateLevel,
+      commissionPercentage,
       commissionAmount 
     });
 
     return new Response(JSON.stringify({ 
       success: true, 
       commission: commissionAmount,
-      affiliateUserId: referral.affiliate_user_id
+      affiliateUserId: referral.affiliate_user_id,
+      affiliateLevel,
+      commissionPercentage
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
