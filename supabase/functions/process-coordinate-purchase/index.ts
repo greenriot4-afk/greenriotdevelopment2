@@ -131,6 +131,10 @@ serve(async (req) => {
     }
 
     // Process the transaction atomically
+    console.log('=== Starting atomic wallet update ===');
+    console.log('Buyer wallet ID:', buyerWallet.id);
+    console.log('Deducting amount:', amount);
+    
     // 1. Deduct from buyer
     const { data: buyerResult, error: buyerError } = await supabaseClient
       .rpc('update_wallet_balance_atomic', {
@@ -139,8 +143,10 @@ serve(async (req) => {
         p_transaction_type: 'debit',
         p_user_id: user.id,
         p_description: description || `Coordenadas para: ${object.title}`,
-        p_object_type: objectType || 'coordinate'
+        p_object_type: 'coordinate'
       });
+
+    console.log('Buyer transaction result:', { success: !!buyerResult, error: buyerError?.message });
 
     if (buyerError) {
       console.error('Failed to deduct from buyer:', buyerError);

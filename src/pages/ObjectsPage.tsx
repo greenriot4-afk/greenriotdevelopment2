@@ -31,6 +31,7 @@ const ObjectsPage = () => {
   const [objects, setObjects] = useState<AppObject[]>([]);
   const [showUpload, setShowUpload] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [lastFetch, setLastFetch] = useState<number>(0);
   const { userLocation, getCurrentLocation, isLoading: locationLoading, calculateDistance } = useLocation();
   const { user } = useAuth();
 
@@ -63,60 +64,69 @@ const ObjectsPage = () => {
     }
   };
 
-  const fetchObjects = async () => {
+  const fetchObjects = async (forceRefresh = false) => {
     try {
-      console.log('fetchObjects called', { type, objectType, user: !!user });
+      // Cache for 30 seconds to avoid unnecessary API calls
+      const now = Date.now();
+      if (!forceRefresh && lastFetch && (now - lastFetch) < 30000) {
+        console.log('Using cached objects, skipping fetch');
+        return;
+      }
+
+      console.log('fetchObjects called', { type, objectType, user: !!user, forceRefresh });
       setLoading(true);
       
       console.log('About to query objects with:', { objectType });
-      const { data, error } = await supabase
+      
+      // First get objects
+      const { data: objectsData, error: objectsError } = await supabase
         .from('objects')
         .select('*')
         .eq('type', objectType)
         .eq('is_sold', false)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(50); // Limit results for better performance
 
-      console.log('fetchObjects result', { data: data?.length, error });
-      if (error) {
-        console.error('Supabase query error:', error);
-        throw error;
+      if (objectsError) {
+        console.error('Supabase query error:', objectsError);
+        throw objectsError;
       }
 
-      // Enrich objects with user profile data
-      const enrichedObjects = await Promise.all(
-        (data || []).map(async (object) => {
-          try {
-            const { data: profile, error: profileError } = await supabase
-              .from('profiles')
-              .select('display_name, username')
-              .eq('user_id', object.user_id)
-              .maybeSingle(); // Use maybeSingle instead of single to handle missing profiles
+      console.log('Objects fetched:', objectsData?.length);
 
-            if (profileError) {
-              console.warn('Error fetching profile for user:', object.user_id, profileError);
-            }
+      // Get unique user IDs
+      const userIds = [...new Set(objectsData?.map(obj => obj.user_id) || [])];
+      
+      // Fetch all profiles in one query
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('user_id, display_name, username')
+        .in('user_id', userIds);
 
-            return {
-              ...object,
-              type: object.type as 'abandoned' | 'donation' | 'product',
-              description: object.description || undefined,
-              is_sold: object.is_sold || false,
-              user_display_name: profile?.display_name || 'Usuario',
-              username: profile?.username || ''
-            };
-          } catch (profileError) {
-            console.warn('Failed to enrich object with profile data:', profileError);
-            return {
-              ...object,
-              type: object.type as 'abandoned' | 'donation' | 'product',
-              description: object.description || undefined,
-              is_sold: object.is_sold || false,
-              user_display_name: 'Usuario',
-              username: ''
-            };
-          }
-        })
-      );
+      if (profilesError) {
+        console.warn('Error fetching profiles:', profilesError);
+      }
+
+      console.log('Profiles fetched:', profilesData?.length);
+
+      // Create a map for quick profile lookup
+      const profilesMap = new Map();
+      profilesData?.forEach(profile => {
+        profilesMap.set(profile.user_id, profile);
+      });
+
+      // Transform the data to match expected interface
+      const enrichedObjects = (objectsData || []).map((object) => {
+        const profile = profilesMap.get(object.user_id);
+        return {
+          ...object,
+          type: object.type as 'abandoned' | 'donation' | 'product',
+          description: object.description || undefined,
+          is_sold: object.is_sold || false,
+          user_display_name: profile?.display_name || 'Usuario',
+          username: profile?.username || ''
+        };
+      });
 
       // Sort objects by distance if user location is available
       let sortedObjects = enrichedObjects as AppObject[];
@@ -135,6 +145,7 @@ const ObjectsPage = () => {
       }
 
       setObjects(sortedObjects);
+      setLastFetch(now); // Update cache timestamp
       console.log('Objects loaded successfully:', sortedObjects.length);
     } catch (error) {
       console.error('Error fetching objects:', error);
@@ -187,7 +198,8 @@ const ObjectsPage = () => {
 
       if (error) throw error;
 
-      setObjects(prev => [newObject as AppObject, ...prev]);
+      // Force refresh to get the latest objects
+      fetchObjects(true);
       setShowUpload(false);
       toast.success('¡Objeto publicado exitosamente!');
     } catch (error) {
