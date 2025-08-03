@@ -30,6 +30,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
+    // Create user client with the auth token for user verification
     const userClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -40,10 +41,20 @@ serve(async (req) => {
       }
     );
 
-    // Get authenticated user
+    console.log('Supabase clients initialized');
+
+    // Get authenticated user using the user client
     const { data: { user }, error: userError } = await userClient.auth.getUser();
-    if (userError || !user) {
-      throw new Error('User authentication failed');
+    console.log('User authentication result:', { user: !!user, error: !!userError });
+    
+    if (userError) {
+      console.error('User authentication error:', userError);
+      throw new Error(`User authentication failed: ${userError.message}`);
+    }
+    
+    if (!user) {
+      console.error('No user found after authentication');
+      throw new Error('User authentication failed - no user found');
     }
 
     console.log('User authenticated:', user.id);
