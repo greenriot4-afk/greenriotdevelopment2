@@ -356,14 +356,9 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                       <Store className="w-3 h-3 text-green-600" />
                     ) : (
                       <UserCircle className="w-3 h-3 text-blue-600" />
-                    )}
-                    {object.user_display_name || 'Usuario'}
-                    {object.market_id && (
-                      <Badge variant="outline" className="text-xs ml-1 bg-green-50 text-green-700 border-green-300">
-                        Mercadillo
-                      </Badge>
-                    )}
-                  </Link>
+                     )}
+                     {object.user_display_name || 'Usuario'}
+                   </Link>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <MapPin className="w-3 h-3" />
