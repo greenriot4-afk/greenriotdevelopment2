@@ -145,6 +145,45 @@ export type Database = {
         }
         Relationships: []
       }
+      connected_accounts: {
+        Row: {
+          account_status: string
+          capabilities: Json | null
+          created_at: string
+          dashboard_url: string | null
+          id: string
+          onboarding_url: string | null
+          requirements: Json | null
+          stripe_account_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_status?: string
+          capabilities?: Json | null
+          created_at?: string
+          dashboard_url?: string | null
+          id?: string
+          onboarding_url?: string | null
+          requirements?: Json | null
+          stripe_account_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_status?: string
+          capabilities?: Json | null
+          created_at?: string
+          dashboard_url?: string | null
+          id?: string
+          onboarding_url?: string | null
+          requirements?: Json | null
+          stripe_account_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -293,6 +332,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_status: string | null
           auto_location: boolean | null
           avatar_url: string | null
           created_at: string
@@ -306,6 +346,7 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          account_status?: string | null
           auto_location?: boolean | null
           avatar_url?: string | null
           created_at?: string
@@ -319,6 +360,7 @@ export type Database = {
           username?: string | null
         }
         Update: {
+          account_status?: string | null
           auto_location?: boolean | null
           avatar_url?: string | null
           created_at?: string

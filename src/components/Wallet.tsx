@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Wallet as WalletIcon, Plus, Minus, DollarSign, History, MapPin, Filter, CreditCard } from "lucide-react";
+import { Wallet as WalletIcon, Plus, Minus, DollarSign, History, MapPin, Filter, CreditCard, ExternalLink, AlertCircle } from "lucide-react";
 
 interface Transaction {
   id: string;
@@ -29,6 +29,16 @@ interface WalletData {
   user_id: string;
 }
 
+interface AccountStatus {
+  account_status: string;
+  can_withdraw: boolean;
+  status_message: string;
+  onboarding_url?: string;
+  dashboard_url?: string;
+  needs_onboarding: boolean;
+  requirements: string[];
+}
+
 export default function Wallet() {
   const [wallet, setWallet] = useState<WalletData | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -38,10 +48,13 @@ export default function Wallet() {
   const [loading, setLoading] = useState(false);
   const [transactionsLoading, setTransactionsLoading] = useState(true);
   const [transactionFilter, setTransactionFilter] = useState<'all' | 'coordinates' | 'wallet'>('all');
+  const [accountStatus, setAccountStatus] = useState<AccountStatus | null>(null);
+  const [checkingAccount, setCheckingAccount] = useState(false);
 
   useEffect(() => {
     fetchWallet();
     fetchTransactions();
+    checkAccountStatus();
   }, []);
 
   const fetchWallet = async () => {
@@ -251,6 +264,87 @@ export default function Wallet() {
     }
   };
 
+  const checkAccountStatus = async () => {
+    try {
+      setCheckingAccount(true);
+      const { data, error } = await supabase.functions.invoke('check-account-status');
+      
+      if (error) {
+        console.error('Error checking account status:', error);
+        return;
+      }
+      
+      setAccountStatus(data);
+    } catch (error) {
+      console.error('Error checking account status:', error);
+    } finally {
+      setCheckingAccount(false);
+    }
+  };
+
+  const createExpressAccount = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.functions.invoke('create-express-account');
+      
+      if (error) throw error;
+      
+      if (data.needs_onboarding && data.onboarding_url) {
+        // Open onboarding in new tab
+        window.open(data.onboarding_url, '_blank');
+        toast.success('Redirecting to account setup...');
+      } else {
+        toast.success('Account is already set up!');
+      }
+      
+      // Refresh account status
+      await checkAccountStatus();
+    } catch (error) {
+      console.error('Error creating Express account:', error);
+      toast.error(error.message || 'Failed to create account');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRealWithdraw = async () => {
+    if (!withdrawAmount || parseFloat(withdrawAmount) < 10) {
+      toast.error('Minimum withdrawal amount is $10');
+      return;
+    }
+
+    if (!wallet || wallet.balance < parseFloat(withdrawAmount)) {
+      toast.error('Insufficient balance');
+      return;
+    }
+
+    if (!accountStatus?.can_withdraw) {
+      toast.error('Please complete your account setup to withdraw funds');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('process-real-withdrawal', {
+        body: { amount: parseFloat(withdrawAmount) }
+      });
+
+      if (error) throw error;
+
+      toast.success(data.message || `Successfully withdrew ${formatCurrency(parseFloat(withdrawAmount))}`);
+      setWithdrawAmount("");
+      
+      // Refresh wallet and transactions
+      await fetchWallet();
+      await fetchTransactions();
+    } catch (error) {
+      console.error('Error processing real withdrawal:', error);
+      toast.error(error.message || 'Failed to process withdrawal');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const checkLastStripeSession = async () => {
     try {
       setLoading(true);
@@ -383,33 +477,159 @@ export default function Wallet() {
                 <span>Withdraw Money</span>
               </CardTitle>
               <CardDescription>
-                Withdraw money from your wallet. Minimum withdrawal is $10.
+                Withdraw money to your bank account. Minimum withdrawal is $10.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="withdrawAmount">Amount (USD)</Label>
-                <Input
-                  id="withdrawAmount"
-                  type="number"
-                  placeholder="10.00"
-                  min="10"
-                  step="0.01"
-                  value={withdrawAmount}
-                  onChange={(e) => setWithdrawAmount(e.target.value)}
-                />
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Available balance: {wallet ? formatCurrency(wallet.balance) : '$0.00'}
-              </p>
-              <Button 
-                onClick={handleWithdraw}
-                disabled={loading || !withdrawAmount || parseFloat(withdrawAmount) < 10 || (wallet && wallet.balance < parseFloat(withdrawAmount))}
-                className="w-full"
-                variant="secondary"
-              >
-                {loading ? 'Processing...' : `Withdraw ${withdrawAmount ? formatCurrency(parseFloat(withdrawAmount)) : '$0.00'}`}
-              </Button>
+              {/* Account Status Section */}
+              {checkingAccount ? (
+                <div className="text-center py-4">
+                  <p className="text-sm text-muted-foreground">Checking account status...</p>
+                </div>
+              ) : !accountStatus ? (
+                <div className="text-center py-4">
+                  <p className="text-sm text-muted-foreground">Unable to check account status</p>
+                </div>
+              ) : accountStatus.account_status === 'not_connected' ? (
+                <div className="space-y-4">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div className="flex items-start space-x-3">
+                      <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium text-yellow-800">Setup Required</h4>
+                        <p className="text-sm text-yellow-700 mt-1">
+                          To withdraw funds, you need to set up your payout account with Stripe.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={createExpressAccount}
+                    disabled={loading}
+                    className="w-full"
+                  >
+                    {loading ? 'Setting up...' : 'Set Up Payout Account'}
+                  </Button>
+                </div>
+              ) : accountStatus.account_status !== 'active' ? (
+                <div className="space-y-4">
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                    <div className="flex items-start space-x-3">
+                      <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium text-orange-800">Account Verification Required</h4>
+                        <p className="text-sm text-orange-700 mt-1">
+                          {accountStatus.status_message}
+                        </p>
+                        {accountStatus.requirements.length > 0 && (
+                          <ul className="text-xs text-orange-600 mt-2 list-disc list-inside">
+                            {accountStatus.requirements.map((req, index) => (
+                              <li key={index}>{req}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    {accountStatus.onboarding_url && (
+                      <Button 
+                        onClick={() => window.open(accountStatus.onboarding_url, '_blank')}
+                        disabled={loading}
+                        className="flex-1"
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Complete Setup
+                      </Button>
+                    )}
+                    {accountStatus.dashboard_url && (
+                      <Button 
+                        onClick={() => window.open(accountStatus.dashboard_url, '_blank')}
+                        variant="outline"
+                        disabled={loading}
+                        className="flex-1"
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Stripe Dashboard
+                      </Button>
+                    )}
+                  </div>
+                  <Button 
+                    onClick={checkAccountStatus}
+                    variant="outline"
+                    disabled={checkingAccount}
+                    className="w-full"
+                  >
+                    {checkingAccount ? 'Checking...' : 'Refresh Status'}
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Account Active - Show withdrawal form */}
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+                      <p className="text-sm text-green-700 font-medium">
+                        Your payout account is active and ready for withdrawals
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="withdrawAmount">Amount (USD)</Label>
+                    <Input
+                      id="withdrawAmount"
+                      type="number"
+                      placeholder="10.00"
+                      min="10"
+                      step="0.01"
+                      value={withdrawAmount}
+                      onChange={(e) => setWithdrawAmount(e.target.value)}
+                    />
+                  </div>
+                  
+                  <p className="text-sm text-muted-foreground">
+                    Available balance: {wallet ? formatCurrency(wallet.balance) : '$0.00'}
+                  </p>
+                  
+                  <Button 
+                    onClick={handleRealWithdraw}
+                    disabled={loading || !withdrawAmount || parseFloat(withdrawAmount) < 10 || (wallet && wallet.balance < parseFloat(withdrawAmount))}
+                    className="w-full"
+                  >
+                    {loading ? 'Processing...' : `Withdraw ${withdrawAmount ? formatCurrency(parseFloat(withdrawAmount)) : '$0.00'}`}
+                  </Button>
+                  
+                  <div className="flex gap-2 mt-4">
+                    {accountStatus.dashboard_url && (
+                      <Button 
+                        onClick={() => window.open(accountStatus.dashboard_url, '_blank')}
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Manage Account
+                      </Button>
+                    )}
+                    <Button 
+                      onClick={checkAccountStatus}
+                      variant="outline"
+                      size="sm"
+                      disabled={checkingAccount}
+                      className="flex-1"
+                    >
+                      {checkingAccount ? 'Checking...' : 'Refresh Status'}
+                    </Button>
+                  </div>
+                  
+                  <div className="text-xs text-muted-foreground mt-4 p-3 bg-muted/50 rounded">
+                    <p>• Withdrawals typically arrive within 2-7 business days</p>
+                    <p>• Processing fees may apply as per Stripe's standard rates</p>
+                    <p>• You'll receive email confirmations for all transfers</p>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
