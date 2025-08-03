@@ -185,9 +185,9 @@ export default function Wallet() {
         return;
       }
       
-      toast.success(`Synced ${data.updated} transactions with Stripe`);
-      fetchWallet();
-      fetchTransactions();
+      toast.success(`Synced ${data.updated} out of ${data.total} transactions with Stripe`);
+      await fetchWallet();
+      await fetchTransactions();
     } catch (error) {
       console.error('Error syncing Stripe status:', error);
       toast.error('Failed to sync with Stripe');
