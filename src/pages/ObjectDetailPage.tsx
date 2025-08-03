@@ -250,19 +250,6 @@ export default function ObjectDetailPage() {
                   requireAuth={true}
                 />
               </div>
-              {object.type === 'donation' && (
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    const mapsUrl = `https://www.google.com/maps?q=${object.latitude},${object.longitude}`;
-                    window.open(mapsUrl, '_blank');
-                  }}
-                  className="flex items-center gap-2"
-                >
-                  <MapPin className="h-4 w-4" />
-                  Ver Ubicación
-                </Button>
-              )}
             </div>
           </div>
         </div>
