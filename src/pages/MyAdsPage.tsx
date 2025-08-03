@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ProductForm, Product } from '@/components/ProductForm';
 import { useAuth } from '@/hooks/useAuth';
+import { useWallet } from '@/hooks/useWallet';
 import { useNavigate } from 'react-router-dom';
 
 const MyAdsPage = () => {
@@ -15,6 +16,7 @@ const MyAdsPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { user } = useAuth();
+  const { formatCurrency } = useWallet();
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
@@ -290,10 +292,10 @@ const MyAdsPage = () => {
                           variant={product.type === 'product' ? 'default' : 'secondary'}
                           className="text-xs"
                         >
-                          {product.type === 'product' ? (
+                           {product.type === 'product' ? (
                             <>
                               <Package className="w-2 h-2 mr-1" />
-                              {product.price_credits} créditos
+                              {formatCurrency(product.price_credits || 0)}
                             </>
                           ) : (
                             <>
