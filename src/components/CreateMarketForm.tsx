@@ -26,7 +26,6 @@ interface CreateMarketFormProps {
 export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [locationName, setLocationName] = useState('');
   const [acceptsDonations, setAcceptsDonations] = useState(false);
   const [photo, setPhoto] = useState<PhotoWithLocation | null>(null);
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
@@ -92,20 +91,19 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
 
     setIsSubmitting(true);
     try {
-      await onSubmit({
-        title: title.trim(),
-        description: description.trim(),
-        image: photo.image,
-        latitude: locationData.latitude,
-        longitude: locationData.longitude,
-        locationName: locationName.trim() || 'Mercadillo',
-        acceptsDonations,
-      });
+        await onSubmit({
+          title: title.trim(),
+          description: description.trim(),
+          image: photo.image,
+          latitude: locationData.latitude,
+          longitude: locationData.longitude,
+          locationName: 'Mercadillo',
+          acceptsDonations,
+        });
       
       // Reset form
       setTitle('');
       setDescription('');
-      setLocationName('');
       setAcceptsDonations(false);
       setPhoto(null);
       setUseCurrentLocation(false);
@@ -162,18 +160,19 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
             )}
           </div>
 
-          {/* Alternative Location */}
+          {/* Localización mercadillo */}
           <div className="space-y-2">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="useCurrentLocation"
-              checked={useCurrentLocation}
-              onCheckedChange={(checked) => setUseCurrentLocation(!!checked)}
-            />
-            <Label htmlFor="useCurrentLocation" className="text-sm">
-              Usar mi ubicación actual (sobrescribe la ubicación de la foto)
-            </Label>
-          </div>
+            <Label>Localización del Mercadillo *</Label>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="useCurrentLocation"
+                checked={useCurrentLocation}
+                onCheckedChange={(checked) => setUseCurrentLocation(!!checked)}
+              />
+              <Label htmlFor="useCurrentLocation" className="text-sm">
+                Usar mi ubicación actual (sobrescribe la ubicación de la foto)
+              </Label>
+            </div>
             {useCurrentLocation && userLocation && (
               <div className="p-2 bg-muted rounded text-sm">
                 <MapPin className="w-3 h-3 inline mr-1" />
@@ -182,7 +181,7 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
             )}
           </div>
 
-          {/* Title */}
+          {/* Título */}
           <div className="space-y-2">
             <Label htmlFor="title">Título *</Label>
             <Input
@@ -194,18 +193,7 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
             />
           </div>
 
-          {/* Location Name */}
-          <div className="space-y-2">
-            <Label htmlFor="locationName">Nombre del Lugar</Label>
-            <Input
-              id="locationName"
-              value={locationName}
-              onChange={(e) => setLocationName(e.target.value)}
-              placeholder="Ej: Plaza Central, Garaje de Maria"
-            />
-          </div>
-
-          {/* Description */}
+          {/* Descripción */}
           <div className="space-y-2">
             <Label htmlFor="description">Descripción</Label>
             <Textarea
@@ -217,7 +205,7 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
             />
           </div>
 
-          {/* Accepts Donations */}
+          {/* Checkbox trabajamos con donaciones */}
           <div className="flex items-center space-x-2">
             <Checkbox
               id="acceptsDonations"
