@@ -180,10 +180,17 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error creating Express account:', error.message);
+    console.error('=== ERROR in create-express-account ===');
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('Full error object:', JSON.stringify(error, null, 2));
     
+    // Return more detailed error information
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: error.stack?.split('\n').slice(0, 3).join('\n')
+      }),
       { 
         status: 400,
         headers: { 
