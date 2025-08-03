@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 export const HeaderWallet = () => {
-  const { wallet, loading } = useWallet();
+  const { wallets, selectedCurrency, loading, formatCurrency } = useWallet();
   const { user } = useAuth();
   const { requireAuth } = useAuthAction();
   const navigate = useNavigate();
@@ -34,6 +34,8 @@ export const HeaderWallet = () => {
     );
   }
 
+  const currentWallet = wallets[selectedCurrency];
+  
   return (
     <Button
       variant="ghost"
@@ -43,7 +45,7 @@ export const HeaderWallet = () => {
     >
       <WalletIcon className="h-4 w-4" />
       <span className="text-sm font-medium">
-        ${wallet?.balance?.toFixed(0) || '0'}
+        {formatCurrency(currentWallet?.balance || 0, selectedCurrency)}
       </span>
     </Button>
   );

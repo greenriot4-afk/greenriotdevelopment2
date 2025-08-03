@@ -9,6 +9,9 @@ jwt_expiry = 3600
 [functions.create-deposit-session]
 verify_jwt = true
 
+[functions.create-deposit-session-eur]
+verify_jwt = true
+
 [functions.process-withdrawal]
 verify_jwt = true
 

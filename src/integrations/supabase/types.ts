@@ -451,6 +451,7 @@ export type Database = {
         Row: {
           amount: number
           created_at: string
+          currency: string
           description: string | null
           id: string
           object_type: string | null
@@ -465,6 +466,7 @@ export type Database = {
         Insert: {
           amount: number
           created_at?: string
+          currency?: string
           description?: string | null
           id?: string
           object_type?: string | null
@@ -479,6 +481,7 @@ export type Database = {
         Update: {
           amount?: number
           created_at?: string
+          currency?: string
           description?: string | null
           id?: string
           object_type?: string | null
@@ -558,6 +561,7 @@ export type Database = {
         Row: {
           balance: number
           created_at: string
+          currency: string
           id: string
           updated_at: string
           user_id: string
@@ -565,6 +569,7 @@ export type Database = {
         Insert: {
           balance?: number
           created_at?: string
+          currency?: string
           id?: string
           updated_at?: string
           user_id: string
@@ -572,6 +577,7 @@ export type Database = {
         Update: {
           balance?: number
           created_at?: string
+          currency?: string
           id?: string
           updated_at?: string
           user_id?: string
@@ -617,6 +623,10 @@ export type Database = {
       }
     }
     Functions: {
+      get_or_create_wallet: {
+        Args: { p_user_id: string; p_currency?: string }
+        Returns: string
+      }
       refresh_objects_view: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -634,14 +644,24 @@ export type Database = {
         Returns: Json
       }
       update_wallet_balance_atomic: {
-        Args: {
-          p_wallet_id: string
-          p_amount: number
-          p_transaction_type: string
-          p_user_id: string
-          p_description: string
-          p_object_type?: string
-        }
+        Args:
+          | {
+              p_wallet_id: string
+              p_amount: number
+              p_transaction_type: string
+              p_user_id: string
+              p_description: string
+              p_object_type?: string
+            }
+          | {
+              p_wallet_id: string
+              p_amount: number
+              p_transaction_type: string
+              p_user_id: string
+              p_description: string
+              p_object_type?: string
+              p_currency?: string
+            }
         Returns: Json
       }
       validate_amount: {

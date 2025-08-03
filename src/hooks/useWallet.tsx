@@ -3,22 +3,40 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
 
+export type Currency = 'USD' | 'EUR';
+
 interface Wallet {
   id: string;
   user_id: string;
   balance: number;
+  currency: Currency;
   created_at: string;
   updated_at: string;
 }
 
+interface WalletContextValue {
+  wallets: Record<Currency, Wallet | null>;
+  selectedCurrency: Currency;
+  loading: boolean;
+  fetchWallets: () => Promise<void>;
+  deductBalance: (amount: number, description: string, objectType?: string, currency?: Currency) => Promise<any>;
+  hasEnoughBalance: (amount: number, currency?: Currency) => boolean;
+  switchCurrency: (currency: Currency) => void;
+  formatCurrency: (amount: number, currency?: Currency) => string;
+}
+
 export const useWallet = () => {
   const { user } = useAuth();
-  const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [wallets, setWallets] = useState<Record<Currency, Wallet | null>>({
+    USD: null,
+    EUR: null
+  });
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>('USD');
   const [loading, setLoading] = useState(true);
 
-  const fetchWallet = async () => {
+  const fetchWallets = async () => {
     if (!user) {
-      setWallet(null);
+      setWallets({ USD: null, EUR: null });
       setLoading(false);
       return;
     }
@@ -29,7 +47,7 @@ export const useWallet = () => {
       // Get fresh session to avoid auth errors
       const { data: session } = await supabase.auth.getSession();
       if (!session.session) {
-        setWallet(null);
+        setWallets({ USD: null, EUR: null });
         setLoading(false);
         return;
       }
@@ -37,39 +55,55 @@ export const useWallet = () => {
       const { data, error } = await supabase
         .from('wallets')
         .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
+        .eq('user_id', user.id);
 
       if (error) {
-        console.error('Error fetching wallet:', error);
-        // For auth errors, don't throw - just set wallet to null
+        console.error('Error fetching wallets:', error);
+        // For auth errors, don't throw - just set wallets to null
         if (error.code === 'refresh_token_not_found' || error.message?.includes('refresh')) {
-          setWallet(null);
+          setWallets({ USD: null, EUR: null });
           return;
         }
         throw error;
       }
 
-      if (!data) {
-        // Wallet doesn't exist, this is normal for new users
-        console.log('No wallet found for user, this is normal for new users');
-        setWallet(null);
-        return;
+      // Initialize wallets object
+      const walletsData: Record<Currency, Wallet | null> = {
+        USD: null,
+        EUR: null
+      };
+
+      // Map the fetched wallets by currency
+      if (data) {
+        data.forEach(walletData => {
+          if (walletData.currency === 'USD' || walletData.currency === 'EUR') {
+            const wallet: Wallet = {
+              ...walletData,
+              currency: walletData.currency as Currency
+            };
+            walletsData[wallet.currency] = wallet;
+          }
+        });
       }
 
-      setWallet(data);
+      setWallets(walletsData);
     } catch (error) {
-      console.error('Error fetching wallet:', error);
+      console.error('Error fetching wallets:', error);
       // Don't show toast error for wallet fetch failures - just log them
-      setWallet(null);
+      setWallets({ USD: null, EUR: null });
     } finally {
       setLoading(false);
     }
   };
 
-  const deductBalance = async (amount: number, description: string, objectType: string = 'abandoned') => {
-    if (!user || !wallet) {
-      throw new Error('Usuario o wallet no disponible');
+  const deductBalance = async (amount: number, description: string, objectType: string = 'abandoned', currency: Currency = selectedCurrency) => {
+    if (!user) {
+      throw new Error('Usuario no disponible');
+    }
+
+    const wallet = wallets[currency];
+    if (!wallet) {
+      throw new Error(`Wallet de ${currency} no disponible`);
     }
 
     // Input validation
@@ -94,7 +128,8 @@ export const useWallet = () => {
           p_transaction_type: 'debit',
           p_user_id: user.id,
           p_description: sanitizedDescription,
-          p_object_type: sanitizedObjectType
+          p_object_type: sanitizedObjectType,
+          p_currency: currency
         });
 
       if (atomicError) {
@@ -108,16 +143,24 @@ export const useWallet = () => {
         transaction_id: string;
         previous_balance: number;
         new_balance: number;
+        currency: string;
       };
 
       // Update local state with new balance
-      setWallet(prev => prev ? { ...prev, balance: parseFloat(walletResult.new_balance.toString()) } : null);
+      setWallets(prev => ({
+        ...prev,
+        [currency]: prev[currency] ? { 
+          ...prev[currency]!, 
+          balance: parseFloat(walletResult.new_balance.toString()) 
+        } : null
+      }));
       
       return { 
         success: true, 
         transaction_id: walletResult.transaction_id,
         previous_balance: walletResult.previous_balance,
-        new_balance: walletResult.new_balance
+        new_balance: walletResult.new_balance,
+        currency: walletResult.currency
       };
     } catch (error) {
       console.error('Error deducting balance:', error);
@@ -125,30 +168,50 @@ export const useWallet = () => {
     }
   };
 
-  const hasEnoughBalance = (amount: number): boolean => {
+  const hasEnoughBalance = (amount: number, currency: Currency = selectedCurrency): boolean => {
+    const wallet = wallets[currency];
     return wallet ? wallet.balance >= amount : false;
   };
 
+  const switchCurrency = (currency: Currency) => {
+    setSelectedCurrency(currency);
+  };
+
+  const formatCurrency = (amount: number, currency: Currency = selectedCurrency): string => {
+    const currencySymbols: Record<Currency, string> = {
+      USD: '$',
+      EUR: '€'
+    };
+    
+    return `${currencySymbols[currency]}${amount.toFixed(2)}`;
+  };
+
   useEffect(() => {
-    fetchWallet();
+    fetchWallets();
   }, [user]);
 
-  // Auto-refresh wallet when user session changes or every 30 seconds
+  // Auto-refresh wallets when user session changes or every 30 seconds
   useEffect(() => {
     if (!user) return;
     
     const interval = setInterval(() => {
-      fetchWallet();
+      fetchWallets();
     }, 30000); // Refresh every 30 seconds
 
     return () => clearInterval(interval);
   }, [user]);
 
   return {
-    wallet,
+    wallets,
+    selectedCurrency,
     loading,
-    fetchWallet,
+    fetchWallets,
     deductBalance,
-    hasEnoughBalance
+    hasEnoughBalance,
+    switchCurrency,
+    formatCurrency,
+    // Backward compatibility
+    wallet: wallets[selectedCurrency],
+    fetchWallet: fetchWallets
   };
 };

@@ -4,8 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useWallet, Currency } from "@/hooks/useWallet";
 import { Wallet as WalletIcon, Plus, Minus, DollarSign, History, MapPin, Filter, CreditCard, ExternalLink, AlertCircle } from "lucide-react";
 
 interface Transaction {
@@ -21,6 +23,7 @@ interface Transaction {
   user_id: string;
   wallet_id: string;
   object_type?: string;
+  currency: Currency;
 }
 
 interface WalletData {
@@ -40,7 +43,7 @@ interface AccountStatus {
 }
 
 export default function Wallet() {
-  const [wallet, setWallet] = useState<WalletData | null>(null);
+  const { wallets, selectedCurrency, switchCurrency, formatCurrency, fetchWallets } = useWallet();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
   const [depositAmount, setDepositAmount] = useState("");
@@ -50,46 +53,18 @@ export default function Wallet() {
   const [transactionFilter, setTransactionFilter] = useState<'all' | 'coordinates' | 'wallet'>('all');
   const [accountStatus, setAccountStatus] = useState<AccountStatus | null>(null);
   const [checkingAccount, setCheckingAccount] = useState(false);
+  
+  const currentWallet = wallets[selectedCurrency];
 
   useEffect(() => {
-    fetchWallet();
     fetchTransactions();
     checkAccountStatus();
-  }, []);
+  }, [selectedCurrency]);
 
-  const fetchWallet = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+  useEffect(() => {
+    fetchTransactions();
+  }, [currentWallet]);
 
-      const { data, error } = await supabase
-        .from('wallets')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        throw error;
-      }
-
-      if (data) {
-        setWallet(data);
-      } else {
-        // Create wallet if it doesn't exist
-        const { data: newWallet, error: createError } = await supabase
-          .from('wallets')
-          .insert({ user_id: user.id, balance: 0.00 })
-          .select()
-          .single();
-
-        if (createError) throw createError;
-        setWallet(newWallet);
-      }
-    } catch (error) {
-      console.error('Error fetching wallet:', error);
-      toast.error('Failed to load wallet');
-    }
-  };
 
   const fetchTransactions = async () => {
     try {
@@ -134,15 +109,23 @@ export default function Wallet() {
   }, [transactionFilter, allTransactions]);
 
   const handleDeposit = async () => {
-    if (!depositAmount || parseFloat(depositAmount) < 10) {
-      toast.error('Minimum deposit amount is $10');
+    const minAmount = selectedCurrency === 'EUR' ? 10 : 10;
+    const currencySymbol = selectedCurrency === 'EUR' ? '€' : '$';
+    
+    if (!depositAmount || parseFloat(depositAmount) < minAmount) {
+      toast.error(`Minimum deposit amount is ${currencySymbol}${minAmount}`);
       return;
     }
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-deposit-session', {
-        body: { amount: parseFloat(depositAmount) }
+      const functionName = selectedCurrency === 'EUR' ? 'create-deposit-session-eur' : 'create-deposit-session';
+      
+      const { data, error } = await supabase.functions.invoke(functionName, {
+        body: { 
+          amount: parseFloat(depositAmount),
+          currency: selectedCurrency
+        }
       });
 
       if (error) throw error;
@@ -166,7 +149,7 @@ export default function Wallet() {
       return;
     }
 
-    if (!wallet || wallet.balance < parseFloat(withdrawAmount)) {
+    if (!currentWallet || currentWallet.balance < parseFloat(withdrawAmount)) {
       toast.error('Insufficient balance');
       return;
     }
@@ -183,7 +166,7 @@ export default function Wallet() {
       setWithdrawAmount("");
       
       // Refresh wallet and transactions
-      await fetchWallet();
+      await fetchWallets();
       await fetchTransactions();
     } catch (error) {
       console.error('Error processing withdrawal:', error);
@@ -193,10 +176,10 @@ export default function Wallet() {
     }
   };
 
-  const formatCurrency = (amount: number) => {
+  const formatLocalCurrency = (amount: number, currency: Currency = selectedCurrency) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: 'USD'
+      currency: currency
     }).format(Math.abs(amount));
   };
 
@@ -254,7 +237,7 @@ export default function Wallet() {
       }
       
       toast.success(`Synced ${data.updated} out of ${data.total} transactions with Stripe`);
-      await fetchWallet();
+      await fetchWallets();
       await fetchTransactions();
     } catch (error) {
       console.error('Error syncing Stripe status:', error);
@@ -321,7 +304,7 @@ export default function Wallet() {
       return;
     }
 
-    if (!wallet || wallet.balance < parseFloat(withdrawAmount)) {
+    if (!currentWallet || currentWallet.balance < parseFloat(withdrawAmount)) {
       toast.error('Insufficient balance');
       return;
     }
@@ -339,11 +322,11 @@ export default function Wallet() {
 
       if (error) throw error;
 
-      toast.success(data.message || `Successfully withdrew ${formatCurrency(parseFloat(withdrawAmount))}`);
+      toast.success(data.message || `Successfully withdrew ${formatLocalCurrency(parseFloat(withdrawAmount))}`);
       setWithdrawAmount("");
       
       // Refresh wallet and transactions
-      await fetchWallet();
+      await fetchWallets();
       await fetchTransactions();
     } catch (error) {
       console.error('Error processing real withdrawal:', error);
@@ -400,8 +383,17 @@ export default function Wallet() {
           <CardDescription>Manage your wallet balance</CardDescription>
         </CardHeader>
         <CardContent className="text-center">
-          <div className="text-4xl font-bold text-primary mb-2">
-            {wallet ? formatCurrency(wallet.balance) : '$0.00'}
+          <div className="text-4xl font-bold text-primary mb-2 flex items-center justify-center gap-4">
+            {formatCurrency(currentWallet?.balance || 0)}
+            <Select value={selectedCurrency} onValueChange={(value: Currency) => switchCurrency(value)}>
+              <SelectTrigger className="w-20 h-8 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USD">USD</SelectItem>
+                <SelectItem value="EUR">EUR</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <p className="text-muted-foreground">Available Balance</p>
           <div className="flex gap-2 justify-center mt-3">
@@ -471,7 +463,7 @@ export default function Wallet() {
                 disabled={loading || !depositAmount || parseFloat(depositAmount) < 10}
                 className="w-full"
               >
-                {loading ? 'Processing...' : `Deposit ${depositAmount ? formatCurrency(parseFloat(depositAmount)) : '$0.00'}`}
+                {loading ? 'Processing...' : `Deposit ${depositAmount ? formatLocalCurrency(parseFloat(depositAmount)) : formatCurrency(0)}`}
               </Button>
             </CardContent>
           </Card>
@@ -597,15 +589,15 @@ export default function Wallet() {
                   </div>
                   
                   <p className="text-sm text-muted-foreground">
-                    Available balance: {wallet ? formatCurrency(wallet.balance) : '$0.00'}
+                    Available balance: {formatCurrency(currentWallet?.balance || 0)}
                   </p>
                   
                   <Button 
                     onClick={handleRealWithdraw}
-                    disabled={loading || !withdrawAmount || parseFloat(withdrawAmount) < 10 || (wallet && wallet.balance < parseFloat(withdrawAmount))}
+                    disabled={loading || !withdrawAmount || parseFloat(withdrawAmount) < 10 || (currentWallet && currentWallet.balance < parseFloat(withdrawAmount))}
                     className="w-full"
                   >
-                    {loading ? 'Processing...' : `Withdraw ${withdrawAmount ? formatCurrency(parseFloat(withdrawAmount)) : '$0.00'}`}
+                    {loading ? 'Processing...' : `Withdraw ${withdrawAmount ? formatLocalCurrency(parseFloat(withdrawAmount)) : formatCurrency(0)}`}
                   </Button>
                   
                   <div className="flex gap-2 mt-4">
@@ -682,7 +674,7 @@ export default function Wallet() {
                         <div>
                           <p className="text-sm text-muted-foreground">Ventas de Coordenadas</p>
                           <p className="text-lg font-semibold text-blue-600">
-                            {formatCurrency(coordinateTransactions
+                            {formatLocalCurrency(coordinateTransactions
                               .filter(t => t.object_type === 'coordinate_sale')
                               .reduce((sum, t) => sum + Math.abs(t.amount), 0))}
                           </p>
@@ -697,7 +689,7 @@ export default function Wallet() {
                         <div>
                           <p className="text-sm text-muted-foreground">Compras de Coordenadas</p>
                           <p className="text-lg font-semibold text-orange-600">
-                            {formatCurrency(coordinateTransactions
+                            {formatLocalCurrency(coordinateTransactions
                               .filter(t => t.object_type === 'coordinate')
                               .reduce((sum, t) => sum + Math.abs(t.amount), 0))}
                           </p>
@@ -712,7 +704,7 @@ export default function Wallet() {
                         <div>
                           <p className="text-sm text-muted-foreground">Balance Neto</p>
                           <p className="text-lg font-semibold text-green-600">
-                            {formatCurrency(coordinateTransactions.reduce((sum, t) => {
+                            {formatLocalCurrency(coordinateTransactions.reduce((sum, t) => {
                               if (t.object_type === 'coordinate_sale') return sum + Math.abs(t.amount);
                               if (t.object_type === 'coordinate') return sum - Math.abs(t.amount);
                               return sum;
@@ -773,8 +765,8 @@ export default function Wallet() {
                             ? 'text-green-600' : 'text-red-600'
                         }`}>
                           {(transaction.type === 'deposit' || transaction.type === 'credit' || 
-                            transaction.object_type === 'coordinate_sale') ? '+' : '-'}
-                          {formatCurrency(transaction.amount)}
+                             transaction.object_type === 'coordinate_sale') ? '+' : '-'}
+                          {formatLocalCurrency(transaction.amount, transaction.currency)}
                         </p>
                         <p className={`text-sm capitalize ${
                           transaction.status === 'completed' ? 'text-green-600' : 
