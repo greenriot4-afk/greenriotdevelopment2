@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useWallet } from '@/hooks/useWallet';
-import { Share2, Copy, Users, Euro, Calendar, Gift } from 'lucide-react';
+import { Share2, Copy, Users, Euro, Calendar, Gift, DollarSign } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { es, enUS } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -19,7 +19,7 @@ const PREMIUM_PRICE_USD = 19;
 export const AffiliateSection = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
-  const { formatCurrency } = useWallet();
+  const { formatCurrency, selectedCurrency } = useWallet();
   const { 
     affiliateCode, 
     referrals, 
@@ -113,7 +113,10 @@ export const AffiliateSection = () => {
           {/* Ganancias totales */}
           <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg">
             <div className="flex items-center gap-2">
-              <Euro className="w-5 h-5 text-primary" />
+              {selectedCurrency === 'EUR' ? 
+                <Euro className="w-5 h-5 text-primary" /> : 
+                <DollarSign className="w-5 h-5 text-primary" />
+              }
               <span className="font-medium">{t('affiliate.totalEarnings')}</span>
             </div>
             <Badge variant="secondary" className="text-lg font-bold">
@@ -188,7 +191,10 @@ export const AffiliateSection = () => {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <Euro className="w-8 h-8 text-primary" />
+              {selectedCurrency === 'EUR' ? 
+                <Euro className="w-8 h-8 text-primary" /> : 
+                <DollarSign className="w-8 h-8 text-primary" />
+              }
               <div>
                 <p className="text-2xl font-bold">{commissions.filter(c => c.status === 'paid').length}</p>
                 <p className="text-sm text-muted-foreground">{t('affiliate.paidCommissions')}</p>
