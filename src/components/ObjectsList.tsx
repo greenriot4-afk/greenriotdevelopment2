@@ -181,12 +181,17 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
 
       if (error) {
         console.error('Edge function error:', error);
-        throw new Error(error.message);
+        throw new Error(error.message || 'Error al procesar el pago');
       }
 
       if (data?.error) {
         console.error('Data error:', data.error);
         throw new Error(data.error);
+      }
+
+      if (!data?.success) {
+        console.error('Payment failed - no success flag:', data);
+        throw new Error('El pago no se procesó correctamente');
       }
 
       const platformFee = data.platformFee;

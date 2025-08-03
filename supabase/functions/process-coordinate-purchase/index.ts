@@ -169,8 +169,22 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error processing coordinate purchase:', error.message);
+    
+    let userFriendlyMessage = error.message;
+    
+    // Provide more user-friendly error messages
+    if (error.message.includes('Insufficient balance')) {
+      userFriendlyMessage = 'No tienes suficiente saldo para esta compra. Recarga tu wallet.';
+    } else if (error.message.includes('Object not found')) {
+      userFriendlyMessage = 'El objeto ya no está disponible.';
+    } else if (error.message.includes('Invalid user token')) {
+      userFriendlyMessage = 'Sesión expirada. Inicia sesión nuevamente.';
+    } else if (error.message.includes('Missing objectId or amount')) {
+      userFriendlyMessage = 'Error en los datos del pago.';
+    }
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: userFriendlyMessage }),
       { 
         status: 400,
         headers: { 
