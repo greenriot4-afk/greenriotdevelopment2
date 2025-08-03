@@ -40,13 +40,17 @@ serve(async (req) => {
       throw new Error('Invalid user token');
     }
 
-    const { objectId, amount, description, objectType } = await req.json();
+    const requestBody = await req.json();
+    console.log('Raw request body:', requestBody);
+    
+    const { objectId, amount, description, objectType } = requestBody;
     
     if (!objectId || !amount) {
+      console.error('Missing required fields:', { objectId, amount });
       throw new Error('Missing objectId or amount');
     }
 
-    console.log('Processing coordinate purchase:', { objectId, amount, buyerId: user.id });
+    console.log('Processing coordinate purchase:', { objectId, amount, buyerId: user.id, objectType, description });
 
     // Get object details to find the seller
     const { data: object, error: objectError } = await supabaseClient

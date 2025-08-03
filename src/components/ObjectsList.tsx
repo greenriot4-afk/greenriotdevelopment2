@@ -160,6 +160,13 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     setShowConfirmDialog(false);
 
     try {
+      console.log('Starting coordinate purchase:', {
+        objectId: selectedObject.id,
+        amount: selectedObject.price_credits,
+        objectType,
+        selectedObject
+      });
+
       // Use the new coordinate purchase function that handles seller payment and platform fee
       const { data, error } = await supabase.functions.invoke('process-coordinate-purchase', {
         body: {
@@ -170,11 +177,15 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
         }
       });
 
+      console.log('Edge function response:', { data, error });
+
       if (error) {
+        console.error('Edge function error:', error);
         throw new Error(error.message);
       }
 
-      if (data.error) {
+      if (data?.error) {
+        console.error('Data error:', data.error);
         throw new Error(data.error);
       }
 
