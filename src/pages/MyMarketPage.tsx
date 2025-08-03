@@ -11,10 +11,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { CircularMarket } from '@/components/MarketsList';
 import { CatalogManagement } from '@/components/CatalogManagement';
+import { EditMarketForm } from '@/components/EditMarketForm';
 
 const MyMarketPage = () => {
   const [market, setMarket] = useState<CircularMarket | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showEditForm, setShowEditForm] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -120,6 +122,45 @@ const MyMarketPage = () => {
     }
   };
 
+  const handleEditMarket = async (data: {
+    title: string;
+    description: string;
+    image: string;
+    latitude: number;
+    longitude: number;
+    locationName: string;
+    acceptsDonations: boolean;
+  }) => {
+    if (!market || !user) return;
+
+    try {
+      const { data: updatedMarket, error } = await supabase
+        .from('circular_markets')
+        .update({
+          title: data.title,
+          description: data.description,
+          image_url: data.image,
+          latitude: data.latitude,
+          longitude: data.longitude,
+          location_name: data.locationName,
+          accepts_donations: data.acceptsDonations,
+        })
+        .eq('id', market.id)
+        .eq('user_id', user.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setMarket(updatedMarket as CircularMarket);
+      setShowEditForm(false);
+      toast.success('Mercadillo actualizado exitosamente!');
+    } catch (error) {
+      console.error('Error updating market:', error);
+      throw error;
+    }
+  };
+
   const openInMaps = () => {
     if (!market) return;
     const mapsUrl = `https://www.google.com/maps?q=${market.latitude},${market.longitude}`;
@@ -140,6 +181,34 @@ const MyMarketPage = () => {
         <div className="text-center py-8">
           <p className="text-muted-foreground">No se encontró tu mercadillo</p>
         </div>
+      </div>
+    );
+  }
+
+  // Si estamos editando, mostrar el formulario
+  if (showEditForm) {
+    return (
+      <div className="flex-1 p-4 max-w-md mx-auto w-full">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowEditForm(false)}
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <div>
+            <h1 className="text-xl font-semibold">Editar Mercadillo</h1>
+            <p className="text-sm text-muted-foreground">Actualiza la información de tu mercadillo</p>
+          </div>
+        </div>
+
+        <EditMarketForm
+          market={market}
+          onSubmit={handleEditMarket}
+          onCancel={() => setShowEditForm(false)}
+        />
       </div>
     );
   }
@@ -274,10 +343,7 @@ const MyMarketPage = () => {
               <Button
                 variant="outline"
                 className="w-full"
-                onClick={() => {
-                  // TODO: Implementar edición del mercadillo
-                  toast.info('Función de edición próximamente');
-                }}
+                onClick={() => setShowEditForm(true)}
               >
                 <Edit className="w-4 h-4 mr-2" />
                 Editar información
