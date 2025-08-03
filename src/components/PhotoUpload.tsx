@@ -307,9 +307,18 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
               <Input
                 type="number"
                 value={price}
-                onChange={(e) => setPrice(Math.max(1, parseInt(e.target.value) || 1))}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '') {
+                    setPrice(0);
+                  } else {
+                    const numVal = parseInt(val);
+                    setPrice(isNaN(numVal) ? 1 : Math.max(1, numVal));
+                  }
+                }}
                 min={1}
                 max={1000}
+                placeholder="1"
               />
             </div>
           )}
