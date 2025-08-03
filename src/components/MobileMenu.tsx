@@ -215,7 +215,7 @@ export function MobileMenu() {
             onClick={handleCreateMarketClick}
           >
             <Plus className="h-5 w-5 mr-3" />
-            Crear Mercadillo
+            {t('menu.createCircularMarket')}
           </Button>
 
           {userHasMarket && (
@@ -225,7 +225,7 @@ export function MobileMenu() {
               onClick={handleMyMarketClick}
             >
               <Store className="h-5 w-5 mr-3" />
-              Mi Mercadillo
+              {t('menu.myCircularMarket')}
             </Button>
           )}
 
@@ -235,7 +235,7 @@ export function MobileMenu() {
             onClick={handleAffiliatesClick}
           >
             <DollarSign className="h-5 w-5 mr-3 mt-1 flex-shrink-0" />
-            <span className="text-left leading-tight">
+            <span className="text-left leading-tight whitespace-pre-line">
               {t('menu.affiliateProgram')}
             </span>
           </Button>
