@@ -160,14 +160,32 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     setShowConfirmDialog(false);
 
     try {
-      // For now, use wallet deduction - in future could integrate Stripe for coordinate payments
-      await deductBalance(
-        selectedObject.price_credits,
-        `Coordenadas para: ${selectedObject.title}`,
-        objectType
+      // Use the new coordinate purchase function that handles seller payment and platform fee
+      const { data, error } = await supabase.functions.invoke('process-coordinate-purchase', {
+        body: {
+          objectId: selectedObject.id,
+          amount: selectedObject.price_credits,
+          description: `Coordenadas para: ${selectedObject.title}`,
+          objectType: objectType
+        }
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      const platformFee = data.platformFee;
+      const sellerAmount = data.sellerAmount;
+      
+      toast.success(
+        `¡Pagaste $${selectedObject.price_credits} por las coordenadas! ` +
+        `(Vendedor recibe $${sellerAmount}, comisión $${platformFee})`
       );
       
-      toast.success(`¡Pagaste $${selectedObject.price_credits} por las coordenadas!`);
       openGoogleMaps(selectedObject);
       
       // Force wallet refresh to update header balance
