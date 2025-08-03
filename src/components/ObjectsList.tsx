@@ -13,25 +13,14 @@ import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuthAction } from '@/hooks/useAuthAction';
+import { AppObject } from '@/hooks/useObjects';
 
-export interface AbandonedObject {
-  id: string;
-  type?: 'abandoned' | 'donation' | 'product';
-  title: string;
-  description?: string;
-  image_url: string;
-  latitude: number;
-  longitude: number;
-  price_credits: number;
-  is_sold: boolean;
-  user_id: string;
-  created_at: string;
-  user_display_name?: string;
-  username?: string;
-}
+// Export AppObject and AbandonedObject for backward compatibility
+export type { AppObject };
+export type { AppObject as AbandonedObject };
 
 interface ObjectsListProps {
-  objects: AbandonedObject[];
+  objects: AppObject[];
   onPurchaseCoordinates: (objectId: string, price: number) => Promise<void>;
   userLocation: { latitude: number; longitude: number } | null;
   objectType: 'abandoned' | 'donation' | 'product';
@@ -44,7 +33,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showInsufficientFundsDialog, setShowInsufficientFundsDialog] = useState(false);
-  const [selectedObject, setSelectedObject] = useState<AbandonedObject | null>(null);
+  const [selectedObject, setSelectedObject] = useState<AppObject | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Update current time every minute to refresh countdown
@@ -57,7 +46,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
   }, []);
 
   // Helper function to check if an abandoned object is free (3+ hours old)
-  const isAbandonedObjectFree = (object: AbandonedObject): boolean => {
+  const isAbandonedObjectFree = (object: AppObject): boolean => {
     if (objectType !== 'abandoned') return false;
     const createdAt = new Date(object.created_at);
     const now = new Date();
@@ -66,7 +55,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
   };
 
   // Helper function to get remaining time until object becomes free
-  const getTimeUntilFree = (object: AbandonedObject): { hours: number; minutes: number } => {
+  const getTimeUntilFree = (object: AppObject): { hours: number; minutes: number } => {
     const createdAt = new Date(object.created_at);
     const freeTime = new Date(createdAt.getTime() + (3 * 60 * 60 * 1000)); // Add 3 hours
     const now = new Date();
@@ -79,7 +68,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
   };
 
   // Helper function to get time until object gets deleted (48 hours)
-  const getTimeUntilDeletion = (object: AbandonedObject): { hours: number; minutes: number } => {
+  const getTimeUntilDeletion = (object: AppObject): { hours: number; minutes: number } => {
     const createdAt = new Date(object.created_at);
     const deletionTime = new Date(createdAt.getTime() + (48 * 60 * 60 * 1000)); // Add 48 hours
     const now = new Date();
@@ -92,7 +81,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
   };
 
   // Helper function to format deletion countdown text
-  const getDeletionCountdownText = (object: AbandonedObject): string => {
+  const getDeletionCountdownText = (object: AppObject): string => {
     const { hours, minutes } = getTimeUntilDeletion(object);
     if (hours === 0 && minutes === 0) return 'Se eliminará pronto';
     if (hours < 1) return `Se elimina en ${minutes}m`;
@@ -103,14 +92,14 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
   };
 
   // Helper function to format countdown text
-  const getCountdownText = (object: AbandonedObject): string => {
+  const getCountdownText = (object: AppObject): string => {
     const { hours, minutes } = getTimeUntilFree(object);
     if (hours === 0 && minutes === 0) return 'FREE NOW';
     if (hours === 0) return `FREE in ${minutes}m`;
     return `FREE in ${hours}h ${minutes}m`;
   };
 
-  const getDistanceText = (object: AbandonedObject) => {
+  const getDistanceText = (object: AppObject) => {
     if (!userLocation) return 'Unknown distance';
     
     const distance = calculateDistance(
@@ -127,7 +116,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     }
   };
 
-  const handlePurchaseClick = (object: AbandonedObject) => {
+  const handlePurchaseClick = (object: AppObject) => {
     // Always require authentication for Google Maps functionality
     requireAuth(() => {
       // For donations, open Google Maps directly (no payment required)
@@ -227,7 +216,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     }
   };
 
-  const openGoogleMaps = (object: AbandonedObject) => {
+  const openGoogleMaps = (object: AppObject) => {
     const mapsUrl = `https://www.google.com/maps?q=${object.latitude},${object.longitude}`;
     window.open(mapsUrl, '_blank');
   };
@@ -247,7 +236,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     }
   };
 
-  const getButtonText = (object: AbandonedObject) => {
+  const getButtonText = (object: AppObject) => {
     if (objectType === 'donation') {
       return (
         <>
@@ -286,7 +275,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     );
   };
 
-  const getDateText = (object: AbandonedObject) => {
+  const getDateText = (object: AppObject) => {
     const date = new Date(object.created_at);
     
     if (objectType === 'abandoned') {

@@ -255,6 +255,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_objects_user_profile"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "objects_market_id_fkey"
             columns: ["market_id"]
             isOneToOne: false
@@ -510,9 +517,47 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      objects_with_profiles: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string | null
+          image_url: string | null
+          is_sold: boolean | null
+          latitude: number | null
+          longitude: number | null
+          market_id: string | null
+          price_credits: number | null
+          title: string | null
+          type: string | null
+          updated_at: string | null
+          user_display_name: string | null
+          user_id: string | null
+          username: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_objects_user_profile"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "objects_market_id_fkey"
+            columns: ["market_id"]
+            isOneToOne: false
+            referencedRelation: "circular_markets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      refresh_objects_view: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       sanitize_text_input: {
         Args: { input_text: string }
         Returns: string

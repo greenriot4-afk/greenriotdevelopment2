@@ -38,24 +38,23 @@ export const useObjects = ({ objectType, userLocation, calculateDistance }: UseO
         return objects;
       }
 
-      console.log('fetchObjects called', { objectType, forceRefresh });
+      console.log('fetchObjects called - using materialized view', { objectType, forceRefresh });
       setLoading(true);
       
-      // First get objects with optimized query
+      // Use the ultra-fast materialized view
       const { data: objectsData, error: objectsError } = await supabase
-        .from('objects')
+        .from('objects_with_profiles')
         .select('*')
         .eq('type', objectType)
-        .eq('is_sold', false)
         .order('created_at', { ascending: false })
-        .limit(50); // Limit results for better performance
+        .limit(100); // Increased limit since it's much faster now
 
       if (objectsError) {
-        console.error('Supabase query error:', objectsError);
+        console.error('Materialized view query error:', objectsError);
         throw objectsError;
       }
 
-      console.log('Objects fetched:', objectsData?.length);
+      console.log('Objects fetched from materialized view:', objectsData?.length);
 
       if (!objectsData || objectsData.length === 0) {
         setObjects([]);
@@ -63,39 +62,15 @@ export const useObjects = ({ objectType, userLocation, calculateDistance }: UseO
         return [];
       }
 
-      // Get unique user IDs
-      const userIds = [...new Set(objectsData.map(obj => obj.user_id))];
-      
-      // Fetch all profiles in one query
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('user_id, display_name, username')
-        .in('user_id', userIds);
-
-      if (profilesError) {
-        console.warn('Error fetching profiles:', profilesError);
-      }
-
-      console.log('Profiles fetched:', profilesData?.length);
-
-      // Create a map for quick profile lookup
-      const profilesMap = new Map();
-      profilesData?.forEach(profile => {
-        profilesMap.set(profile.user_id, profile);
-      });
-
-      // Transform the data to match expected interface
-      const enrichedObjects = objectsData.map((object) => {
-        const profile = profilesMap.get(object.user_id);
-        return {
-          ...object,
-          type: object.type as 'abandoned' | 'donation' | 'product',
-          description: object.description || undefined,
-          is_sold: object.is_sold || false,
-          user_display_name: profile?.display_name || 'Usuario',
-          username: profile?.username || ''
-        };
-      });
+      // Transform the data to match expected interface - no additional queries needed!
+      const enrichedObjects = objectsData.map((object) => ({
+        ...object,
+        type: object.type as 'abandoned' | 'donation' | 'product',
+        description: object.description || undefined,
+        is_sold: object.is_sold || false,
+        user_display_name: object.user_display_name || 'Usuario',
+        username: object.username || ''
+      }));
 
       // Sort objects by distance if user location is available
       let sortedObjects = enrichedObjects as AppObject[];
@@ -115,7 +90,7 @@ export const useObjects = ({ objectType, userLocation, calculateDistance }: UseO
 
       setObjects(sortedObjects);
       setLastFetch(now);
-      console.log('Objects loaded successfully:', sortedObjects.length);
+      console.log('Objects loaded successfully from materialized view:', sortedObjects.length);
       return sortedObjects;
     } catch (error) {
       console.error('Error fetching objects:', error);
