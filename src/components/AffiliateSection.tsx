@@ -246,29 +246,6 @@ export const AffiliateSection = () => {
         </Card>
       )}
 
-      {/* Premium Subscription CTA */}
-      <Card className="border-primary/20">
-        <CardHeader>
-          <CardTitle className="text-lg">Want to create a circular market?</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            {t('affiliate.premiumDescription')}
-          </p>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">{t('affiliate.premiumPlan')}</p>
-              <p className="text-sm text-muted-foreground">{t('affiliate.premiumPrice')}</p>
-            </div>
-            <Button 
-              onClick={handleCreatePremiumSubscription}
-              disabled={subscribing}
-            >
-              {subscribing ? t('affiliate.processing') : t('affiliate.subscribe')}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* How it works */}
       <Card>
