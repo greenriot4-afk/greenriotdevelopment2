@@ -202,10 +202,9 @@ const ObjectsPage = () => {
           <h2 className="text-xl font-semibold">{getTitle()}</h2>
           <p className="text-sm text-muted-foreground">{getDescription()}</p>
         </div>
-
       </div>
 
-      {/* Upload Form */}
+      {/* Upload Form - Only shown when FAB is clicked */}
       {showUpload && (
         <div className="mb-4 p-3 border rounded-lg bg-card">
           <PhotoUpload 
