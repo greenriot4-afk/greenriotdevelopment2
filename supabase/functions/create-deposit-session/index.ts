@@ -51,9 +51,7 @@ serve(async (req) => {
     }
 
     // Create Stripe checkout session with automatic tax calculation
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
+    const sessionConfig: any = {
       payment_method_types: ['card'],
       line_items: [
         {
@@ -84,7 +82,16 @@ serve(async (req) => {
         currency: 'USD',
         type: 'wallet_deposit'
       }
-    });
+    };
+
+    // Add customer info - either existing customer ID or email for new customers
+    if (customerId) {
+      sessionConfig.customer = customerId;
+    } else {
+      sessionConfig.customer_email = user.email;
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     // Get or create USD wallet for user
     const serviceSupabase = createClient(

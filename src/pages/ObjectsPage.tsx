@@ -194,20 +194,21 @@ const ObjectsPage = () => {
   useEffect(() => {
     if (userLocation && objects.length > 0) {
       console.log('Re-sorting objects by distance');
-      const sortedObjects = [...objects].sort((a, b) => {
-        const distanceA = calculateDistance(
-          userLocation.latitude, userLocation.longitude,
-          a.latitude, a.longitude
-        );
-        const distanceB = calculateDistance(
-          userLocation.latitude, userLocation.longitude,
-          b.latitude, b.longitude
-        );
-        return distanceA - distanceB;
+      setObjects(prevObjects => {
+        return [...prevObjects].sort((a, b) => {
+          const distanceA = calculateDistance(
+            userLocation.latitude, userLocation.longitude,
+            a.latitude, a.longitude
+          );
+          const distanceB = calculateDistance(
+            userLocation.latitude, userLocation.longitude,
+            b.latitude, b.longitude
+          );
+          return distanceA - distanceB;
+        });
       });
-      setObjects(sortedObjects);
     }
-  }, [userLocation, calculateDistance]); // Only re-sort, don't re-fetch
+  }, [userLocation]); // Remove objects and calculateDistance dependencies
 
   const handleUploadObject = async (data: {
     title: string;
