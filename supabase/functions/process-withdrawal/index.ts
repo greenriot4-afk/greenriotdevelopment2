@@ -8,6 +8,7 @@ const corsHeaders = {
 
 interface WithdrawalRequest {
   amount: number;
+  currency?: 'USD' | 'EUR';
 }
 
 serve(async (req) => {
@@ -43,7 +44,7 @@ serve(async (req) => {
 
     // Parse request body with input validation
     const body = await req.json();
-    const { amount }: WithdrawalRequest = body;
+    const { amount, currency = 'USD' }: WithdrawalRequest = body;
 
     // Comprehensive input validation
     if (!amount || typeof amount !== 'number' || !Number.isFinite(amount)) {
@@ -51,73 +52,78 @@ serve(async (req) => {
     }
 
     if (amount < 10) {
-      throw new Error('Minimum withdrawal amount is $10');
+      const currencySymbol = currency === 'EUR' ? '€' : '$';
+      throw new Error(`Minimum withdrawal amount is ${currencySymbol}10`);
     }
 
-    if (amount > 10000) {
-      throw new Error('Maximum withdrawal amount is $10,000');
+    if (amount > 100000) {
+      throw new Error('Maximum withdrawal amount is 100,000');
     }
 
-    // Validate decimal places (max 2)
-    if (Number((amount % 1).toFixed(2)) !== (amount % 1)) {
-      throw new Error('Amount can have maximum 2 decimal places');
+    if (!['USD', 'EUR'].includes(currency)) {
+      throw new Error('Unsupported currency');
     }
 
-    // Get user's wallet
-    const { data: wallet, error: walletError } = await supabaseClient
+    // Create service role client for database operations
+    const serviceSupabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      { auth: { persistSession: false } }
+    );
+
+    // Get or create user wallet for the specified currency
+    const { data: walletId } = await serviceSupabase
+      .rpc('get_or_create_wallet', {
+        p_user_id: user.id,
+        p_currency: currency
+      });
+
+    const { data: wallet, error: walletError } = await serviceSupabase
       .from('wallets')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('id', walletId)
       .single();
 
-    if (walletError) {
+    if (walletError || !wallet) {
       throw new Error('Wallet not found');
     }
 
-    // Use atomic wallet update function to prevent race conditions
-    const { data: result, error: atomicError } = await supabaseClient
+    if (wallet.balance < amount) {
+      throw new Error('Insufficient balance');
+    }
+
+    // Use atomic wallet update function
+    const { data: result, error: atomicError } = await serviceSupabase
       .rpc('update_wallet_balance_atomic', {
         p_wallet_id: wallet.id,
         p_amount: amount,
         p_transaction_type: 'withdrawal',
         p_user_id: user.id,
-        p_description: `Withdrawal of $${amount}`,
-        p_object_type: 'withdrawal'
+        p_description: `Withdrawal of ${currency === 'EUR' ? '€' : '$'}${amount}`,
+        p_object_type: 'withdrawal',
+        p_currency: currency
       });
 
     if (atomicError) {
-      console.error('Atomic withdrawal failed:', atomicError);
-      throw new Error('Failed to process withdrawal: ' + atomicError.message);
+      throw new Error(atomicError.message || 'Failed to process withdrawal');
     }
 
-    console.log('Withdrawal processed successfully:', result.transaction_id);
-
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        transaction_id: result.transaction_id,
-        previous_balance: result.previous_balance,
-        new_balance: result.new_balance
-      }),
-      { 
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        } 
-      }
-    );
+    return new Response(JSON.stringify({ 
+      success: true, 
+      message: `Successfully withdrew ${currency === 'EUR' ? '€' : '$'}${amount}`,
+      currency: currency
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    });
 
   } catch (error) {
-    console.error('Error processing withdrawal:', error.message);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { 
-        status: 400,
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        } 
-      }
-    );
+    console.error('Withdrawal error:', error);
+    return new Response(JSON.stringify({ 
+      error: error.message || 'Failed to process withdrawal' 
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 400,
+    });
   }
 });
