@@ -52,53 +52,15 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
     );
   }
 
-  // For abandoned items, only camera is allowed on native, but allow gallery on web
-  const [allowGallery, setAllowGallery] = useState(objectType !== 'abandoned');
-  
-  // Check platform and adjust gallery availability
-  useEffect(() => {
-    const checkPlatform = async () => {
-      try {
-        const { Capacitor } = await import('@capacitor/core');
-        const isNative = Capacitor.isNativePlatform();
-        
-        // On web, always allow gallery even for abandoned items
-        if (!isNative && objectType === 'abandoned') {
-          setAllowGallery(true);
-        }
-      } catch (error) {
-        // Capacitor not available, assume web platform
-        setAllowGallery(true);
-      }
-    };
-    
-    checkPlatform();
-  }, [objectType]);
+  // For abandoned items, ONLY camera is allowed - no gallery option
+  const allowGallery = objectType !== 'abandoned';
 
-  // Auto-open camera for abandoned items only on native platforms
+  // Auto-open camera for abandoned items on all platforms
   useEffect(() => {
-    const checkAndOpenCamera = async () => {
-      if (objectType === 'abandoned' && user && !photo && !isCameraLoading) {
-        try {
-          // Check if we're on a native platform
-          const { Capacitor } = await import('@capacitor/core');
-          const isNative = Capacitor.isNativePlatform();
-          
-          if (isNative) {
-            // Only auto-open camera on native platforms
-            handleCapturePhoto();
-          } else {
-            // On web, show message to use gallery instead
-            toast.info('En navegadores web, usa el botón "Galería" para seleccionar fotos.');
-          }
-        } catch (error) {
-          console.log('Capacitor not available, assuming web platform');
-          toast.info('Usa el botón "Galería" para seleccionar fotos.');
-        }
-      }
-    };
-    
-    checkAndOpenCamera();
+    if (objectType === 'abandoned' && user && !photo && !isCameraLoading) {
+      console.log('Auto-opening camera for abandoned item...');
+      handleCapturePhoto();
+    }
   }, [objectType, user]);
 
   const handleCapturePhoto = async () => {
@@ -110,7 +72,7 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
       }
     } catch (error) {
       console.error('Error in handleCapturePhoto:', error);
-      toast.error('Error al capturar la foto. Inténtalo de nuevo o usa "Galería".');
+      toast.error('Error al capturar la foto. Inténtalo de nuevo.');
     }
   };
 
@@ -176,7 +138,11 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
     e.preventDefault();
     
     if (!photo) {
-      toast.error('Por favor captura o sube una foto primero');
+      if (objectType === 'abandoned') {
+        toast.error('Por favor captura una foto con la cámara');
+      } else {
+        toast.error('Por favor captura o sube una foto primero');
+      }
       return;
     }
     
@@ -229,6 +195,18 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Informational message for abandoned items */}
+          {objectType === 'abandoned' && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="flex items-center gap-2">
+                <Camera className="w-4 h-4 text-blue-600" />
+                <p className="text-sm text-blue-800">
+                  <strong>Solo cámara:</strong> Para garantizar autenticidad, los objetos abandonados deben ser fotografiados en el momento y lugar exacto del hallazgo.
+                </p>
+              </div>
+            </div>
+          )}
+          
           {/* Photo Capture/Upload */}
           <div className="space-y-2">
             <div className={`grid ${allowGallery ? 'grid-cols-2' : 'grid-cols-1'} gap-2`}>

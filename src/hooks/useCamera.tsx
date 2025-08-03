@@ -12,6 +12,136 @@ export interface PhotoWithLocation {
 export const useCamera = () => {
   const [isLoading, setIsLoading] = useState(false);
 
+  // Web camera capture function using native browser APIs
+  const captureWebPhoto = async (): Promise<string | null> => {
+    return new Promise((resolve, reject) => {
+      // Create video element
+      const video = document.createElement('video');
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      
+      if (!context) {
+        reject(new Error('Canvas context not available'));
+        return;
+      }
+
+      // Create camera UI overlay
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      `;
+
+      video.style.cssText = `
+        max-width: 90vw;
+        max-height: 70vh;
+        border-radius: 8px;
+      `;
+
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.cssText = `
+        display: flex;
+        gap: 16px;
+        margin-top: 20px;
+      `;
+
+      const captureBtn = document.createElement('button');
+      captureBtn.textContent = 'Capturar Foto';
+      captureBtn.style.cssText = `
+        padding: 12px 24px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+      `;
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Cancelar';
+      cancelBtn.style.cssText = `
+        padding: 12px 24px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+      `;
+
+      buttonContainer.appendChild(captureBtn);
+      buttonContainer.appendChild(cancelBtn);
+      overlay.appendChild(video);
+      overlay.appendChild(buttonContainer);
+      document.body.appendChild(overlay);
+
+      // Get camera stream with better error handling
+      navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment', // Use back camera on mobile
+          width: { ideal: 1024 },
+          height: { ideal: 1024 }
+        } 
+      })
+      .then(stream => {
+        video.srcObject = stream;
+        video.play();
+
+        // Add instructions
+        const instructions = document.createElement('div');
+        instructions.textContent = 'Posiciona el objeto en el centro y presiona "Capturar Foto"';
+        instructions.style.cssText = `
+          color: white;
+          text-align: center;
+          margin-bottom: 10px;
+          font-size: 16px;
+        `;
+        overlay.insertBefore(instructions, video);
+
+        // Capture photo
+        captureBtn.onclick = () => {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0);
+          
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+          
+          // Stop camera and cleanup
+          stream.getTracks().forEach(track => track.stop());
+          document.body.removeChild(overlay);
+          resolve(dataUrl);
+        };
+
+        // Cancel
+        cancelBtn.onclick = () => {
+          stream.getTracks().forEach(track => track.stop());
+          document.body.removeChild(overlay);
+          resolve(null);
+        };
+      })
+      .catch(error => {
+        document.body.removeChild(overlay);
+        console.error('Camera access error:', error);
+        if (error.name === 'NotAllowedError') {
+          reject(new Error('Permisos de cámara denegados. Actívalos en la configuración del navegador.'));
+        } else if (error.name === 'NotFoundError') {
+          reject(new Error('No se encontró ninguna cámara en este dispositivo.'));
+        } else {
+          reject(new Error('Error al acceder a la cámara: ' + error.message));
+        }
+      });
+    });
+  };
+
   const capturePhotoWithLocation = async (): Promise<PhotoWithLocation | null> => {
     setIsLoading(true);
     try {
@@ -68,7 +198,7 @@ export const useCamera = () => {
           return null;
         }
       } else {
-        // Web platform - use browser APIs with fallback
+        // Web platform - use custom web camera implementation
         console.log('Using web camera API...');
         
         try {
@@ -77,14 +207,18 @@ export const useCamera = () => {
             throw new Error('Camera not available in this browser');
           }
 
-          // For web, we need to implement our own camera capture
-          // For now, fallback to file input
-          toast.error('Para capturar fotos, usa el botón "Galería" en navegadores web.');
-          setIsLoading(false);
-          return null;
+          // Use our custom web camera function
+          const photoDataUrl = await captureWebPhoto();
+          if (!photoDataUrl) {
+            console.log('User cancelled photo capture');
+            setIsLoading(false);
+            return null;
+          }
+
+          photo = { dataUrl: photoDataUrl };
         } catch (webError) {
           console.error('Web camera error:', webError);
-          toast.error('La cámara no está disponible en este navegador. Usa el botón "Galería".');
+          toast.error('Error al acceder a la cámara. Verifica los permisos del navegador.');
           setIsLoading(false);
           return null;
         }
