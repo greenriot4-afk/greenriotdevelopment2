@@ -224,7 +224,7 @@ export const ProductForm = ({ product, marketId, onSubmit, onCancel }: ProductFo
           {/* Precio (solo para productos) */}
           {type === 'product' && (
             <div className="space-y-2">
-              <Label htmlFor="price">Precio en créditos *</Label>
+              <Label htmlFor="price">Precio *</Label>
               <Input
                 id="price"
                 type="number"
