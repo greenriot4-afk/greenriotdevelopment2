@@ -6,11 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Wallet as WalletIcon, Plus, Minus, DollarSign, History } from "lucide-react";
+import { Wallet as WalletIcon, Plus, Minus, DollarSign, History, MapPin, Filter, CreditCard } from "lucide-react";
 
 interface Transaction {
   id: string;
-  type: 'deposit' | 'withdrawal';
+  type: 'deposit' | 'withdrawal' | 'debit' | 'credit';
   amount: number;
   status: string;
   description: string;
@@ -20,6 +20,7 @@ interface Transaction {
   updated_at: string;
   user_id: string;
   wallet_id: string;
+  object_type?: string;
 }
 
 interface WalletData {
@@ -31,10 +32,12 @@ interface WalletData {
 export default function Wallet() {
   const [wallet, setWallet] = useState<WalletData | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
   const [depositAmount, setDepositAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [transactionsLoading, setTransactionsLoading] = useState(true);
+  const [transactionFilter, setTransactionFilter] = useState<'all' | 'coordinates' | 'wallet'>('all');
 
   useEffect(() => {
     fetchWallet();
@@ -86,10 +89,12 @@ export default function Wallet() {
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(10);
+        .limit(50); // Increased limit to show more transactions
 
       if (error) throw error;
-      setTransactions((data || []) as Transaction[]);
+      const allTxns = (data || []) as Transaction[];
+      setAllTransactions(allTxns);
+      setTransactions(allTxns);
     } catch (error) {
       console.error('Error fetching transactions:', error);
       toast.error('Failed to load transactions');
@@ -97,6 +102,23 @@ export default function Wallet() {
       setTransactionsLoading(false);
     }
   };
+
+  // Filter transactions based on selected filter
+  useEffect(() => {
+    if (transactionFilter === 'all') {
+      setTransactions(allTransactions);
+    } else if (transactionFilter === 'coordinates') {
+      setTransactions(allTransactions.filter(t => 
+        t.object_type === 'coordinate' || 
+        t.object_type === 'coordinate_sale' ||
+        t.description?.toLowerCase().includes('coordenadas')
+      ));
+    } else if (transactionFilter === 'wallet') {
+      setTransactions(allTransactions.filter(t => 
+        t.type === 'deposit' || t.type === 'withdrawal'
+      ));
+    }
+  }, [transactionFilter, allTransactions]);
 
   const handleDeposit = async () => {
     if (!depositAmount || parseFloat(depositAmount) < 10) {
@@ -159,14 +181,14 @@ export default function Wallet() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'USD'
-    }).format(amount);
+    }).format(Math.abs(amount));
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('es-ES', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -174,6 +196,39 @@ export default function Wallet() {
       minute: '2-digit'
     });
   };
+
+  const getTransactionIcon = (transaction: Transaction) => {
+    if (transaction.object_type === 'coordinate_sale') return <MapPin className="h-4 w-4" />;
+    if (transaction.object_type === 'coordinate') return <MapPin className="h-4 w-4" />;
+    if (transaction.type === 'deposit') return <Plus className="h-4 w-4" />;
+    if (transaction.type === 'withdrawal') return <Minus className="h-4 w-4" />;
+    if (transaction.type === 'credit') return <Plus className="h-4 w-4" />;
+    if (transaction.type === 'debit') return <Minus className="h-4 w-4" />;
+    return <CreditCard className="h-4 w-4" />;
+  };
+
+  const getTransactionColor = (transaction: Transaction) => {
+    if (transaction.object_type === 'coordinate_sale') return 'bg-blue-100 text-blue-600';
+    if (transaction.object_type === 'coordinate') return 'bg-orange-100 text-orange-600';
+    if (transaction.type === 'deposit' || transaction.type === 'credit') return 'bg-green-100 text-green-600';
+    return 'bg-red-100 text-red-600';
+  };
+
+  const getTransactionType = (transaction: Transaction) => {
+    if (transaction.object_type === 'coordinate_sale') return 'Venta de Coordenadas';
+    if (transaction.object_type === 'coordinate') return 'Compra de Coordenadas';
+    if (transaction.type === 'deposit') return 'Depósito';
+    if (transaction.type === 'withdrawal') return 'Retiro';
+    if (transaction.type === 'credit') return 'Ingreso';
+    if (transaction.type === 'debit') return 'Gasto';
+    return transaction.type;
+  };
+
+  const coordinateTransactions = allTransactions.filter(t => 
+    t.object_type === 'coordinate' || 
+    t.object_type === 'coordinate_sale' ||
+    t.description?.toLowerCase().includes('coordenadas')
+  );
 
   const syncStripeStatus = async () => {
     try {
@@ -362,50 +417,144 @@ export default function Wallet() {
         <TabsContent value="history">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <History className="h-5 w-5" />
-                <span>Transaction History</span>
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <History className="h-5 w-5" />
+                  <span>Historial de Transacciones</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Filter className="h-4 w-4" />
+                  <select 
+                    value={transactionFilter} 
+                    onChange={(e) => setTransactionFilter(e.target.value as any)}
+                    className="text-sm border rounded px-2 py-1"
+                  >
+                    <option value="all">Todas</option>
+                    <option value="coordinates">Coordenadas</option>
+                    <option value="wallet">Wallet</option>
+                  </select>
+                </div>
               </CardTitle>
               <CardDescription>
-                View your recent transactions
+                {transactionFilter === 'coordinates' 
+                  ? `Ventas y compras de coordenadas (${coordinateTransactions.length} transacciones)`
+                  : transactionFilter === 'wallet'
+                  ? 'Depósitos y retiros de wallet'
+                  : 'Todas las transacciones de tu cuenta'}
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {/* Summary Cards para Coordenadas */}
+              {transactionFilter === 'coordinates' && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <Card className="bg-blue-50">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-2">
+                        <MapPin className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Ventas de Coordenadas</p>
+                          <p className="text-lg font-semibold text-blue-600">
+                            {formatCurrency(coordinateTransactions
+                              .filter(t => t.object_type === 'coordinate_sale')
+                              .reduce((sum, t) => sum + Math.abs(t.amount), 0))}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-orange-50">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-2">
+                        <MapPin className="h-5 w-5 text-orange-600" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Compras de Coordenadas</p>
+                          <p className="text-lg font-semibold text-orange-600">
+                            {formatCurrency(coordinateTransactions
+                              .filter(t => t.object_type === 'coordinate')
+                              .reduce((sum, t) => sum + Math.abs(t.amount), 0))}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-green-50">
+                    <CardContent className="p-4">
+                      <div className="flex items-center space-x-2">
+                        <DollarSign className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Balance Neto</p>
+                          <p className="text-lg font-semibold text-green-600">
+                            {formatCurrency(coordinateTransactions.reduce((sum, t) => {
+                              if (t.object_type === 'coordinate_sale') return sum + Math.abs(t.amount);
+                              if (t.object_type === 'coordinate') return sum - Math.abs(t.amount);
+                              return sum;
+                            }, 0))}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
               {transactionsLoading ? (
-                <div className="text-center py-4">Loading transactions...</div>
+                <div className="text-center py-4">Cargando transacciones...</div>
               ) : transactions.length === 0 ? (
-                <div className="text-center py-4 text-muted-foreground">
-                  No transactions yet
+                <div className="text-center py-8 text-muted-foreground">
+                  <div className="space-y-2">
+                    {transactionFilter === 'coordinates' ? (
+                      <>
+                        <MapPin className="h-12 w-12 mx-auto text-muted-foreground/50" />
+                        <p>No hay transacciones de coordenadas aún</p>
+                        <p className="text-sm">Las ventas de coordenadas aparecerán aquí cuando alguien compre tus ubicaciones</p>
+                      </>
+                    ) : (
+                      <>
+                        <History className="h-12 w-12 mx-auto text-muted-foreground/50" />
+                        <p>No hay transacciones aún</p>
+                        <p className="text-sm">Tus transacciones aparecerán aquí</p>
+                      </>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {transactions.map((transaction) => (
                     <div 
                       key={transaction.id}
-                      className="flex items-center justify-between p-3 border rounded-lg"
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <div className="flex items-center space-x-3">
-                        <div className={`p-2 rounded-full ${
-                          transaction.type === 'deposit' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-                        }`}>
-                          {transaction.type === 'deposit' ? <Plus className="h-4 w-4" /> : <Minus className="h-4 w-4" />}
+                        <div className={`p-2 rounded-full ${getTransactionColor(transaction)}`}>
+                          {getTransactionIcon(transaction)}
                         </div>
-                        <div>
-                          <p className="font-medium capitalize">{transaction.type}</p>
+                        <div className="flex-1">
+                          <p className="font-medium">{getTransactionType(transaction)}</p>
                           <p className="text-sm text-muted-foreground">{formatDate(transaction.created_at)}</p>
+                          {transaction.description && (
+                            <p className="text-xs text-muted-foreground mt-1 max-w-md truncate">
+                              {transaction.description}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className={`font-medium ${
-                          transaction.type === 'deposit' ? 'text-green-600' : 'text-red-600'
+                        <p className={`font-medium text-lg ${
+                          (transaction.type === 'deposit' || transaction.type === 'credit' || 
+                           transaction.object_type === 'coordinate_sale') 
+                            ? 'text-green-600' : 'text-red-600'
                         }`}>
-                          {transaction.type === 'deposit' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                          {(transaction.type === 'deposit' || transaction.type === 'credit' || 
+                            transaction.object_type === 'coordinate_sale') ? '+' : '-'}
+                          {formatCurrency(transaction.amount)}
                         </p>
                         <p className={`text-sm capitalize ${
                           transaction.status === 'completed' ? 'text-green-600' : 
                           transaction.status === 'pending' ? 'text-yellow-600' : 'text-red-600'
                         }`}>
-                          {transaction.status}
+                          {transaction.status === 'completed' ? 'Completada' : 
+                           transaction.status === 'pending' ? 'Pendiente' : 
+                           transaction.status === 'failed' ? 'Fallida' : transaction.status}
                         </p>
                       </div>
                     </div>
