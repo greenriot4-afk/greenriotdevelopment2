@@ -285,9 +285,16 @@ export default function Wallet() {
   const createExpressAccount = async () => {
     try {
       setLoading(true);
+      console.log('Calling create-express-account function...');
+      
       const { data, error } = await supabase.functions.invoke('create-express-account');
       
-      if (error) throw error;
+      console.log('Function response:', { data, error });
+      
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
       
       if (data.needs_onboarding && data.onboarding_url) {
         // Open onboarding in new tab
@@ -301,6 +308,7 @@ export default function Wallet() {
       await checkAccountStatus();
     } catch (error) {
       console.error('Error creating Express account:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
       toast.error(error.message || 'Failed to create account');
     } finally {
       setLoading(false);
