@@ -23,21 +23,41 @@ const ObjectsPage = () => {
     return 'abandons'; // default fallback
   };
 
+  
   const type = getTypeFromPath(routerLocation.pathname);
   const objectType = type === 'abandons' ? 'abandoned' : type === 'donations' ? 'donation' : 'product';
   
-  // Use the optimized hook with materialized view
-  const { objects, loading, refreshObjects } = useObjects({
-    objectType,
-    userLocation,
-    calculateDistance
-  });
+  // Use simple, direct approach instead of complex hook
+  const [objects, setObjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchObjects = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('objects')
+        .select('*')
+        .eq('type', objectType)
+        .eq('is_sold', false)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (error) throw error;
+      
+      setObjects(data || []);
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Error al cargar los objetos');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Trigger initial load and refresh when type changes
   useEffect(() => {
-    console.log('ObjectsPage: triggering refresh for type:', objectType);
-    refreshObjects();
-  }, [objectType, refreshObjects]);
+    console.log('ObjectsPage: loading objects for type:', objectType);
+    fetchObjects();
+  }, [objectType]);
 
   const getTitle = () => {
     switch (type) {
@@ -87,9 +107,8 @@ const ObjectsPage = () => {
 
       if (error) throw error;
 
-      // Refresh the materialized view and force refresh objects
-      await supabase.rpc('refresh_objects_view');
-      refreshObjects();
+      // Simply refresh the objects list
+      fetchObjects();
       setShowUpload(false);
       toast.success('¡Objeto publicado exitosamente!');
     } catch (error) {
