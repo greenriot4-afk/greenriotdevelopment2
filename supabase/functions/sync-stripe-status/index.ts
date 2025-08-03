@@ -105,7 +105,7 @@ serve(async (req) => {
           .rpc('update_wallet_balance_atomic', {
             p_wallet_id: transaction.wallet_id,
             p_amount: parseFloat(transaction.amount.toString()),
-            p_transaction_type: 'credit',
+            p_transaction_type: 'deposit',
             p_user_id: user.id,
             p_description: `Stripe deposit: ${matchingSession.id} (synced)`,
             p_object_type: 'deposit'
