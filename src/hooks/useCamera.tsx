@@ -26,6 +26,7 @@ export const useCamera = () => {
 
       if (!photo.dataUrl) {
         toast.error('Failed to capture photo');
+        setIsLoading(false);
         return null;
       }
 
@@ -35,17 +36,19 @@ export const useCamera = () => {
         timeout: 10000,
       });
 
-      return {
+      const result = {
         image: photo.dataUrl,
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       };
+
+      setIsLoading(false);
+      return result;
     } catch (error) {
       console.error('Error capturing photo with location:', error);
       toast.error('Failed to capture photo or get location');
-      return null;
-    } finally {
       setIsLoading(false);
+      return null;
     }
   };
 

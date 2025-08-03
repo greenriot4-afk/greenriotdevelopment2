@@ -63,10 +63,15 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
   }, [objectType, user]);
 
   const handleCapturePhoto = async () => {
-    const photoData = await capturePhotoWithLocation();
-    if (photoData) {
-      setPhoto(photoData);
-      toast.success('Foto capturada con ubicación!');
+    try {
+      const photoData = await capturePhotoWithLocation();
+      if (photoData) {
+        setPhoto(photoData);
+        toast.success('Foto capturada con ubicación!');
+      }
+    } catch (error) {
+      console.error('Error in handleCapturePhoto:', error);
+      toast.error('Error al capturar la foto');
     }
   };
 
