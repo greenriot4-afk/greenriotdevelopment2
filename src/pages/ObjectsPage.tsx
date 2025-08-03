@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation as useRouterLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { PhotoUpload } from '@/components/PhotoUpload';
@@ -33,6 +33,10 @@ const ObjectsPage = () => {
   const [loading, setLoading] = useState(true);
   const { userLocation, getCurrentLocation, isLoading: locationLoading, calculateDistance } = useLocation();
   const { user } = useAuth();
+  
+  // Simple cache to prevent duplicate requests
+  const lastFetchRef = useRef<{ type: string; timestamp: number } | null>(null);
+  const CACHE_DURATION = 30000; // 30 seconds
 
   // Get the type from the current pathname
   const getTypeFromPath = (pathname: string): 'abandons' | 'donations' | 'products' => {
@@ -68,60 +72,64 @@ const ObjectsPage = () => {
       console.log('fetchObjects called', { type, objectType, user: !!user });
       setLoading(true);
       
-      console.log('About to query objects with:', { objectType });
+      // Optimized query with limit to prevent timeouts
+      console.log('About to query objects with limit:', { objectType });
       const { data, error } = await supabase
         .from('objects')
         .select('*')
         .eq('type', objectType)
         .eq('is_sold', false)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(50); // Limit results to prevent timeouts
 
       console.log('fetchObjects result', { data: data?.length, error });
+      
       if (error) {
         console.error('Supabase query error:', error);
+        // Handle timeout errors more gracefully
+        if (error.code === '57014') {
+          toast.error('La consulta está tardando más de lo esperado. Reintentando...');
+          return; // Exit early, don't set empty array
+        }
         throw error;
       }
 
-      // Enrich objects with user profile data
-      const enrichedObjects = await Promise.all(
-        (data || []).map(async (object) => {
-          try {
-            const { data: profile, error: profileError } = await supabase
-              .from('profiles')
-              .select('display_name, username')
-              .eq('user_id', object.user_id)
-              .maybeSingle(); // Use maybeSingle instead of single to handle missing profiles
+      // Get unique user IDs to batch profile queries
+      const userIds = [...new Set((data || []).map(obj => obj.user_id))];
+      
+      // Batch fetch profiles for all users
+      const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('user_id, display_name, username')
+        .in('user_id', userIds);
 
-            if (profileError) {
-              console.warn('Error fetching profile for user:', object.user_id, profileError);
-            }
+      if (profileError) {
+        console.warn('Error fetching profiles:', profileError);
+      }
 
-            return {
-              ...object,
-              type: object.type as 'abandoned' | 'donation' | 'product',
-              description: object.description || undefined,
-              is_sold: object.is_sold || false,
-              user_display_name: profile?.display_name || 'Usuario',
-              username: profile?.username || ''
-            };
-          } catch (profileError) {
-            console.warn('Failed to enrich object with profile data:', profileError);
-            return {
-              ...object,
-              type: object.type as 'abandoned' | 'donation' | 'product',
-              description: object.description || undefined,
-              is_sold: object.is_sold || false,
-              user_display_name: 'Usuario',
-              username: ''
-            };
-          }
-        })
-      );
+      // Create a map for quick profile lookup
+      const profileMap = new Map();
+      (profiles || []).forEach(profile => {
+        profileMap.set(profile.user_id, profile);
+      });
+
+      // Transform objects with profile data
+      const transformedObjects = (data || []).map(object => {
+        const profile = profileMap.get(object.user_id);
+        return {
+          ...object,
+          type: object.type as 'abandoned' | 'donation' | 'product',
+          description: object.description || undefined,
+          is_sold: object.is_sold || false,
+          user_display_name: profile?.display_name || 'Usuario',
+          username: profile?.username || ''
+        };
+      });
 
       // Sort objects by distance if user location is available
-      let sortedObjects = enrichedObjects as AppObject[];
+      let sortedObjects = transformedObjects as AppObject[];
       if (userLocation) {
-        sortedObjects = enrichedObjects.sort((a, b) => {
+        sortedObjects = transformedObjects.sort((a, b) => {
           const distanceA = calculateDistance(
             userLocation.latitude, userLocation.longitude,
             a.latitude, a.longitude
@@ -136,10 +144,22 @@ const ObjectsPage = () => {
 
       setObjects(sortedObjects);
       console.log('Objects loaded successfully:', sortedObjects.length);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching objects:', error);
-      toast.error('Error al cargar los objetos');
-      setObjects([]); // Set empty array on error
+      
+      // Provide user-friendly error messages
+      if (error?.code === '57014') {
+        toast.error('La consulta tardó demasiado. Por favor, inténtalo de nuevo.');
+      } else if (error?.message?.includes('timeout')) {
+        toast.error('Conexión lenta. Inténtalo de nuevo.');
+      } else {
+        toast.error('No se pudieron cargar los objetos en este momento.');
+      }
+      
+      // Don't clear existing objects on timeout - keep what we have
+      if (error?.code !== '57014' && objects.length === 0) {
+        setObjects([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -147,13 +167,47 @@ const ObjectsPage = () => {
 
   useEffect(() => {
     console.log('useEffect triggered', { type, objectType, user: !!user });
+    
+    // Check cache to prevent duplicate requests
+    const now = Date.now();
+    const lastFetch = lastFetchRef.current;
+    
+    if (lastFetch && 
+        lastFetch.type === objectType && 
+        (now - lastFetch.timestamp) < CACHE_DURATION) {
+      console.log('Using cached data, skipping fetch');
+      setLoading(false);
+      return;
+    }
+    
     if (type && objectType) {
+      // Update cache reference
+      lastFetchRef.current = { type: objectType, timestamp: now };
       fetchObjects();
     } else {
       console.log('Missing dependencies for fetchObjects', { type, objectType });
       setLoading(false);
     }
-  }, [type, objectType, userLocation]); // Add userLocation dependency to re-sort when location changes
+  }, [type, objectType]); // Remove userLocation dependency to prevent excessive re-fetching
+
+  // Separate effect for sorting when location changes
+  useEffect(() => {
+    if (userLocation && objects.length > 0) {
+      console.log('Re-sorting objects by distance');
+      const sortedObjects = [...objects].sort((a, b) => {
+        const distanceA = calculateDistance(
+          userLocation.latitude, userLocation.longitude,
+          a.latitude, a.longitude
+        );
+        const distanceB = calculateDistance(
+          userLocation.latitude, userLocation.longitude,
+          b.latitude, b.longitude
+        );
+        return distanceA - distanceB;
+      });
+      setObjects(sortedObjects);
+    }
+  }, [userLocation, calculateDistance]); // Only re-sort, don't re-fetch
 
   const handleUploadObject = async (data: {
     title: string;
@@ -187,6 +241,9 @@ const ObjectsPage = () => {
 
       if (error) throw error;
 
+      // Invalidate cache when new object is added
+      lastFetchRef.current = null;
+      
       setObjects(prev => [newObject as AppObject, ...prev]);
       setShowUpload(false);
       toast.success('¡Objeto publicado exitosamente!');
