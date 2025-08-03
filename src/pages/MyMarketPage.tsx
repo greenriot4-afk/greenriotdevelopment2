@@ -3,12 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Heart, Edit, Trash2 } from 'lucide-react';
+import { ArrowLeft, MapPin, Heart, Edit, Trash2, Store, Package } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { CircularMarket } from '@/components/MarketsList';
+import { CatalogManagement } from '@/components/CatalogManagement';
 
 const MyMarketPage = () => {
   const [market, setMarket] = useState<CircularMarket | null>(null);
@@ -159,123 +161,145 @@ const MyMarketPage = () => {
         </div>
       </div>
 
-      {/* Market Info Card */}
-      <Card className="mb-4 overflow-hidden">
-        {market.image_url && (
-          <div className="aspect-video relative">
-            <img 
-              src={market.image_url} 
-              alt={market.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute top-2 left-2">
-              <Badge variant={market.is_active ? "default" : "secondary"}>
-                {market.is_active ? 'Activo' : 'Inactivo'}
-              </Badge>
-            </div>
-            {market.accepts_donations && (
-              <div className="absolute top-2 right-2">
-                <Badge variant="default" className="bg-green-500">
-                  <Heart className="w-3 h-3 mr-1" />
-                  Donaciones
-                </Badge>
+      {/* Tabs */}
+      <Tabs defaultValue="info" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="info" className="flex items-center gap-2">
+            <Store className="w-4 h-4" />
+            Información
+          </TabsTrigger>
+          <TabsTrigger value="catalog" className="flex items-center gap-2">
+            <Package className="w-4 h-4" />
+            Catálogo
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Info Tab */}
+        <TabsContent value="info" className="space-y-4 mt-4">
+          {/* Market Info Card */}
+          <Card className="overflow-hidden">
+            {market.image_url && (
+              <div className="aspect-video relative">
+                <img 
+                  src={market.image_url} 
+                  alt={market.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute top-2 left-2">
+                  <Badge variant={market.is_active ? "default" : "secondary"}>
+                    {market.is_active ? 'Activo' : 'Inactivo'}
+                  </Badge>
+                </div>
+                {market.accepts_donations && (
+                  <div className="absolute top-2 right-2">
+                    <Badge variant="default" className="bg-green-500">
+                      <Heart className="w-3 h-3 mr-1" />
+                      Donaciones
+                    </Badge>
+                  </div>
+                )}
               </div>
             )}
+            
+            <CardHeader>
+              <CardTitle>{market.title}</CardTitle>
+              {market.description && (
+                <p className="text-sm text-muted-foreground">{market.description}</p>
+              )}
+              {market.location_name && (
+                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                  <MapPin className="w-3 h-3" />
+                  {market.location_name}
+                </p>
+              )}
+            </CardHeader>
+
+            <CardContent>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={openInMaps}
+                className="w-full mb-3"
+              >
+                <MapPin className="w-3 h-3 mr-2" />
+                Ver en Google Maps
+              </Button>
+              
+              <p className="text-xs text-muted-foreground text-center">
+                Creado {new Date(market.created_at).toLocaleDateString()}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Settings */}
+          <div className="space-y-4">
+            {/* Active Status */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium">Estado del mercadillo</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {market.is_active ? 'Visible para otros usuarios' : 'Oculto para otros usuarios'}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={market.is_active}
+                    onCheckedChange={handleToggleActive}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Donations */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium">Aceptar donaciones</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Permite que otros usuarios sepan que aceptas donaciones
+                    </p>
+                  </div>
+                  <Switch
+                    checked={market.accepts_donations}
+                    onCheckedChange={handleToggleDonations}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Actions */}
+            <div className="space-y-2">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  // TODO: Implementar edición del mercadillo
+                  toast.info('Función de edición próximamente');
+                }}
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Editar información
+              </Button>
+              
+              <Button
+                variant="destructive"
+                className="w-full"
+                onClick={handleDeleteMarket}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Eliminar mercadillo
+              </Button>
+            </div>
           </div>
-        )}
-        
-        <CardHeader>
-          <CardTitle>{market.title}</CardTitle>
-          {market.description && (
-            <p className="text-sm text-muted-foreground">{market.description}</p>
-          )}
-          {market.location_name && (
-            <p className="text-sm text-muted-foreground flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              {market.location_name}
-            </p>
-          )}
-        </CardHeader>
+        </TabsContent>
 
-        <CardContent>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={openInMaps}
-            className="w-full mb-3"
-          >
-            <MapPin className="w-3 h-3 mr-2" />
-            Ver en Google Maps
-          </Button>
-          
-          <p className="text-xs text-muted-foreground text-center">
-            Creado {new Date(market.created_at).toLocaleDateString()}
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Settings */}
-      <div className="space-y-4">
-        {/* Active Status */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium">Estado del mercadillo</h3>
-                <p className="text-sm text-muted-foreground">
-                  {market.is_active ? 'Visible para otros usuarios' : 'Oculto para otros usuarios'}
-                </p>
-              </div>
-              <Switch
-                checked={market.is_active}
-                onCheckedChange={handleToggleActive}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Donations */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium">Aceptar donaciones</h3>
-                <p className="text-sm text-muted-foreground">
-                  Permite que otros usuarios sepan que aceptas donaciones
-                </p>
-              </div>
-              <Switch
-                checked={market.accepts_donations}
-                onCheckedChange={handleToggleDonations}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Actions */}
-        <div className="space-y-2">
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => {
-              // TODO: Implementar edición del mercadillo
-              toast.info('Función de edición próximamente');
-            }}
-          >
-            <Edit className="w-4 h-4 mr-2" />
-            Editar información
-          </Button>
-          
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={handleDeleteMarket}
-          >
-            <Trash2 className="w-4 h-4 mr-2" />
-            Eliminar mercadillo
-          </Button>
-        </div>
-      </div>
+        {/* Catalog Tab */}
+        <TabsContent value="catalog" className="mt-4">
+          <CatalogManagement marketId={market.id} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
