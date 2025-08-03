@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CreateMarketForm } from '@/components/CreateMarketForm';
 import { MarketsList, CircularMarket } from '@/components/MarketsList';
@@ -13,9 +14,10 @@ const MarketsPage = () => {
   const [markets, setMarkets] = useState<CircularMarket[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
   const { userLocation, getCurrentLocation, isLoading: locationLoading } = useLocation();
   const { user } = useAuth();
-  const { subscribed, createSubscription, loading: subscriptionLoading } = useSubscription();
+  const { subscribed, createSubscription, loading: subscriptionLoading, checkSubscription } = useSubscription();
 
   const fetchMarkets = async () => {
     try {
@@ -40,7 +42,21 @@ const MarketsPage = () => {
 
   useEffect(() => {
     fetchMarkets();
-  }, []);
+    
+    // Check for subscription success/cancel parameters
+    const subscriptionParam = searchParams.get('subscription');
+    if (subscriptionParam === 'success') {
+      toast.success('¡Suscripción exitosa! Ahora puedes crear mercadillos circulares.');
+      // Refresh subscription status
+      checkSubscription();
+      // Clean up URL parameters
+      setSearchParams({});
+    } else if (subscriptionParam === 'canceled') {
+      toast.info('Suscripción cancelada.');
+      // Clean up URL parameters
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams, checkSubscription]);
 
   const handleCreateMarket = async (data: {
     title: string;
