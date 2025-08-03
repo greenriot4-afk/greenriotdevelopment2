@@ -108,7 +108,8 @@ serve(async (req) => {
             p_transaction_type: 'deposit',
             p_user_id: user.id,
             p_description: `Stripe deposit: ${matchingSession.id} (synced)`,
-            p_object_type: 'deposit'
+            p_object_type: 'deposit',
+            p_currency: transaction.currency || 'USD'
           });
 
         if (updateError) {
