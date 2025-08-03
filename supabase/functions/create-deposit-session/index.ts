@@ -141,14 +141,22 @@ serve(async (req) => {
       },
     });
 
-    // Update transaction with Stripe session ID
-    const { error: updateError } = await supabaseClient
+    // Update transaction with Stripe session ID using service role
+    const supabaseService = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const { error: updateError } = await supabaseService
       .from('transactions')
       .update({ stripe_session_id: session.id })
-      .eq('id', transaction.id);
+      .eq('id', transaction.id)
+      .eq('user_id', user.id); // Additional security check
 
     if (updateError) {
       console.error('Failed to update transaction with session ID:', updateError);
+    } else {
+      console.log('Successfully updated transaction with session ID:', session.id);
     }
 
     console.log('Created Stripe session:', session.id);
