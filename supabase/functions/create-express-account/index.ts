@@ -102,10 +102,19 @@ serve(async (req) => {
         account = await stripe.accounts.create({
           type: 'express',
           email: user.email,
+          country: 'ES', // Set country to Spain
+          business_type: 'individual', // Specify individual instead of company
           capabilities: {
             card_payments: { requested: true },
             transfers: { requested: true },
           },
+          settings: {
+            payouts: {
+              schedule: {
+                interval: 'daily'
+              }
+            }
+          }
         });
         accountId = account.id;
         console.log('Created account successfully:', accountId);
