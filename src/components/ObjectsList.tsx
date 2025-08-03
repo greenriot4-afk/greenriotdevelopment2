@@ -39,7 +39,7 @@ interface ObjectsListProps {
 
 export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, objectType }: ObjectsListProps) => {
   const { calculateDistance } = useLocation();
-  const { wallet, hasEnoughBalance, deductBalance } = useWallet();
+  const { wallet, hasEnoughBalance, deductBalance, fetchWallet } = useWallet();
   const { requireAuth, isAuthenticated } = useAuthAction();
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -160,6 +160,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     setShowConfirmDialog(false);
 
     try {
+      // For now, use wallet deduction - in future could integrate Stripe for coordinate payments
       await deductBalance(
         selectedObject.price_credits,
         `Coordenadas para: ${selectedObject.title}`,
@@ -168,8 +169,15 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
       
       toast.success(`¡Pagaste $${selectedObject.price_credits} por las coordenadas!`);
       openGoogleMaps(selectedObject);
+      
+      // Force wallet refresh to update header balance
+      setTimeout(() => {
+        fetchWallet();
+      }, 500);
+      
     } catch (error) {
-      toast.error('Error al procesar el pago');
+      const errorMessage = error instanceof Error ? error.message : 'Error al procesar el pago';
+      toast.error(errorMessage);
       console.error('Payment error:', error);
     } finally {
       setPurchasing(null);
