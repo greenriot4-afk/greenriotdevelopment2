@@ -50,7 +50,7 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
-    // Create Stripe checkout session with automatic tax calculation
+    // Create Stripe checkout session
     const sessionConfig: any = {
       payment_method_types: ['card'],
       line_items: [
@@ -60,7 +60,6 @@ serve(async (req) => {
             product_data: {
               name: 'Wallet Deposit (USD)',
               description: `Deposit $${amount} to your wallet`,
-              tax_code: 'txcd_10103001', // Digital services tax code
             },
             unit_amount: Math.round(amount * 100), // Convert to cents
           },
@@ -70,12 +69,6 @@ serve(async (req) => {
       mode: 'payment',
       success_url: `${req.headers.get("origin")}/wallet?success=true`,
       cancel_url: `${req.headers.get("origin")}/wallet?canceled=true`,
-      automatic_tax: { enabled: true },
-      customer_update: {
-        address: 'auto',
-        name: 'auto'
-      },
-      billing_address_collection: 'required',
       metadata: {
         user_id: user.id,
         amount: amount.toString(),
