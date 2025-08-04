@@ -5,12 +5,6 @@ import { useLanguage } from "@/hooks/useLanguage";
 
 const tabs = [
   {
-    id: "website",
-    labelKey: "nav.website",
-    icon: Globe,
-    path: "/"
-  },
-  {
     id: "abandons",
     labelKey: "nav.abandons",
     iconSrc: "/lovable-uploads/879e7bbc-f480-4a92-828d-077abd67eb7e.png",
