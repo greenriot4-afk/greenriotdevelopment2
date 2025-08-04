@@ -43,6 +43,7 @@ export function MobileTabs() {
   const currentPath = location.pathname;
 
   const handleTabClick = (path: string) => {
+    console.log('MobileTabs: Tab clicked', { currentPath, targetPath: path });
     navigate(path);
   };
 

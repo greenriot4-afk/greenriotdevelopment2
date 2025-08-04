@@ -167,7 +167,12 @@ const ObjectsPage = () => {
   };
 
   useEffect(() => {
-    console.log('useEffect triggered', { type, objectType, user: !!user });
+    console.log('ObjectsPage useEffect triggered', { 
+      type, 
+      objectType, 
+      user: !!user,
+      pathname: routerLocation.pathname 
+    });
     
     // Check cache to prevent duplicate requests
     const now = Date.now();
@@ -184,6 +189,7 @@ const ObjectsPage = () => {
     if (type && objectType) {
       // Update cache reference
       lastFetchRef.current = { type: objectType, timestamp: now };
+      console.log('Calling fetchObjects with:', { type, objectType });
       fetchObjects();
     } else {
       console.log('Missing dependencies for fetchObjects', { type, objectType });
