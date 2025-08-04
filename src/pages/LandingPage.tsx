@@ -60,9 +60,7 @@ export default function LandingPage() {
               <div className="space-y-6 mb-8">
                 <div className="flex gap-4">
                   <Camera className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-foreground font-impact">
-                    HUNT FURNITURE, ELECTRONICS OR TREASURES ABANDONED ON THE STREET
-                  </p>
+                  <p className="text-lg text-foreground font-impact">HUNT FURNITURES, ELECTRONICS OR ANY OTHER TREASURES ABANDONED ON THE STREET</p>
                 </div>
                 <div className="flex gap-4">
                   <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
@@ -72,9 +70,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex gap-4">
                   <DollarSign className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-foreground font-impact">
-                    TURN YOUR DAILY WALKS INTO AN URBAN BUSINESS OPPORTUNITY
-                  </p>
+                  <p className="text-lg text-foreground font-impact">TURN YOUR DAILY WALKS INTO AN URBAN FUNBUSINESS OPPORTUNITY</p>
                 </div>
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
@@ -109,10 +105,8 @@ export default function LandingPage() {
                   <div className="bg-primary rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                     <Store className="h-10 w-10 text-primary-foreground" />
                   </div>
-                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">EXPLORE CIRCULAR MARKETS NEAR YOU</h3>
-                  <p className="text-foreground text-lg leading-relaxed font-impact">
-                    SEE THEIR CATALOG FROM THE COMFORT OF YOUR HOME AND THEN GO TO BUY LIVE
-                  </p>
+                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">CIRCULAR MARKETS NEAR YOU</h3>
+                  <p className="text-lg leading-relaxed font-impact text-[#1a4f39] text-center font-light">ASK THEM TO COME TO YOUR HOUSE TO COLLECT YOUR UNWANTED ITEMS INSTEAD OF THROWING THEM IN THE TRASH</p>
                 </div>
               </Card>
             </div>
@@ -123,7 +117,7 @@ export default function LandingPage() {
               <div className="space-y-6 mb-8">
                 <div className="flex gap-4">
                   <Eye className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">BROWSE CATALOGS OF LOCAL THRIFT  STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME</p>
+                  <p className="text-lg text-white font-impact">BROWSE CATALOGS OF LOCAL THRIFT  STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME. CHAT AND NEGOTIATE</p>
                 </div>
                 <div className="flex gap-4">
                   <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
