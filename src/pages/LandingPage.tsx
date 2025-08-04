@@ -205,7 +205,7 @@ export default function LandingPage() {
                   bring circular markets and make $
                 </Badge>
                 <Badge variant="outline" className="border-accent text-accent font-impact flex items-center gap-1">
-                  <Globe className="h-3 w-3" />
+                  <Globe className="h-3 w-3 text-blue-500" />
                   help the planet
                 </Badge>
               </div>
