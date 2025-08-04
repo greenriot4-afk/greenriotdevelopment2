@@ -75,7 +75,7 @@ export default function LandingPage() {
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
                 <Link to="/objects">
-                  START EARNING <ArrowRight className="ml-2 h-5 w-5" />
+                  START MAKING MONEY AND HELPING THE PLANET <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </div>
