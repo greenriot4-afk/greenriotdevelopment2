@@ -6,8 +6,9 @@ import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { useLanguage } from "@/hooks/useLanguage";
 export default function LandingPage() {
-  const { t } = useLanguage();
-  
+  const {
+    t
+  } = useLanguage();
   return <div className="min-h-screen bg-background">
       {/* Navigation Bar */}
       <Navbar />
@@ -108,11 +109,7 @@ export default function LandingPage() {
               {/* App Screenshots - Aligned to left */}
               <div className="space-y-8">
                 <div className="w-80 max-w-sm">
-                  <img 
-                    src="/lovable-uploads/72660b3e-2b63-423d-86c3-d5f90e52aa22.png" 
-                    alt="GreenRiot app showing garage sale and market features" 
-                    className="w-full h-auto rounded-3xl shadow-2xl"
-                  />
+                  <img src="/lovable-uploads/72660b3e-2b63-423d-86c3-d5f90e52aa22.png" alt="GreenRiot app showing garage sale and market features" className="w-full h-auto rounded-3xl shadow-2xl" />
                 </div>
               </div>
             </div>
@@ -138,9 +135,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
-                <Link to="/markets">
-                  {t('landing.markets.cta')} <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                
               </Button>
             </div>
           </div>
