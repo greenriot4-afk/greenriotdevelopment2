@@ -16,12 +16,16 @@ export default function LandingPage() {
       <Navbar />
 
       {/* Header Image Section */}
-      <section className="relative h-screen bg-cover bg-center bg-no-repeat overflow-hidden" style={{backgroundImage: "url('/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png')"}}>
+      <section className="relative h-screen bg-cover bg-center bg-no-repeat overflow-hidden" style={{
+      backgroundImage: "url('/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png')"
+    }}>
         <div className="absolute inset-0 bg-black/20"></div>
       </section>
 
       {/* Hero Content Section */}
-      <section className="relative py-24 px-4 overflow-hidden" style={{backgroundColor: '#17503a'}}>
+      <section className="relative py-24 px-4 overflow-hidden" style={{
+      backgroundColor: '#17503a'
+    }}>
         <div className="container mx-auto max-w-5xl text-center relative z-10">
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
@@ -38,14 +42,10 @@ export default function LandingPage() {
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in delay-300">
             <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
-              <Link to="/auth">
-                {t('landing.hero.cta1')} <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+              
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-white text-white hover:bg-white hover:text-secondary font-impact text-rebel">
-              <Link to="/abandons">
-                {t('landing.hero.cta2')}
-              </Link>
+              
             </Button>
           </div>
         </div>
@@ -89,9 +89,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
-                <Link to="/auth">
-                  {t('landing.coordinates.cta')} <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                
               </Button>
             </div>
             
@@ -178,14 +176,10 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
-              <Link to="/auth">
-                {t('landing.finalCta.cta1')}
-              </Link>
+              
             </Button>
             <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-secondary text-lg px-8 py-4 h-auto font-impact text-rebel">
-              <Link to="/abandons">
-                {t('landing.finalCta.cta2')}
-              </Link>
+              
             </Button>
           </div>
         </div>
