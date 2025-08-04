@@ -5,6 +5,23 @@ enabled = true
 site_url = "http://localhost:3000"
 additional_redirect_urls = ["https://lovable.dev"]
 jwt_expiry = 3600
+enable_signup = true
+email_confirm = true
+enable_password_leak_detection = true
+
+[auth.external.google]
+enabled = true
+client_id = ""
+secret = ""
+redirect_uri = ""
+
+[auth.email]
+double_confirm_changes = true
+enable_confirmations = true
+max_frequency = "1 per minute"
+
+[auth.sms]
+max_frequency = "1 per minute"
 
 [functions.create-deposit-session]
 verify_jwt = true

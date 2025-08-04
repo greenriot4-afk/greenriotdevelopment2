@@ -99,14 +99,27 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
       return;
     }
     
-    if (!/^[a-zA-Z0-9\s\-_,.\u00C0-\u017F]+$/.test(sanitizedTitle)) {
+    // Enhanced character filtering - allow letters, numbers, spaces, basic punctuation, and accented characters
+    if (!/^[a-zA-Z0-9\s\-_,.!?\u00C0-\u017F\u1E00-\u1EFF]+$/.test(sanitizedTitle)) {
       toast.error('El título contiene caracteres no válidos');
+      return;
+    }
+
+    // Check for potentially dangerous patterns
+    if (/(<script|javascript:|data:|vbscript:|on\w+\s*=)/i.test(sanitizedTitle)) {
+      toast.error('El título contiene contenido no permitido');
       return;
     }
 
     // Description validation
     if (sanitizedDescription.length > 500) {
       toast.error('La descripción no puede exceder 500 caracteres');
+      return;
+    }
+
+    // Check for dangerous content in description
+    if (sanitizedDescription && /(<script|javascript:|data:|vbscript:|on\w+\s*=)/i.test(sanitizedDescription)) {
+      toast.error('La descripción contiene contenido no permitido');
       return;
     }
 

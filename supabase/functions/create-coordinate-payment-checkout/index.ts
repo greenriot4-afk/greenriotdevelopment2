@@ -2,9 +2,26 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
+// Enhanced input validation and sanitization
+const sanitizeString = (input: string | undefined, maxLength: number = 500): string => {
+  if (!input) return '';
+  return input.replace(/[<>'"&\x00-\x1f]/g, '').slice(0, maxLength).trim();
+};
+
+const validateAmount = (amount: any): number => {
+  if (typeof amount !== 'number' || amount <= 0 || amount > 10000 || !Number.isFinite(amount)) {
+    throw new Error('Invalid amount: must be a positive number between 0.01 and 10000');
+  }
+  return Math.round(amount * 100) / 100; // Round to 2 decimal places
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "X-XSS-Protection": "1; mode=block",
+  "Referrer-Policy": "strict-origin-when-cross-origin"
 };
 
 serve(async (req) => {
@@ -36,12 +53,18 @@ serve(async (req) => {
 
     const { amount, description, objectType = 'coordinate', currency = 'USD', taxIncluded = false, objectId } = await req.json();
     
-    if (!amount || amount <= 0) {
-      throw new Error('Invalid amount');
-    }
-
+    // Enhanced input validation
+    const validatedAmount = validateAmount(amount);
+    const sanitizedDescription = sanitizeString(description, 200);
+    const sanitizedObjectType = sanitizeString(objectType, 50);
+    const sanitizedObjectId = sanitizeString(objectId, 100);
+    
     if (!['USD', 'EUR'].includes(currency)) {
       throw new Error('Unsupported currency');
+    }
+
+    if (!sanitizedObjectId) {
+      throw new Error('Object ID is required for coordinate purchases');
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
