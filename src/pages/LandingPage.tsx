@@ -20,7 +20,7 @@ export default function LandingPage() {
       </div>
 
       {/* Header Image Section */}
-      <section className="relative h-screen bg-contain bg-center bg-no-repeat overflow-hidden" style={{backgroundImage: "url('/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png')"}}>
+      <section className="relative h-screen bg-cover bg-center bg-no-repeat overflow-hidden" style={{backgroundImage: "url('/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png')"}}>
         <div className="absolute inset-0 bg-black/20"></div>
       </section>
 
