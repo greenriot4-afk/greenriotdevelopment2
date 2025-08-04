@@ -64,7 +64,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu (sm and below) */}
-          <div className="md:hidden flex items-center space-x-0.5">
+          <div className="md:hidden flex items-center space-x-0.5 ml-8">
             {/* Mobile CTA Button */}
             <Button asChild size="sm" className="bg-accent hover:bg-accent/90 text-green-800 font-impact text-xs px-2 sm:px-3 py-1.5 sm:py-2 min-w-0">
               <Link to="/app/abandons">
