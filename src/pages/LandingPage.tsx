@@ -87,7 +87,7 @@ export default function LandingPage() {
                     <img src="/lovable-uploads/d555150b-d59d-46cf-ad9e-2a7883671574.png" alt="Buy Coordinates" className="w-96 h-auto mx-auto" />
                   </div>
                   <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">BUY COORDINATES AND GET BARGAINS</h3>
-                  <p className="text-foreground text-lg leading-relaxed font-impact">You know there is a FREE COUCH 6 away from you but not exactly where, buy the coordinates and get a €200 COUCH FOR €1</p>
+                  <p className="text-foreground text-lg leading-relaxed font-impact">You know there is a FREE COUCH 6 away from you but not exactly where, buy the coordinates and get a $200 COUCH FOR $1</p>
                 </div>
               </div>
             </div>
