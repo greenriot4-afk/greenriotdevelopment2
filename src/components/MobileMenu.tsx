@@ -8,30 +8,33 @@ import { useAuthAction } from "@/hooks/useAuthAction";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-
 export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [userHasMarket, setUserHasMarket] = useState(false);
-  const { signOut, user } = useAuth();
-  const { language, setLanguage, t } = useLanguage();
-  const { requireAuth } = useAuthAction();
+  const {
+    signOut,
+    user
+  } = useAuth();
+  const {
+    language,
+    setLanguage,
+    t
+  } = useLanguage();
+  const {
+    requireAuth
+  } = useAuthAction();
   const navigate = useNavigate();
-
   useEffect(() => {
     const checkUserMarket = async () => {
       if (!user) {
         setUserHasMarket(false);
         return;
       }
-
       try {
-        const { data, error } = await supabase
-          .from('circular_markets')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('is_active', true)
-          .limit(1);
-
+        const {
+          data,
+          error
+        } = await supabase.from('circular_markets').select('id').eq('user_id', user.id).eq('is_active', true).limit(1);
         if (error) throw error;
         setUserHasMarket(data && data.length > 0);
       } catch (error) {
@@ -39,24 +42,20 @@ export function MobileMenu() {
         setUserHasMarket(false);
       }
     };
-
     checkUserMarket();
   }, [user]);
-
   const handleWalletClick = () => {
     requireAuth(() => {
       navigate('/wallet');
       setIsOpen(false);
     });
   };
-
   const handleAccountClick = () => {
     requireAuth(() => {
       navigate('/account');
       setIsOpen(false);
     });
   };
-
   const handleCreateMarketClick = () => {
     requireAuth(() => {
       navigate('/markets');
@@ -70,184 +69,117 @@ export function MobileMenu() {
       }, 100);
     });
   };
-
   const handleChatClick = () => {
     requireAuth(() => {
       navigate('/chat');
       setIsOpen(false);
     });
   };
-
   const handleMyMarketClick = () => {
     requireAuth(() => {
       navigate('/my-market');
       setIsOpen(false);
     });
   };
-
   const handleAffiliatesClick = () => {
     requireAuth(() => {
       navigate('/affiliates');
       setIsOpen(false);
     });
   };
-
   const handleFavoritesClick = () => {
     requireAuth(() => {
       navigate('/favorites');
       setIsOpen(false);
     });
   };
-
   const handleMyAdsClick = () => {
     requireAuth(() => {
       navigate('/my-ads');
       setIsOpen(false);
     });
   };
-
   const handleWebsiteClick = () => {
     navigate('/');
     setIsOpen(false);
   };
-
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'es' : 'en');
   };
-
   const handleSignOut = async () => {
     await signOut();
     toast.success(t('menu.signOut'));
     setIsOpen(false);
   };
-
   const handleAuthRedirect = () => {
     navigate('/auth');
     setIsOpen(false);
   };
-
-  return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+  return <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-10 w-10 text-white hover:bg-white/10"
-        >
+        <Button variant="ghost" size="icon" className="h-10 w-10 text-white hover:bg-white/10">
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent 
-        side="right" 
-        className="w-80 p-0 border-0 bg-gradient-to-br from-primary to-primary/80"
-      >
+      <SheetContent side="right" className="w-80 p-0 border-0 bg-gradient-to-br from-primary to-primary/80">
         {/* Header with user profile or auth prompt */}
         <div className="p-6 bg-black/20 backdrop-blur-sm">
-          {user ? (
-            <div className="flex items-center gap-3">
+          {user ? <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                 <User className="h-6 w-6 text-white" />
               </div>
                <div>
-                 <h3 className="text-white font-semibold">
+                 <h3 className="text-white font-medium">
                    {user?.email?.split('@')[0] || t('menu.user')}
                  </h3>
                </div>
-            </div>
-          ) : (
-            <div className="text-center">
+            </div> : <div className="text-center">
               <h3 className="text-white font-semibold mb-2">¡Únete a Greenriot!</h3>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={handleAuthRedirect}
-                className="w-full"
-              >
+              <Button variant="secondary" size="sm" onClick={handleAuthRedirect} className="w-full">
                 Iniciar Sesión / Registro
               </Button>
-            </div>
-          )}
+            </div>}
           
-          {user && (
-            <Button
-              variant="ghost"
-              className="w-full justify-start mt-3 text-white hover:bg-white/10"
-              onClick={handleAccountClick}
-            >
+          {user && <Button variant="ghost" className="w-full justify-start mt-3 text-white hover:bg-white/10" onClick={handleAccountClick}>
               <Settings className="h-5 w-5 mr-3" />
               {t('menu.myAccount')}
-            </Button>
-          )}
+            </Button>}
         </div>
 
 
         {/* Menu Items */}
         <div className="p-4 space-y-2">
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={handleWalletClick}
-          >
+          <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleWalletClick}>
             <WalletIcon className="h-5 w-5 mr-3" />
             {t('menu.myWallet')}
           </Button>
 
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={handleChatClick}
-          >
+          <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleChatClick}>
             <MessageCircle className="h-5 w-5 mr-3" />
             {t('menu.chats')}
           </Button>
 
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={handleFavoritesClick}
-          >
+          <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleFavoritesClick}>
             <Heart className="h-5 w-5 mr-3" />
             {t('menu.favorites')}
           </Button>
 
-          {!userHasMarket && (
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-              onClick={handleMyAdsClick}
-            >
+          {!userHasMarket && <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleMyAdsClick}>
               <Megaphone className="h-5 w-5 mr-3" />
               Mis anuncios
-            </Button>
-          )}
+            </Button>}
 
-          {!userHasMarket && (
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-              onClick={handleCreateMarketClick}
-            >
+          {!userHasMarket && <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleCreateMarketClick}>
               <Plus className="h-5 w-5 mr-3" />
               {t('menu.createCircularMarket')}
-            </Button>
-          )}
+            </Button>}
 
-          {userHasMarket && (
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-              onClick={handleMyMarketClick}
-            >
+          {userHasMarket && <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleMyMarketClick}>
               <Store className="h-5 w-5 mr-3" />
               {t('menu.myCircularMarket')}
-            </Button>
-          )}
+            </Button>}
 
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 py-3 text-white hover:bg-white/10 h-auto"
-            onClick={handleAffiliatesClick}
-          >
+          <Button variant="ghost" className="w-full justify-start px-4 py-3 text-white hover:bg-white/10 h-auto" onClick={handleAffiliatesClick}>
             <DollarSign className="h-5 w-5 mr-3 mt-1 flex-shrink-0" />
             <span className="text-left leading-tight whitespace-pre-line">
               {t('menu.affiliateProgram')}
@@ -256,20 +188,12 @@ export function MobileMenu() {
 
           {/* Website and Language buttons */}
           <div className="pt-4 border-t border-white/10 space-y-2">
-             <Button
-               variant="ghost"
-               className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-               onClick={handleWebsiteClick}
-             >
+             <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleWebsiteClick}>
                <Globe className="h-5 w-5 mr-3" />
                Website
              </Button>
 
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-              onClick={toggleLanguage}
-            >
+            <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={toggleLanguage}>
               <Languages className="h-5 w-5 mr-3" />
               {language === 'en' ? 'ES' : 'EN'}
             </Button>
@@ -277,30 +201,17 @@ export function MobileMenu() {
         </div>
 
         {/* Footer */}
-        {user ? (
-          <div className="absolute bottom-4 left-4 right-4">
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-4 h-12 text-white/80 hover:bg-white/10"
-              onClick={handleSignOut}
-            >
+        {user ? <div className="absolute bottom-4 left-4 right-4">
+            <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white/80 hover:bg-white/10" onClick={handleSignOut}>
               <LogOut className="h-5 w-5 mr-3" />
               {t('menu.signOut')}
             </Button>
-          </div>
-        ) : (
-          <div className="absolute bottom-4 left-4 right-4">
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={handleAuthRedirect}
-            >
+          </div> : <div className="absolute bottom-4 left-4 right-4">
+            <Button variant="secondary" className="w-full" onClick={handleAuthRedirect}>
               <User className="h-5 w-5 mr-3" />
               Crear Cuenta
             </Button>
-          </div>
-        )}
+          </div>}
       </SheetContent>
-    </Sheet>
-  );
+    </Sheet>;
 }
