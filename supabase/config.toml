@@ -41,6 +41,12 @@ verify_jwt = false
 [functions.test-payment-system]
 verify_jwt = false
 
+[functions.security-monitor]
+verify_jwt = true
+
+[functions.rate-limiter]
+verify_jwt = true
+
 [functions.cleanup-old-abandons]
 verify_jwt = false
 

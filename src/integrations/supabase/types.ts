@@ -633,6 +633,10 @@ export type Database = {
       }
     }
     Functions: {
+      check_auth_security_settings: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       get_affiliate_commission_percentage: {
         Args: {
           affiliate_level: Database["public"]["Enums"]["affiliate_level"]
