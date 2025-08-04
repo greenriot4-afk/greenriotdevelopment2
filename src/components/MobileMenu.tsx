@@ -149,7 +149,7 @@ export function MobileMenu() {
                 <User className="h-6 w-6 text-white" />
               </div>
                <div>
-                 <h3 className="text-white font-semibold text-shadow-sm">
+                 <h3 className="text-white font-semibold">
                    {user?.email?.split('@')[0] || t('menu.user')}
                  </h3>
                </div>
