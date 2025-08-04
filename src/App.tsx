@@ -70,7 +70,6 @@ const AppContent = () => {
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
           <Routes>
-            <Route path="/" element={<Navigate to="/abandons" replace />} />
             <Route path="/abandons" element={<ObjectsPage />} />
             <Route path="/donations" element={<ObjectsPage />} />
             <Route path="/products" element={<ObjectsPage />} />
@@ -88,6 +87,7 @@ const AppContent = () => {
             <Route path="/chat/:conversationId" element={<ChatPage />} />
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/testing" element={<TestingPage />} />
+            <Route path="*" element={<Navigate to="/abandons" replace />} />
           </Routes>
         </main>
       </div>
@@ -108,55 +108,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/abandons" element={<AppContent />} />
-            <Route path="/donations" element={<AppContent />} />
-            <Route path="/products" element={<AppContent />} />
-            <Route path="/markets" element={<AppContent />} />
-            <Route path="/affiliates" element={<AppContent />} />
-            <Route path="/object/:objectId" element={<AppContent />} />
-            <Route path="/market-detail/:marketId" element={<AppContent />} />
-            <Route path="/market-catalog/:marketId" element={<AppContent />} />
-            <Route path="/profile/:userId" element={<AppContent />} />
-            <Route path="/wallet" element={
-              <ProtectedRoute>
-                <AppContent />
-              </ProtectedRoute>
-            } />
-            <Route path="/account" element={
-              <ProtectedRoute>
-                <AppContent />
-              </ProtectedRoute>
-            } />
-            <Route path="/my-market" element={
-              <ProtectedRoute>
-                <AppContent />
-              </ProtectedRoute>
-            } />
-            <Route path="/my-ads" element={
-              <ProtectedRoute>
-                <AppContent />
-              </ProtectedRoute>
-            } />
-            <Route path="/chat" element={
-              <ProtectedRoute>
-                <AppContent />
-              </ProtectedRoute>
-            } />
-            <Route path="/chat/:conversationId" element={
-              <ProtectedRoute>
-                <AppContent />
-              </ProtectedRoute>
-            } />
-            <Route path="/favorites" element={
-              <ProtectedRoute>
-                <AppContent />
-              </ProtectedRoute>
-            } />
-            <Route path="/testing" element={
-              <ProtectedRoute>
-                <AppContent />
-              </ProtectedRoute>
-            } />
+            <Route path="/app/*" element={<AppContent />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

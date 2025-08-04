@@ -28,7 +28,7 @@ export default function Navbar() {
             
             {/* CTA Button */}
             <Button asChild className="bg-accent hover:bg-accent/90 text-primary font-impact text-rebel shadow-rebel">
-              <Link to="/app">
+              <Link to="/app/abandons">
                 {language === 'en' ? 'TRY BETA APP' : 'PRUEBA LA BETA'}
               </Link>
             </Button>
@@ -62,7 +62,7 @@ export default function Navbar() {
             <div className="flex flex-col space-y-4">
               
               <Button asChild className="bg-accent hover:bg-accent/90 text-primary font-impact text-rebel shadow-rebel w-fit">
-                <Link to="/app" onClick={() => setIsMenuOpen(false)}>
+                <Link to="/app/abandons" onClick={() => setIsMenuOpen(false)}>
                   {language === 'en' ? 'TRY BETA APP' : 'PRUEBA LA BETA'}
                 </Link>
               </Button>
