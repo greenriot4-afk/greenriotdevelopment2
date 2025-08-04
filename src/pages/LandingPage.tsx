@@ -166,24 +166,7 @@ export default function LandingPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 px-4 bg-urban text-white">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-6 drop-shadow-2xl">
-            {t('landing.finalCta.title')}
-          </h2>
-          <p className="text-xl mb-12 opacity-90 max-w-2xl mx-auto font-impact">
-            {t('landing.finalCta.description')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
-              
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-secondary text-lg px-8 py-4 h-auto font-impact text-rebel">
-              
-            </Button>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Footer */}
       <footer className="bg-secondary py-12 px-4">
