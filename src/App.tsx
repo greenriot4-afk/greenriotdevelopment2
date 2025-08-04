@@ -90,7 +90,7 @@ const AppContent = () => {
             <Route path="/chat/:conversationId" element={<ChatPage />} />
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/testing" element={<TestingPage />} />
-            <Route path="*" element={<Navigate to="/abandons" replace />} />
+            <Route path="*" element={<Navigate to="/app/abandons" replace />} />
           </Routes>
         </main>
       </div>

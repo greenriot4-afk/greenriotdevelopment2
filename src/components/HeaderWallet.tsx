@@ -13,7 +13,7 @@ export const HeaderWallet = () => {
 
   const handleWalletClick = () => {
     requireAuth(() => {
-      navigate('/wallet');
+      navigate('/app/wallet');
     });
   };
 

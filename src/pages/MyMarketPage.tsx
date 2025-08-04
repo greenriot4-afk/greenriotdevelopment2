@@ -38,7 +38,7 @@ const MyMarketPage = () => {
       if (error) {
         if (error.code === 'PGRST116') {
           // No market found
-          navigate('/markets');
+          navigate('/app/markets');
           toast.error('No tienes un mercadillo creado');
           return;
         }
@@ -49,7 +49,7 @@ const MyMarketPage = () => {
     } catch (error) {
       console.error('Error fetching user market:', error);
       toast.error('Error al cargar tu mercadillo');
-      navigate('/markets');
+      navigate('/app/markets');
     } finally {
       setLoading(false);
     }
@@ -115,7 +115,7 @@ const MyMarketPage = () => {
       if (error) throw error;
 
       toast.success('Mercadillo eliminado correctamente');
-      navigate('/markets');
+      navigate('/app/markets');
     } catch (error) {
       console.error('Error deleting market:', error);
       toast.error('Error al eliminar el mercadillo');
@@ -220,7 +220,7 @@ const MyMarketPage = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate('/markets')}
+          onClick={() => navigate('/app/markets')}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>

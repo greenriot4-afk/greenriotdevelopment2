@@ -56,7 +56,7 @@ const MarketDetailPage = () => {
       } catch (error) {
         console.error('Error fetching market detail:', error);
         toast.error('Error al cargar el mercadillo');
-        navigate('/markets');
+        navigate('/app/markets');
       } finally {
         setLoading(false);
       }
@@ -113,7 +113,7 @@ const MarketDetailPage = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate('/markets')}
+          onClick={() => navigate('/app/markets')}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>
@@ -208,7 +208,7 @@ const MarketDetailPage = () => {
         <div className="grid grid-cols-2 gap-3">
           <Button
             variant="outline"
-            onClick={() => navigate(`/market-catalog/${market.id}`)}
+            onClick={() => navigate(`/app/market-catalog/${market.id}`)}
           >
             <Store className="w-4 h-4 mr-2" />
             Ver Catálogo

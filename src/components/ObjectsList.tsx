@@ -326,7 +326,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
           <Card 
             key={object.id} 
             className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
-            onClick={() => navigate(`/object/${object.id}`)}
+            onClick={() => navigate(`/app/object/${object.id}`)}
           >
             <div className="aspect-video relative">
               <img 
@@ -349,7 +349,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
               <div className="flex items-center justify-between mb-3 p-2 bg-muted/30 rounded-lg">
                 <div className="flex flex-col gap-1">
                   <Link 
-                    to={`/profile/${object.user_id}`}
+                    to={`/app/profile/${object.user_id}`}
                     className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
                   >
                     {object.market_id ? (
@@ -457,7 +457,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
            <AlertDialogFooter>
              <AlertDialogCancel>Cancelar</AlertDialogCancel>
              <AlertDialogAction asChild>
-               <Link to="/wallet" className="flex items-center gap-2">
+               <Link to="/app/wallet" className="flex items-center gap-2">
                  <Wallet className="w-4 h-4" />
                  Ir a Mi Wallet
                </Link>

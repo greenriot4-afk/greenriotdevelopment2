@@ -53,7 +53,7 @@ const ChatListPage = () => {
             <Card 
               key={conversation.id} 
               className="cursor-pointer hover:bg-accent transition-colors"
-              onClick={() => navigate(`/chat/${conversation.id}`)}
+              onClick={() => navigate(`/app/chat/${conversation.id}`)}
             >
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">

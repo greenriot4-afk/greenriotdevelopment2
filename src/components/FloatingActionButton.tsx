@@ -38,9 +38,9 @@ export function FloatingActionButton({ onUpload }: FloatingActionButtonProps) {
     requireAuth(() => {
       // Navigate to the correct page first
       const routeMap = {
-        abandoned: '/abandons',
-        donation: '/donations',
-        product: '/products'
+        abandoned: '/app/abandons',
+        donation: '/app/donations',
+        product: '/app/products'
       };
       
       navigate(routeMap[type]);

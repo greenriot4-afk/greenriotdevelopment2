@@ -58,7 +58,7 @@ const MarketCatalogPage = () => {
       } catch (error) {
         console.error('Error fetching market data:', error);
         toast.error('Error al cargar el catálogo');
-        navigate('/markets');
+        navigate('/app/markets');
       } finally {
         setLoading(false);
       }
@@ -92,7 +92,7 @@ const MarketCatalogPage = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate('/markets')}
+          onClick={() => navigate('/app/markets')}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>

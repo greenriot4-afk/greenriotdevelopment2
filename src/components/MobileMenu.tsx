@@ -46,19 +46,19 @@ export function MobileMenu() {
   }, [user]);
   const handleWalletClick = () => {
     requireAuth(() => {
-      navigate('/wallet');
+      navigate('/app/wallet');
       setIsOpen(false);
     });
   };
   const handleAccountClick = () => {
     requireAuth(() => {
-      navigate('/account');
+      navigate('/app/account');
       setIsOpen(false);
     });
   };
   const handleCreateMarketClick = () => {
     requireAuth(() => {
-      navigate('/markets');
+      navigate('/app/markets');
       setIsOpen(false);
       // Show create form automatically when navigating to markets
       setTimeout(() => {
@@ -71,31 +71,31 @@ export function MobileMenu() {
   };
   const handleChatClick = () => {
     requireAuth(() => {
-      navigate('/chat');
+      navigate('/app/chat');
       setIsOpen(false);
     });
   };
   const handleMyMarketClick = () => {
     requireAuth(() => {
-      navigate('/my-market');
+      navigate('/app/my-market');
       setIsOpen(false);
     });
   };
   const handleAffiliatesClick = () => {
     requireAuth(() => {
-      navigate('/affiliates');
+      navigate('/app/affiliates');
       setIsOpen(false);
     });
   };
   const handleFavoritesClick = () => {
     requireAuth(() => {
-      navigate('/favorites');
+      navigate('/app/favorites');
       setIsOpen(false);
     });
   };
   const handleMyAdsClick = () => {
     requireAuth(() => {
-      navigate('/my-ads');
+      navigate('/app/my-ads');
       setIsOpen(false);
     });
   };

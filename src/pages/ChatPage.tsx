@@ -202,7 +202,7 @@ const ChatPage = () => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate('/chat')}
+          onClick={() => navigate('/app/chat')}
         >
           <ArrowLeft className="w-4 h-4" />
         </Button>

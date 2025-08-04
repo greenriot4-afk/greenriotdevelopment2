@@ -79,7 +79,7 @@ export default function LandingPage() {
               </div>
               <div className="flex justify-start">
                 <Button asChild size="sm" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-3">
-                  <Link to="/objects">
+                  <Link to="/app/abandons">
                     {t('landing.coordinates.cta')} <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-5 sm:w-5" />
                   </Link>
                 </Button>
