@@ -80,49 +80,14 @@ const AppContent = () => {
             <Route path="/market-detail/:marketId" element={<MarketDetailPage />} />
             <Route path="/market-catalog/:marketId" element={<MarketCatalogPage />} />
             <Route path="/profile/:userId" element={<UserProfilePage />} />
-            
-            {/* Protected routes - require authentication */}
-            <Route path="/wallet" element={
-              <ProtectedRoute>
-                <WalletPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/account" element={
-              <ProtectedRoute>
-                <AccountSettings />
-              </ProtectedRoute>
-            } />
-            <Route path="/my-market" element={
-              <ProtectedRoute>
-                <MyMarketPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/my-ads" element={
-              <ProtectedRoute>
-                <MyAdsPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/chat" element={
-              <ProtectedRoute>
-                <ChatListPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/chat/:conversationId" element={
-              <ProtectedRoute>
-                <ChatPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/favorites" element={
-              <ProtectedRoute>
-                <FavoritesPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/testing" element={
-              <ProtectedRoute>
-                <TestingPage />
-              </ProtectedRoute>
-            } />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/wallet" element={<WalletPage />} />
+            <Route path="/account" element={<AccountSettings />} />
+            <Route path="/my-market" element={<MyMarketPage />} />
+            <Route path="/my-ads" element={<MyAdsPage />} />
+            <Route path="/chat" element={<ChatListPage />} />
+            <Route path="/chat/:conversationId" element={<ChatPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/testing" element={<TestingPage />} />
           </Routes>
         </main>
       </div>
@@ -143,7 +108,57 @@ const App = () => (
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/app/*" element={<AppContent />} />
+            <Route path="/app" element={<AppContent />} />
+            <Route path="/abandons" element={<AppContent />} />
+            <Route path="/donations" element={<AppContent />} />
+            <Route path="/products" element={<AppContent />} />
+            <Route path="/markets" element={<AppContent />} />
+            <Route path="/affiliates" element={<AppContent />} />
+            <Route path="/object/:objectId" element={<AppContent />} />
+            <Route path="/market-detail/:marketId" element={<AppContent />} />
+            <Route path="/market-catalog/:marketId" element={<AppContent />} />
+            <Route path="/profile/:userId" element={<AppContent />} />
+            <Route path="/wallet" element={
+              <ProtectedRoute>
+                <AppContent />
+              </ProtectedRoute>
+            } />
+            <Route path="/account" element={
+              <ProtectedRoute>
+                <AppContent />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-market" element={
+              <ProtectedRoute>
+                <AppContent />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-ads" element={
+              <ProtectedRoute>
+                <AppContent />
+              </ProtectedRoute>
+            } />
+            <Route path="/chat" element={
+              <ProtectedRoute>
+                <AppContent />
+              </ProtectedRoute>
+            } />
+            <Route path="/chat/:conversationId" element={
+              <ProtectedRoute>
+                <AppContent />
+              </ProtectedRoute>
+            } />
+            <Route path="/favorites" element={
+              <ProtectedRoute>
+                <AppContent />
+              </ProtectedRoute>
+            } />
+            <Route path="/testing" element={
+              <ProtectedRoute>
+                <AppContent />
+              </ProtectedRoute>
+            } />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
         </TooltipProvider>

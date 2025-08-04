@@ -49,18 +49,14 @@ export function MobileTabs() {
   const currentPath = location.pathname;
 
   const handleTabClick = (path: string) => {
-    if (path === "/") {
-      window.location.href = "/";
-    } else {
-      navigate(`/app${path}`);
-    }
+    navigate(path);
   };
 
   return (
     <div className="flex justify-center border-b bg-background">
       <div className="flex w-full max-w-md">
         {tabs.map((tab) => {
-          const isActive = tab.path === "/" ? currentPath === "/" : currentPath === `/app${tab.path}`;
+          const isActive = currentPath === tab.path;
           
           return (
             <Button
