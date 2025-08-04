@@ -167,7 +167,7 @@ const translations = {
     'landing.markets.cardDescription': 'SEE THEIR CATALOG FROM THE COMFORT OF YOUR HOME AND THEN GO TO BUY LIVE',
     
     'landing.finalCta.title': 'READY TO TURN TRASH INTO CASH?',
-    'landing.finalCta.description': 'MAKING OR SAVING MONEY',
+    'landing.finalCta.description': 'JOIN THOUSANDS OF USERS WHO ARE ALREADY MAKING MONEY, SAVING MONEY AND HELPING THE PLANET THROUGH URBAN CIRCULAR ECONOMY.',
     'landing.finalCta.cta1': 'JOIN FREE NOW',
     'landing.finalCta.cta2': 'START EXPLORING',
     
