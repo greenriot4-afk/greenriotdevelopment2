@@ -29,7 +29,7 @@ Underground, urban and rebellious brand style with Impact font and uppercase tex
     --secondary: 124 63% 20%; /* Color 1: Verde oscuro */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 11% 85%; /* Color 3: Gris claro */
+    --muted: 200 3% 12%; /* Color 3: Gris oscuro #1d2122 */
     --muted-foreground: 124 63% 20%;
 
     --accent: 82 52% 41%; /* Color 2: Verde claro #729f31 */
@@ -38,7 +38,7 @@ Underground, urban and rebellious brand style with Impact font and uppercase tex
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 210 11% 75%; /* Color 3: Gris para bordes */
+    --border: 200 3% 20%; /* Color 3: Gris para bordes */
     --input: 82 20% 90%;
     --ring: 124 63% 20%; /* Color 1: Verde oscuro para focus */
 
@@ -77,7 +77,7 @@ Underground, urban and rebellious brand style with Impact font and uppercase tex
     --secondary: 124 63% 15%;
     --secondary-foreground: 0 0% 95%;
 
-    --muted: 210 11% 25%; /* Color 3: Gris oscuro para dark mode */
+    --muted: 200 3% 12%; /* Color 3: Gris oscuro #1d2122 */
     --muted-foreground: 210 11% 65%;
 
     --accent: 82 52% 50%; /* Color 2: Verde claro más brillante para dark mode */
