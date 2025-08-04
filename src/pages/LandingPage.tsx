@@ -173,40 +173,40 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">{t('landing.footer.title')}</h3>
-              <p className="text-foreground mb-4 font-impact">
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-white">{t('landing.footer.title')}</h3>
+              <p className="text-white mb-4 font-impact">
                 {t('landing.footer.description')}
               </p>
               <div className="flex flex-wrap gap-2 mb-6">
-                <Badge variant="outline" className="border-primary text-primary font-impact">{t('landing.footer.circular')}</Badge>
-                <Badge variant="outline" className="border-primary text-primary font-impact">{t('landing.footer.profitable')}</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">{t('landing.footer.circular')}</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">{t('landing.footer.profitable')}</Badge>
               </div>
               <div className="space-y-2">
-                <Link to="/cookies" className="block hover:text-primary transition-colors font-impact text-foreground">
+                <Link to="/cookies" className="block hover:text-accent transition-colors font-impact text-white">
                   Cookies Policy
                 </Link>
-                <Link to="/privacy" className="block hover:text-primary transition-colors font-impact text-foreground">
+                <Link to="/privacy" className="block hover:text-accent transition-colors font-impact text-white">
                   Privacy Policy
                 </Link>
-                <Link to="/legal" className="block hover:text-primary transition-colors font-impact text-foreground">
+                <Link to="/legal" className="block hover:text-accent transition-colors font-impact text-white">
                   Legal Notice
                 </Link>
               </div>
             </div>
             
             <div>
-              <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">Refer and Earn</h3>
-              <p className="text-foreground mb-4 font-impact">
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-white">Refer and Earn</h3>
+              <p className="text-white mb-4 font-impact">
                 Invita a tus amigos y gana recompensas por cada nuevo usuario que se registre. Construyamos juntos una comunidad más sostenible y próspera.
               </p>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="border-primary text-primary font-impact">+10€ por referido</Badge>
-                <Badge variant="outline" className="border-primary text-primary font-impact">Sin límites</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">+10€ por referido</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">Sin límites</Badge>
               </div>
             </div>
           </div>
           
-          <div className="border-t border-primary mt-8 pt-8 text-center text-foreground">
+          <div className="border-t border-accent mt-8 pt-8 text-center text-white">
             <p className="font-impact">{t('landing.footer.copyright')}</p>
           </div>
         </div>
