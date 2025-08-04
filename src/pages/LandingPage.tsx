@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, Store, Plus, Languages, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-
 export default function LandingPage() {
   return <div className="min-h-screen bg-background">
       {/* Navigation Bar */}
@@ -24,27 +23,19 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-5xl text-center relative z-10">
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
-            <span className="text-accent">
-              STOOPING & THRIFTING
-            </span>
+            <span className="text-accent">STOOPING & THRIFTING</span>
             <br />
             <span className="text-accent">URBAN REBELLION</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">
-            FIND FREE TREASURES NEAR YOU – give them a second life – SAVE OR MAKE MONEY – save the planet
-          </p>
+          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">FIND FREE STUFF NEAR YOU –  SAVE OR MAKE MONEY – SAVE THE PLANET</p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in delay-300">
             <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
-              <Link to="/auth">
-                JOIN THE REBELLION <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+              
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-white text-white hover:bg-white hover:text-secondary font-impact text-rebel">
-              <Link to="/objects">
-                EXPLORE NOW <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
+              
             </Button>
           </div>
         </div>
