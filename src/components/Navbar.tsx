@@ -45,28 +45,31 @@ export default function Navbar() {
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-white hover:text-accent hover:bg-white/10"
-          >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
+          {/* Mobile Menu - Show CTA button and Menu button */}
+          <div className="md:hidden flex items-center space-x-3">
+            {/* Mobile CTA Button */}
+            <Button asChild size="sm" className="bg-accent hover:bg-accent/90 text-primary font-impact text-xs px-3 py-2">
+              <Link to="/app/abandons">
+                {language === 'en' ? 'TRY BETA' : 'BETA'}
+              </Link>
+            </Button>
+            
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-white hover:text-accent hover:bg-white/10"
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Menu - simplified, main navigation now in hamburger menu */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-white/10">
             <div className="flex flex-col space-y-4">
-              
-              <Button asChild className="bg-accent hover:bg-accent/90 text-primary font-impact text-rebel shadow-rebel w-fit">
-                <Link to="/app/abandons" onClick={() => setIsMenuOpen(false)}>
-                  {language === 'en' ? 'TRY BETA APP' : 'PRUEBA LA BETA'}
-                </Link>
-              </Button>
-
               <Button 
                 variant="ghost" 
                 size="sm" 
