@@ -12,7 +12,7 @@ export default function LandingPage() {
       {/* Header Image Section */}
       <section className="relative h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
         <img 
-          src="/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png" 
+          src="/lovable-uploads/df376dd2-7cc6-4425-8f10-e83c4b70f682.png" 
           alt="Header" 
           className="w-full h-full object-cover"
         />
