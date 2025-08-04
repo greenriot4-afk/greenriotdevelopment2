@@ -173,7 +173,7 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-2xl font-impact text-rebel mb-4 text-white">{t('landing.footer.title')}</h3>
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">{t('landing.footer.title')}</h3>
               <p className="text-white mb-4 font-impact">
                 {t('landing.footer.description')}
               </p>
@@ -195,13 +195,13 @@ export default function LandingPage() {
             </div>
             
             <div>
-              <h3 className="text-2xl font-impact text-rebel mb-4 text-white">Refer and Earn</h3>
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">Refer and Earn</h3>
               <p className="text-white mb-4 font-impact">
-                Invita a tus amigos y gana recompensas por cada nuevo usuario que se registre. Construyamos juntos una comunidad más sostenible y próspera.
+                Invite your friends and earn rewards for every new user who signs up. Let's build a more sustainable and prosperous community together.
               </p>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="border-accent text-accent font-impact">+10€ por referido</Badge>
-                <Badge variant="outline" className="border-accent text-accent font-impact">Sin límites</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">+10€ per referral</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">No limits</Badge>
               </div>
             </div>
           </div>
