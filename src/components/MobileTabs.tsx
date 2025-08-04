@@ -51,7 +51,9 @@ export function MobileTabs() {
     <div className="flex justify-center border-b bg-background">
       <div className="flex w-full max-w-md">
         {tabs.map((tab) => {
-          const isActive = currentPath.startsWith('/app') && currentPath.includes(tab.path.replace('/app', ''));
+          // Extract the route part after /app
+          const routePart = tab.path.replace('/app/', '');
+          const isActive = currentPath === tab.path || currentPath.startsWith(`/app/${routePart}`);
           
           return (
             <Button

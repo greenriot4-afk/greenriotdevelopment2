@@ -73,23 +73,23 @@ const AppContent = () => {
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
           <Routes>
-            <Route path="/abandons" element={<ObjectsPage />} />
-            <Route path="/donations" element={<ObjectsPage />} />
-            <Route path="/products" element={<ObjectsPage />} />
-            <Route path="/object/:objectId" element={<ObjectDetailPage />} />
-            <Route path="/markets" element={<MarketsPage />} />
-            <Route path="/affiliates" element={<AffiliatePage />} />
-            <Route path="/market-detail/:marketId" element={<MarketDetailPage />} />
-            <Route path="/market-catalog/:marketId" element={<MarketCatalogPage />} />
-            <Route path="/profile/:userId" element={<UserProfilePage />} />
-            <Route path="/wallet" element={<WalletPage />} />
-            <Route path="/account" element={<AccountSettings />} />
-            <Route path="/my-market" element={<MyMarketPage />} />
-            <Route path="/my-ads" element={<MyAdsPage />} />
-            <Route path="/chat" element={<ChatListPage />} />
-            <Route path="/chat/:conversationId" element={<ChatPage />} />
-            <Route path="/favorites" element={<FavoritesPage />} />
-            <Route path="/testing" element={<TestingPage />} />
+            <Route path="abandons" element={<ObjectsPage />} />
+            <Route path="donations" element={<ObjectsPage />} />
+            <Route path="products" element={<ObjectsPage />} />
+            <Route path="object/:objectId" element={<ObjectDetailPage />} />
+            <Route path="markets" element={<MarketsPage />} />
+            <Route path="affiliates" element={<AffiliatePage />} />
+            <Route path="market-detail/:marketId" element={<MarketDetailPage />} />
+            <Route path="market-catalog/:marketId" element={<MarketCatalogPage />} />
+            <Route path="profile/:userId" element={<UserProfilePage />} />
+            <Route path="wallet" element={<WalletPage />} />
+            <Route path="account" element={<AccountSettings />} />
+            <Route path="my-market" element={<MyMarketPage />} />
+            <Route path="my-ads" element={<MyAdsPage />} />
+            <Route path="chat" element={<ChatListPage />} />
+            <Route path="chat/:conversationId" element={<ChatPage />} />
+            <Route path="favorites" element={<FavoritesPage />} />
+            <Route path="testing" element={<TestingPage />} />
             <Route path="*" element={<Navigate to="/app/abandons" replace />} />
           </Routes>
         </main>
