@@ -108,7 +108,6 @@ const App = () => (
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/app" element={<AppContent />} />
             <Route path="/abandons" element={<AppContent />} />
             <Route path="/donations" element={<AppContent />} />
             <Route path="/products" element={<AppContent />} />
