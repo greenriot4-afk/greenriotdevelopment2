@@ -19,10 +19,14 @@ export default function LandingPage() {
         </Button>
       </div>
 
-      {/* Hero Section */}
+      {/* Header Image Section */}
+      <section className="relative h-screen bg-cover bg-center bg-no-repeat overflow-hidden" style={{backgroundImage: "url('/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png')"}}>
+        <div className="absolute inset-0 bg-black/20"></div>
+      </section>
+
+      {/* Hero Content Section */}
       <section className="relative py-24 px-4 overflow-hidden" style={{backgroundColor: '#17503a'}}>
         <div className="container mx-auto max-w-5xl text-center relative z-10">
-          
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
             <span className="text-accent">
@@ -58,20 +62,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      
-      {/* Image Section - Save or Make Money */}
-      <section className="relative h-96 bg-cover bg-center bg-no-repeat overflow-hidden" style={{backgroundImage: "url('/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png')"}}>
-        <div className="absolute inset-0 bg-black/30"></div>
-        <div className="container mx-auto h-full flex items-center justify-end px-4 relative z-10">
-          <div className="text-right max-w-2xl">
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-impact text-rebel text-white drop-shadow-2xl">
-              SAVE OR MAKE MONEY
-              <br />
-              SAVE THE PLANET
-            </h2>
-          </div>
-        </div>
-      </section>
 
       {/* Coordinates Feature - Money Making */}
       <section className="py-20 px-4 bg-background">

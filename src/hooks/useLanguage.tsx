@@ -144,7 +144,7 @@ const translations = {
     'landing.hero.badge': '🌍 UNDERGROUND CIRCULAR ECONOMY',
     'landing.hero.title': 'STOOPING & THRIFTING',
     'landing.hero.subtitle': 'URBAN REBELLION',
-    'landing.hero.description': 'FIND FREE TREASURES NEAR YOU – give them a second life – EARN OR SAVE MONEY – save the planet',
+    'landing.hero.description': 'FIND FREE TREASURES NEAR YOU – give them a second life – SAVE OR MAKE MONEY – save the planet',
     'landing.hero.cta1': 'JOIN THE REBELLION',
     'landing.hero.cta2': 'EXPLORE NOW',
     
