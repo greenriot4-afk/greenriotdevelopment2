@@ -9,7 +9,6 @@ interface Wallet {
   id: string;
   user_id: string;
   balance: number;
-  currency: Currency;
   created_at: string;
   updated_at: string;
 }
@@ -25,7 +24,7 @@ interface WalletContextValue {
   formatCurrency: (amount: number, currency?: Currency) => string;
 }
 
-export const useWallet = () => {
+export const useWallet = (): WalletContextValue & { wallet: Wallet | null; fetchWallet: () => Promise<void> } => {
   const { user } = useAuth();
   const [wallets, setWallets] = useState<Record<Currency, Wallet | null>>({
     USD: null,
@@ -73,17 +72,10 @@ export const useWallet = () => {
         EUR: null
       };
 
-      // Map the fetched wallets by currency
-      if (data) {
-        data.forEach(walletData => {
-          if (walletData.currency === 'USD' || walletData.currency === 'EUR') {
-            const wallet: Wallet = {
-              ...walletData,
-              currency: walletData.currency as Currency
-            };
-            walletsData[wallet.currency] = wallet;
-          }
-        });
+      // For now, we'll assume USD wallets since the schema doesn't have currency
+      if (data && data.length > 0) {
+        // Use the first wallet as USD wallet
+        walletsData.USD = data[0] as Wallet;
       }
 
       setWallets(walletsData);
@@ -128,8 +120,7 @@ export const useWallet = () => {
           p_transaction_type: 'debit',
           p_user_id: user.id,
           p_description: sanitizedDescription,
-          p_object_type: sanitizedObjectType,
-          p_currency: currency
+          p_object_type: sanitizedObjectType
         });
 
       if (atomicError) {

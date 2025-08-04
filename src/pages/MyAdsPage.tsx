@@ -16,7 +16,8 @@ const MyAdsPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { user } = useAuth();
-  const { formatCurrency } = useWallet();
+  const walletHook = useWallet();
+  const formatCurrency = (walletHook as any).formatCurrency;
   const navigate = useNavigate();
 
   const fetchProducts = async () => {

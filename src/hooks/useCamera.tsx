@@ -9,7 +9,12 @@ export interface PhotoWithLocation {
   longitude: number;
 }
 
-export const useCamera = () => {
+// Updated hook to include selectFromGallery function
+export const useCamera = (): {
+  capturePhotoWithLocation: () => Promise<PhotoWithLocation | null>;
+  selectFromGallery: () => Promise<PhotoWithLocation | null>;
+  isLoading: boolean;
+} => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Web camera capture function using native browser APIs
@@ -458,5 +463,5 @@ export const useCamera = () => {
     capturePhotoWithLocation,
     selectFromGallery,
     isLoading,
-  };
+  } as const;
 };

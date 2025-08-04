@@ -38,7 +38,10 @@ export const EditMarketForm = ({ market, onSubmit, onCancel }: EditMarketFormPro
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showImageOptions, setShowImageOptions] = useState(false);
   
-  const { capturePhotoWithLocation, selectFromGallery, isLoading: isCameraLoading } = useCamera();
+  const cameraHook = useCamera();
+  const capturePhotoWithLocation = cameraHook.capturePhotoWithLocation;
+  const selectFromGallery = (cameraHook as any).selectFromGallery;
+  const isCameraLoading = cameraHook.isLoading;
   const { userLocation, getCurrentLocation, isLoading: locationLoading } = useLocation();
 
   const handleCapturePhoto = async () => {

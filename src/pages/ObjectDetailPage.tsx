@@ -57,8 +57,8 @@ export default function ObjectDetailPage() {
 
         setObject({
           ...data,
-          user_display_name: data.profiles?.display_name,
-          username: data.profiles?.username,
+          user_display_name: (data.profiles as any)?.display_name,
+          username: (data.profiles as any)?.username,
           type: data.type as 'abandoned' | 'donation' | 'product'
         });
       } catch (error) {

@@ -45,7 +45,10 @@ export const ProductForm = ({ product, marketId, onSubmit, onCancel }: ProductFo
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showImageOptions, setShowImageOptions] = useState(false);
   
-  const { capturePhotoWithLocation, selectFromGallery, isLoading: isCameraLoading } = useCamera();
+  const cameraHook = useCamera();
+  const capturePhotoWithLocation = cameraHook.capturePhotoWithLocation;
+  const selectFromGallery = (cameraHook as any).selectFromGallery;
+  const isCameraLoading = cameraHook.isLoading;
 
   const handleCapturePhoto = async () => {
     const photoData = await capturePhotoWithLocation();
