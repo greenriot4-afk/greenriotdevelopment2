@@ -30,7 +30,7 @@ export default function LandingPage() {
             <span className="text-accent">{t('landing.hero.subtitle')}</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">FIND FREE STUFF NEAR YOU –  SAVE OR MAKE MONEY – SAVE THE PLANET</p>
+          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">FIND FREE STUFF AND BARGAINS NEAR YOU –  SAVE OR MAKE MONEY – SAVE THE PLANET</p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in delay-300">
             <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
