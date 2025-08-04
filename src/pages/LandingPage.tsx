@@ -165,15 +165,15 @@ export default function LandingPage() {
                 <Badge variant="outline" className="border-accent text-accent font-impact">💰 PROFITABLE</Badge>
               </div>
               <div className="space-y-2">
-                <Link to="/cookies" className="block hover:text-accent transition-colors font-impact text-white">
+                <a href="#" className="block hover:text-accent transition-colors font-impact text-white">
                   Cookies Policy
-                </Link>
-                <Link to="/privacy" className="block hover:text-accent transition-colors font-impact text-white">
+                </a>
+                <a href="#" className="block hover:text-accent transition-colors font-impact text-white">
                   Privacy Policy
-                </Link>
-                <Link to="/legal" className="block hover:text-accent transition-colors font-impact text-white">
+                </a>
+                <a href="#" className="block hover:text-accent transition-colors font-impact text-white">
                   Legal Notice
-                </Link>
+                </a>
               </div>
             </div>
             
