@@ -84,8 +84,29 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title.trim()) {
+    // Enhanced input validation
+    const sanitizedTitle = title.trim();
+    const sanitizedDescription = description.trim();
+    
+    // Title validation
+    if (!sanitizedTitle) {
       toast.error('Por favor ingresa un título');
+      return;
+    }
+    
+    if (sanitizedTitle.length > 100) {
+      toast.error('El título no puede exceder 100 caracteres');
+      return;
+    }
+    
+    if (!/^[a-zA-Z0-9\s\-_,.\u00C0-\u017F]+$/.test(sanitizedTitle)) {
+      toast.error('El título contiene caracteres no válidos');
+      return;
+    }
+
+    // Description validation
+    if (sanitizedDescription.length > 500) {
+      toast.error('La descripción no puede exceder 500 caracteres');
       return;
     }
 
@@ -103,8 +124,8 @@ export const CreateMarketForm = ({ onSubmit, onCancel }: CreateMarketFormProps) 
     setIsSubmitting(true);
     try {
         await onSubmit({
-          title: title.trim(),
-          description: description.trim(),
+          title: sanitizedTitle,
+          description: sanitizedDescription,
           image: photo.image,
           latitude: locationData.latitude,
           longitude: locationData.longitude,

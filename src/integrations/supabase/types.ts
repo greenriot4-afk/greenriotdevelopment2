@@ -332,13 +332,6 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
-            foreignKeyName: "fk_objects_user_profile"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
             foreignKeyName: "objects_market_id_fkey"
             columns: ["market_id"]
             isOneToOne: false
@@ -630,13 +623,6 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
-            foreignKeyName: "fk_objects_user_profile"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["user_id"]
-          },
-          {
             foreignKeyName: "objects_market_id_fkey"
             columns: ["market_id"]
             isOneToOne: false
@@ -644,39 +630,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      public_profiles: {
-        Row: {
-          account_status: string | null
-          avatar_url: string | null
-          created_at: string | null
-          display_name: string | null
-          id: string | null
-          updated_at: string | null
-          user_id: string | null
-          username: string | null
-        }
-        Insert: {
-          account_status?: string | null
-          avatar_url?: string | null
-          created_at?: string | null
-          display_name?: string | null
-          id?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-          username?: string | null
-        }
-        Update: {
-          account_status?: string | null
-          avatar_url?: string | null
-          created_at?: string | null
-          display_name?: string | null
-          id?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-          username?: string | null
-        }
-        Relationships: []
       }
     }
     Functions: {
@@ -697,6 +650,15 @@ export type Database = {
       sanitize_text_input: {
         Args: { input_text: string }
         Returns: string
+      }
+      secure_wallet_operation: {
+        Args: {
+          p_wallet_id: string
+          p_user_id: string
+          p_amount: number
+          p_operation: string
+        }
+        Returns: boolean
       }
       trigger_abandons_cleanup: {
         Args: Record<PropertyKey, never>
@@ -729,6 +691,15 @@ export type Database = {
       }
       validate_amount: {
         Args: { amount: number }
+        Returns: boolean
+      }
+      validate_numeric_input: {
+        Args: {
+          input_value: number
+          min_value?: number
+          max_value?: number
+          decimal_places?: number
+        }
         Returns: boolean
       }
       validate_profile_input: {

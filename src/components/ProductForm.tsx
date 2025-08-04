@@ -68,8 +68,29 @@ export const ProductForm = ({ product, marketId, onSubmit, onCancel }: ProductFo
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title.trim()) {
+    // Enhanced input validation
+    const sanitizedTitle = title.trim();
+    const sanitizedDescription = description.trim();
+    
+    // Title validation
+    if (!sanitizedTitle) {
       toast.error('Por favor ingresa un título');
+      return;
+    }
+    
+    if (sanitizedTitle.length > 100) {
+      toast.error('El título no puede exceder 100 caracteres');
+      return;
+    }
+    
+    if (!/^[a-zA-Z0-9\s\-_,.\u00C0-\u017F]+$/.test(sanitizedTitle)) {
+      toast.error('El título contiene caracteres no válidos');
+      return;
+    }
+
+    // Description validation
+    if (sanitizedDescription.length > 500) {
+      toast.error('La descripción no puede exceder 500 caracteres');
       return;
     }
 
@@ -78,16 +99,20 @@ export const ProductForm = ({ product, marketId, onSubmit, onCancel }: ProductFo
       return;
     }
 
-    if (type === 'product' && (!priceCredits || parseInt(priceCredits) <= 0)) {
-      toast.error('Por favor ingresa un precio válido para el producto');
-      return;
+    // Price validation for products
+    if (type === 'product') {
+      const price = parseInt(priceCredits);
+      if (!priceCredits || isNaN(price) || price <= 0 || price > 10000) {
+        toast.error('Por favor ingresa un precio válido entre 1 y 10,000 créditos');
+        return;
+      }
     }
 
     setIsSubmitting(true);
     try {
       await onSubmit({
-        title: title.trim(),
-        description: description.trim(),
+        title: sanitizedTitle,
+        description: sanitizedDescription,
         type,
         price_credits: type === 'product' ? parseInt(priceCredits) : 0,
         image_url: photo.image,

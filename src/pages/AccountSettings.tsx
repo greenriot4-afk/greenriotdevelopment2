@@ -86,14 +86,46 @@ export default function AccountSettings() {
     e.preventDefault();
     if (!user) return;
 
+    // Enhanced input validation using database function
+    const sanitizedDisplayName = displayName.trim();
+    const sanitizedUsername = username.trim().toLowerCase();
+    
+    // Client-side validation
+    if (!sanitizedDisplayName || sanitizedDisplayName.length > 100) {
+      toast.error('El nombre de mostrar debe tener entre 1 y 100 caracteres');
+      return;
+    }
+    
+    if (!sanitizedUsername || sanitizedUsername.length > 50) {
+      toast.error('El nombre de usuario debe tener entre 1 y 50 caracteres');
+      return;
+    }
+    
+    if (!/^[a-zA-Z0-9_-]+$/.test(sanitizedUsername)) {
+      toast.error('El nombre de usuario solo puede contener letras, números, guiones y guiones bajos');
+      return;
+    }
+
     try {
       setProfileLoading(true);
+
+      // Use database validation function
+      const { data: isValid, error: validationError } = await supabase
+        .rpc('validate_profile_input', {
+          p_display_name: sanitizedDisplayName,
+          p_username: sanitizedUsername
+        });
+
+      if (validationError) {
+        toast.error('Error de validación: ' + validationError.message);
+        return;
+      }
 
       const { error } = await supabase
         .from('profiles')
         .update({
-          display_name: displayName.trim(),
-          username: username.trim().toLowerCase()
+          display_name: sanitizedDisplayName,
+          username: sanitizedUsername
         })
         .eq('user_id', user.id);
 
