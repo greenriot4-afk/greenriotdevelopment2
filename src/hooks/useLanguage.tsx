@@ -176,6 +176,10 @@ const translations = {
     'footer.links.privacy': 'Privacy Policy', 
     'footer.links.legal': 'Legal Notice',
     'footer.copyright': 'MAKING LOCAL CIRCULAR ECONOMY EASY AND PROFITABLE',
+    'footer.badges.circular': '♻️ CIRCULAR',
+    'footer.badges.profitable': '💰 PROFITABLE',
+    'footer.badges.bringMarkets': 'bring circular markets and make $',
+    'footer.badges.helpPlanet': 'help the planet',
     
     'landing.finalCta.title': 'READY TO TURN TRASH INTO CASH?',
     'landing.finalCta.description': 'JOIN THOUSANDS OF USERS WHO ARE ALREADY MAKING MONEY, SAVING MONEY AND HELPING THE PLANET THROUGH URBAN CIRCULAR ECONOMY.',
@@ -398,6 +402,10 @@ const translations = {
     'footer.links.privacy': 'Politica privacidad',
     'footer.links.legal': 'Aviso legal',
     'footer.copyright': 'HACIENDO LA ECONOMÍA CIRCULAR LOCAL FÁCIL, RENTABLE Y DIVERTIDA',
+    'footer.badges.circular': '♻️ CIRCULAR',
+    'footer.badges.profitable': '💰 RENTABLE',
+    'footer.badges.bringMarkets': 'Trae un mercado circular y gana $',
+    'footer.badges.helpPlanet': 'ayuda al planeta',
     
     'landing.finalCta.title': '¿LISTO PARA CONVERTIR BASURA EN DINERO?',
     'landing.finalCta.description': 'ÚNETE A MILES DE USUARIOS QUE YA ESTÁN GANANDO DINERO, AHORRANDO DINERO Y AYUDANDO AL PLANETA A TRAVÉS DE LA ECONOMÍA CIRCULAR URBANA.',

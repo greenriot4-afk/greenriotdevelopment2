@@ -155,8 +155,8 @@ export default function LandingPage() {
                 {t('footer.description')}
               </p>
               <div className="flex flex-wrap gap-2 mb-6">
-                <Badge variant="outline" className="border-accent text-accent font-impact">♻️ CIRCULAR</Badge>
-                <Badge variant="outline" className="border-accent text-accent font-impact">💰 PROFITABLE</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">{t('footer.badges.circular')}</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">{t('footer.badges.profitable')}</Badge>
               </div>
               <div className="space-y-2">
                 <Link to="/cookies" className="block hover:text-accent transition-colors font-impact text-white">
@@ -179,11 +179,11 @@ export default function LandingPage() {
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="border-accent text-accent font-impact flex items-center gap-1">
                   <DollarSign className="h-3 w-3" />
-                  bring circular markets and make $
+                  {t('footer.badges.bringMarkets')}
                 </Badge>
                 <Badge variant="outline" className="border-accent text-accent font-impact flex items-center gap-1">
                   <Globe className="h-3 w-3 text-blue-500" />
-                  help the planet
+                  {t('footer.badges.helpPlanet')}
                 </Badge>
               </div>
             </div>
