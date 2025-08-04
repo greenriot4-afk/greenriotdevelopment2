@@ -27,6 +27,7 @@ import AffiliatePage from "./pages/AffiliatePage";
 import FavoritesPage from "./pages/FavoritesPage";
 import TestingPage from "./pages/TestingPage";
 import { UserProfilePage } from "./pages/UserProfilePage";
+import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 import { LocationPermissionDialog } from "@/components/LocationPermissionDialog";
 import { useFirstLogin } from "@/hooks/useFirstLogin";
@@ -140,6 +141,7 @@ const App = () => (
           <Sonner />
         <BrowserRouter>
           <Routes>
+            <Route path="/landing" element={<LandingPage />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/*" element={<AppContent />} />
           </Routes>
