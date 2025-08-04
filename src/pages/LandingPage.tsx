@@ -104,16 +104,8 @@ export default function LandingPage() {
               <div className="space-y-8">
                 <div className="w-80 max-w-sm">
                   <img 
-                    src="/lovable-uploads/6596ef47-c390-485d-ad2f-866400f5dfb8.png" 
-                    alt="GreenRiot app showing list of circular markets" 
-                    className="w-full h-auto rounded-3xl shadow-2xl"
-                  />
-                </div>
-                
-                <div className="w-80 max-w-sm">
-                  <img 
-                    src="/lovable-uploads/ec64fcd2-b654-48aa-b479-6901a38d24ce.png" 
-                    alt="GreenRiot app showing market details" 
+                    src="/lovable-uploads/72660b3e-2b63-423d-86c3-d5f90e52aa22.png" 
+                    alt="GreenRiot app showing garage sale and market features" 
                     className="w-full h-auto rounded-3xl shadow-2xl"
                   />
                 </div>
