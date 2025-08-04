@@ -169,51 +169,44 @@ export default function LandingPage() {
       
 
       {/* Footer */}
-      <footer className="bg-secondary py-12 px-4">
+      <footer className="bg-muted py-12 px-4">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-2xl font-impact text-rebel mb-4 text-white">{t('landing.footer.title')}</h3>
-              <p className="text-white mb-4 font-impact">
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">{t('landing.footer.title')}</h3>
+              <p className="text-foreground mb-4 font-impact">
                 {t('landing.footer.description')}
               </p>
-              <div className="flex space-x-4">
+              <div className="flex flex-wrap gap-2 mb-6">
                 <Badge variant="outline" className="border-primary text-primary font-impact">{t('landing.footer.circular')}</Badge>
                 <Badge variant="outline" className="border-primary text-primary font-impact">{t('landing.footer.profitable')}</Badge>
+              </div>
+              <div className="space-y-2">
+                <Link to="/cookies" className="block hover:text-primary transition-colors font-impact text-foreground">
+                  Cookies Policy
+                </Link>
+                <Link to="/privacy" className="block hover:text-primary transition-colors font-impact text-foreground">
+                  Privacy Policy
+                </Link>
+                <Link to="/legal" className="block hover:text-primary transition-colors font-impact text-foreground">
+                  Legal Notice
+                </Link>
               </div>
             </div>
             
             <div>
-              <h4 className="font-impact text-rebel mb-4 text-white">{t('landing.footer.features')}</h4>
-              <ul className="space-y-2 text-white">
-                <li><Link to="/abandons" className="hover:text-primary transition-colors font-impact">{t('landing.footer.findStuff')}</Link></li>
-                <li><Link to="/markets" className="hover:text-primary transition-colors font-impact">{t('landing.footer.circularMarkets')}</Link></li>
-                <li><Link to="/wallet" className="hover:text-primary transition-colors font-impact">{t('landing.footer.earnings')}</Link></li>
-                <li><Link to="/affiliate" className="hover:text-primary transition-colors font-impact">{t('landing.footer.refer')}</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-impact text-rebel mb-4 text-white">{t('landing.footer.community')}</h4>
-              <ul className="space-y-2 text-white">
-                <li><Link to="/chat" className="hover:text-primary transition-colors font-impact">{t('landing.footer.chat')}</Link></li>
-                <li><Link to="/favorites" className="hover:text-primary transition-colors font-impact">{t('landing.footer.favorites')}</Link></li>
-                <li><Link to="/account" className="hover:text-primary transition-colors font-impact">{t('landing.footer.myAccount')}</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-impact text-rebel mb-4 text-white">{t('landing.footer.impact')}</h4>
-              <ul className="space-y-2 text-white font-impact">
-                <li>{t('landing.footer.activeUsers')}</li>
-                <li>{t('landing.footer.wasteReduction')}</li>
-                <li>{t('landing.footer.avgSavings')}</li>
-                <li>{t('landing.footer.growingCommunity')}</li>
-              </ul>
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">Refer and Earn</h3>
+              <p className="text-foreground mb-4 font-impact">
+                Invita a tus amigos y gana recompensas por cada nuevo usuario que se registre. Construyamos juntos una comunidad más sostenible y próspera.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className="border-primary text-primary font-impact">+10€ por referido</Badge>
+                <Badge variant="outline" className="border-primary text-primary font-impact">Sin límites</Badge>
+              </div>
             </div>
           </div>
           
-          <div className="border-t border-primary mt-8 pt-8 text-center text-white">
+          <div className="border-t border-primary mt-8 pt-8 text-center text-foreground">
             <p className="font-impact">{t('landing.footer.copyright')}</p>
           </div>
         </div>
