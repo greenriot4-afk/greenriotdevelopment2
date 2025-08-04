@@ -88,7 +88,7 @@ export default function LandingPage() {
               <Card className="p-8 bg-card border-primary shadow-rebel">
                 <div className="text-center">
                   <div className="bg-primary rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                    <Eye className="h-10 w-10 text-primary-foreground" />
+                    <img src="/lovable-uploads/c7ef6562-8319-47d6-83eb-4939c25fa1f5.png" alt="Buy Coordinates" className="h-10 w-10" />
                   </div>
                   <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">BUY COORDINATES AND GET BARGAINS</h3>
                   <p className="text-foreground text-lg leading-relaxed font-impact">You know there is a FREE COUCH 6 away from you but not exactly where, buy the coordinates and get a €200 COUCH FOR €1</p>
