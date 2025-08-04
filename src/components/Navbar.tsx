@@ -8,12 +8,7 @@ export default function Navbar() {
   const { t, language, setLanguage } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const menuItems = [
-    { label: language === 'en' ? 'HOME' : 'INICIO', href: '/' },
-    { label: language === 'en' ? 'STOOPING' : 'STOOPING', href: '/app/abandons' },
-    { label: language === 'en' ? 'THRIFTING' : 'THRIFTING', href: '/app/markets' },
-    { label: language === 'en' ? 'DUMPSTER DIVING' : 'DUMPSTER DIVING', href: '/app/wallet' },
-  ];
+  // Remove website navigation items - they'll be in the hamburger menu instead
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-lg border-b border-white/20 shadow-lg">
@@ -28,17 +23,8 @@ export default function Navbar() {
             />
           </Link>
 
-          {/* Desktop Menu */}
+          {/* Desktop Menu - only show CTA button */}
           <div className="hidden md:flex items-center space-x-8">
-            {menuItems.map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                className="text-white font-impact text-sm hover:text-accent transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
             
             {/* CTA Button */}
             <Button asChild className="bg-accent hover:bg-accent/90 text-primary font-impact text-rebel shadow-rebel">
@@ -70,20 +56,10 @@ export default function Navbar() {
           </Button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - simplified, main navigation now in hamburger menu */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-white/10">
             <div className="flex flex-col space-y-4">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className="text-white font-impact text-sm hover:text-accent transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
               
               <Button asChild className="bg-accent hover:bg-accent/90 text-primary font-impact text-rebel shadow-rebel w-fit">
                 <Link to="/app" onClick={() => setIsMenuOpen(false)}>
