@@ -112,7 +112,7 @@ export default function LandingPage() {
                   <div className="bg-primary rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                     <Store className="h-10 w-10 text-primary-foreground" />
                   </div>
-                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">EXPLORE UNDERGROUND CIRCULAR STORES</h3>
+                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">EXPLORE CIRCULAR MARKETS NEAR YOU</h3>
                   <p className="text-foreground text-lg leading-relaxed font-impact">
                     SEE THEIR CATALOG FROM THE COMFORT OF YOUR HOME AND THEN GO TO BUY LIVE
                   </p>
@@ -121,36 +121,24 @@ export default function LandingPage() {
             </div>
             
             <div>
-              <Badge className="mb-6 bg-primary text-primary-foreground font-impact text-rebel shadow-rebel">
-                🏪 CIRCULAR MARKETS
-              </Badge>
-              <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-white">
-                EXPLORE LOCAL UNDERGROUND THRIFT STORES AND GARAGE SALES
-              </h2>
+              
+              <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-white">EXPLORE LOCAL CIRCULAR THRIFT STORES AND GARAGE SALES</h2>
               <div className="space-y-6 mb-8">
                 <div className="flex gap-4">
                   <Eye className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">
-                    BROWSE CATALOGS OF LOCAL STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME
-                  </p>
+                  <p className="text-lg text-white font-impact">BROWSE CATALOGS OF LOCAL THRIFT  STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME</p>
                 </div>
                 <div className="flex gap-4">
                   <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">
-                    VISIT ONLY THE STORES THAT HAVE WHAT YOU'RE LOOKING FOR, SAVING TIME AND GAS
-                  </p>
+                  <p className="text-lg text-white font-impact">VISIT ONLY THE PLACES THAT HAVE WHAT YOU'RE LOOKING FOR, SAVING TIME AND GAS</p>
                 </div>
                 <div className="flex gap-4">
                   <Plus className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">
-                    CREATE YOUR OWN CIRCULAR MARKET, make money with unwanted stuff and save the planet
-                  </p>
+                  <p className="text-lg text-white font-impact">CREATE YOUR OWN CIRCULAR MARKET, MAKE MONEY WITH UNWANTED STUFF AND SAVE THE PLANET</p>
                 </div>
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
-                <Link to="/markets">
-                  EXPLORE MARKETS <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                
               </Button>
             </div>
           </div>
