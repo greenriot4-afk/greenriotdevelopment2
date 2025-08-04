@@ -12,19 +12,19 @@ export default function Navbar() {
     { label: language === 'en' ? 'HOME' : 'INICIO', href: '/landing' },
     { label: language === 'en' ? 'STOOPING' : 'STOOPING', href: '/abandons' },
     { label: language === 'en' ? 'THRIFTING' : 'THRIFTING', href: '/markets' },
-    { label: language === 'en' ? 'WALLET' : 'BILLETERA', href: '/wallet' },
+    { label: language === 'en' ? 'DUMPSTER DIVING' : 'DUMPSTER DIVING', href: '/wallet' },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md border-b border-white/10">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-lg border-b border-white/20 shadow-lg">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link to="/landing" className="flex items-center">
             <img 
               src="/lovable-uploads/fed4e95f-7ec0-41bc-b194-9781cdc063de.png" 
               alt="Greenriot" 
-              className="h-8 w-auto"
+              className="h-12 w-auto"
             />
           </Link>
 
