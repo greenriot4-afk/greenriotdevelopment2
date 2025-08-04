@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, Store, Plus, Languages } from "lucide-react";
+import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, Store, Plus, Languages, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
@@ -200,8 +200,14 @@ export default function LandingPage() {
                 Invite your friends and earn rewards for every new user who signs up. Let's build a more sustainable and prosperous community together.
               </p>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="outline" className="border-accent text-accent font-impact">+10€ per referral</Badge>
-                <Badge variant="outline" className="border-accent text-accent font-impact">No limits</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact flex items-center gap-1">
+                  <DollarSign className="h-3 w-3" />
+                  bring circular markets and make $
+                </Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact flex items-center gap-1">
+                  <Globe className="h-3 w-3" />
+                  help the planet
+                </Badge>
               </div>
             </div>
           </div>
