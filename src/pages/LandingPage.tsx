@@ -207,7 +207,7 @@ export default function LandingPage() {
           </div>
           
           <div className="border-t border-accent mt-8 pt-8 text-center text-white">
-            <p className="font-impact">MAKING LOCAL CIRCULAR ECONOMY PROFITABLE</p>
+            <p className="font-impact">MAKING LOCAL CIRCULAR ECONOMY EASY AND PROFITABLE</p>
           </div>
         </div>
       </footer>
