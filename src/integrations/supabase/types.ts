@@ -332,6 +332,13 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
+            foreignKeyName: "fk_objects_user_profile"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "objects_market_id_fkey"
             columns: ["market_id"]
             isOneToOne: false
@@ -623,6 +630,13 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
           {
+            foreignKeyName: "fk_objects_user_profile"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
             foreignKeyName: "objects_market_id_fkey"
             columns: ["market_id"]
             isOneToOne: false
@@ -630,6 +644,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      public_profiles: {
+        Row: {
+          account_status: string | null
+          avatar_url: string | null
+          created_at: string | null
+          display_name: string | null
+          id: string | null
+          updated_at: string | null
+          user_id: string | null
+          username: string | null
+        }
+        Insert: {
+          account_status?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          username?: string | null
+        }
+        Update: {
+          account_status?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          username?: string | null
+        }
+        Relationships: []
       }
     }
     Functions: {
@@ -682,6 +729,14 @@ export type Database = {
       }
       validate_amount: {
         Args: { amount: number }
+        Returns: boolean
+      }
+      validate_profile_input: {
+        Args: {
+          p_display_name?: string
+          p_username?: string
+          p_location_name?: string
+        }
         Returns: boolean
       }
     }
