@@ -11,7 +11,7 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-lg border-b border-white/20 shadow-lg">
       <div className="container mx-auto px-1 sm:px-2 lg:px-4">
-        <div className="flex items-center justify-start md:justify-between h-16 sm:h-18 lg:h-20 gap-4 md:gap-0">
+        <div className="flex items-center justify-start md:justify-between h-16 sm:h-18 lg:h-20 gap-8 md:gap-0">
           {/* Logo */}
           <Link to="/" className="flex items-center flex-shrink-0">
             <img 
