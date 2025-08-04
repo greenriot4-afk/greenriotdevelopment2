@@ -144,7 +144,7 @@ const translations = {
     'landing.hero.badge': '🌍 UNDERGROUND CIRCULAR ECONOMY',
     'landing.hero.title': 'STOOPING & THRIFTING',
     'landing.hero.subtitle': 'URBAN REBELLION',
-    'landing.hero.description': 'FIND FREE TREASURES NEAR YOU – give them a second life – SAVE OR MAKE MONEY – save the planet',
+    'landing.hero.description': 'FIND FREE STUFF OR BARGAINS NEAR YOU –  SAVE OR MAKE MONEY – SAVE THE PLANET',
     'landing.hero.cta1': 'JOIN THE REBELLION',
     'landing.hero.cta2': 'EXPLORE NOW',
     
@@ -171,6 +171,11 @@ const translations = {
     // Footer section
     'footer.description': 'the circular economy app that makes the local circular economy easy, fun, and profitable.',
     'footer.affiliate.description': 'register now to get your affiliate code and help build circular economy markets. you can make easy money by sharing your link and helping the planet',
+    'footer.affiliate.title': 'Refer and Earn',
+    'footer.links.cookies': 'Cookies Policy',
+    'footer.links.privacy': 'Privacy Policy', 
+    'footer.links.legal': 'Legal Notice',
+    'footer.copyright': 'MAKING LOCAL CIRCULAR ECONOMY EASY AND PROFITABLE',
     
     'landing.finalCta.title': 'READY TO TURN TRASH INTO CASH?',
     'landing.finalCta.description': 'JOIN THOUSANDS OF USERS WHO ARE ALREADY MAKING MONEY, SAVING MONEY AND HELPING THE PLANET THROUGH URBAN CIRCULAR ECONOMY.',
@@ -361,7 +366,7 @@ const translations = {
     'landing.hero.badge': '🌍 ECONOMÍA CIRCULAR UNDERGROUND',
     'landing.hero.title': 'STOOPING & THRIFTING',
     'landing.hero.subtitle': 'REBELIÓN URBANA',
-    'landing.hero.description': 'ENCUENTRA TESOROS GRATIS CERCA DE TI – dales una segunda vida – GANA O AHORRA DINERO – salva el planeta',
+    'landing.hero.description': 'ENCUENTRA CHOLLOS O COSAS GRATIS - GANA O AHORRA DINERO - SALVA EL PLANETA',
     'landing.hero.cta1': 'ÚNETE A LA REBELIÓN',
     'landing.hero.cta2': 'EXPLORA YA',
     
@@ -388,6 +393,11 @@ const translations = {
     // Footer section
     'footer.description': 'La app que hace la economía circular local fácil, divertida y rentable.',
     'footer.affiliate.description': 'Regístrate ahora para obtener tu código de afiliado y ayuda a construir mas mercados de economía circular. Puedes ganar dinero fácilmente compartiendo tu enlace y ayudando al planeta.',
+    'footer.affiliate.title': 'REFIERE Y GANA',
+    'footer.links.cookies': 'Politica de cookies',
+    'footer.links.privacy': 'Politica privacidad',
+    'footer.links.legal': 'Aviso legal',
+    'footer.copyright': 'HACIENDO LA ECONOMÍA CIRCULAR LOCAL FÁCIL, RENTABLE Y DIVERTIDA',
     
     'landing.finalCta.title': '¿LISTO PARA CONVERTIR BASURA EN DINERO?',
     'landing.finalCta.description': 'ÚNETE A MILES DE USUARIOS QUE YA ESTÁN GANANDO DINERO, AHORRANDO DINERO Y AYUDANDO AL PLANETA A TRAVÉS DE LA ECONOMÍA CIRCULAR URBANA.',

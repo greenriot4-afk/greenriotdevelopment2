@@ -31,7 +31,7 @@ export default function LandingPage() {
             <span className="text-accent">{t('landing.hero.subtitle')}</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">FIND FREE STUFF AND BARGAINS NEAR YOU –  SAVE OR MAKE MONEY – SAVE THE PLANET</p>
+          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">{t('landing.hero.description')}</p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in delay-300">
             <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
@@ -160,19 +160,19 @@ export default function LandingPage() {
               </div>
               <div className="space-y-2">
                 <Link to="/cookies" className="block hover:text-accent transition-colors font-impact text-white">
-                  Cookies Policy
+                  {t('footer.links.cookies')}
                 </Link>
                 <Link to="/privacy" className="block hover:text-accent transition-colors font-impact text-white">
-                  Privacy Policy
+                  {t('footer.links.privacy')}
                 </Link>
                 <Link to="/legal" className="block hover:text-accent transition-colors font-impact text-white">
-                  Legal Notice
+                  {t('footer.links.legal')}
                 </Link>
               </div>
             </div>
             
             <div>
-              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">Refer and Earn</h3>
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">{t('footer.affiliate.title')}</h3>
               <p className="text-white mb-4 font-impact">
                 {t('footer.affiliate.description')}
               </p>
@@ -190,7 +190,7 @@ export default function LandingPage() {
           </div>
           
           <div className="border-t border-accent mt-8 pt-8 text-center text-white">
-            <p className="font-impact">MAKING LOCAL CIRCULAR ECONOMY EASY AND PROFITABLE</p>
+            <p className="font-impact">{t('footer.copyright')}</p>
           </div>
         </div>
       </footer>
