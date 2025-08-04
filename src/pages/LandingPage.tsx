@@ -4,11 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, Store, Plus, Languages, Globe, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import { useLanguage } from "@/hooks/useLanguage";
-
 export default function LandingPage() {
-  const { t } = useLanguage();
-  
   return <div className="min-h-screen bg-background">
       {/* Navigation Bar */}
       <Navbar />
@@ -26,23 +22,19 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-5xl text-center relative z-10">
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
-            <span className="text-accent">{t('landing.hero.title')}</span>
+            <span className="text-accent">STOOPING & THRIFTING</span>
             <br />
-            <span className="text-accent">{t('landing.hero.subtitle')}</span>
+            <span className="text-accent">REBELIÓN URBANA</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">{t('landing.hero.description')}</p>
+          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">ENCUENTRA OBJETOS GRATIS CERCA DE TI – AHORRA O GANA DINERO – SALVA EL PLANETA</p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in delay-300">
             <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
-              <Link to="/app/abandons">
-                {t('landing.hero.cta1')}
-              </Link>
+              
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-white text-white hover:bg-white hover:text-secondary font-impact text-rebel">
-              <Link to="/app/markets">
-                {t('landing.hero.cta2')}
-              </Link>
+              
             </Button>
           </div>
         </div>
@@ -63,28 +55,28 @@ export default function LandingPage() {
             <div className="text-left lg:text-left">
               
               <h2 className="text-2xl sm:text-3xl md:text-5xl font-impact text-rebel mb-6 sm:mb-8 leading-tight text-foreground text-left">
-                {t('landing.coordinates.title')}
+                GANA DINERO COMPARTIENDO FOTOS Y COORDENADAS DE OBJETOS ABANDONADOS EN LA CALLE
               </h2>
               <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8 text-left">
                 <div className="flex gap-3 sm:gap-4 justify-start">
                   <Camera className="h-5 w-5 sm:h-6 sm:w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-sm sm:text-lg text-foreground font-impact text-left">{t('landing.coordinates.feature1')}</p>
+                  <p className="text-sm sm:text-lg text-foreground font-impact text-left">CAZA MUEBLES, ELECTRÓNICOS O CUALQUIER OTRO TESORO ABANDONADO EN LA CALLE</p>
                 </div>
                 <div className="flex gap-3 sm:gap-4 justify-start">
                   <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-primary mt-1 flex-shrink-0" />
                   <p className="text-sm sm:text-lg text-foreground font-impact text-left">
-                    {t('landing.coordinates.feature2')}
+                    COMPARTE LA UBICACIÓN APROXIMADA Y GANA DINERO CUANDO ALGUIEN COMPRE LAS COORDENADAS EXACTAS
                   </p>
                 </div>
                 <div className="flex gap-3 sm:gap-4 justify-start">
                   <DollarSign className="h-5 w-5 sm:h-6 sm:w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-sm sm:text-lg text-foreground font-impact text-left">{t('landing.coordinates.feature3')}</p>
+                  <p className="text-sm sm:text-lg text-foreground font-impact text-left">CONVIERTE TUS PASEOS DIARIOS EN UNA OPORTUNIDAD DE NEGOCIO URBANO DIVERTIDA</p>
                 </div>
               </div>
               <div className="flex justify-start">
                 <Button asChild size="sm" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-3">
                   <Link to="/objects">
-                    {t('landing.coordinates.cta')} <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-5 sm:w-5" />
+                    EMPIEZA A GANAR DINERO Y AYUDAR AL PLANETA <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-5 sm:w-5" />
                   </Link>
                 </Button>
               </div>
@@ -94,10 +86,10 @@ export default function LandingPage() {
               <div className="p-8">
                 <div className="text-center">
                   <div className="mb-6">
-                    <img src="/lovable-uploads/d555150b-d59d-46cf-ad9e-2a7883671574.png" alt={t('landing.coordinates.cardTitle')} className="w-96 h-auto mx-auto" />
+                    <img src="/lovable-uploads/d555150b-d59d-46cf-ad9e-2a7883671574.png" alt="Comprar Coordenadas" className="w-96 h-auto mx-auto" />
                   </div>
-                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">{t('landing.coordinates.cardTitle')}</h3>
-                  <p className="text-foreground text-lg leading-relaxed font-impact">{t('landing.coordinates.cardDescription')}</p>
+                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">COMPRA COORDENADAS Y CONSIGUE GANGAS</h3>
+                  <p className="text-foreground text-lg leading-relaxed font-impact">Sabes que hay un SOFÁ GRATIS a 6 metros de ti pero no exactamente dónde, compra las coordenadas y consigue un SOFÁ DE $200 POR $1</p>
                 </div>
               </div>
             </div>
@@ -115,7 +107,7 @@ export default function LandingPage() {
                 <div className="w-80 max-w-sm">
                   <img 
                     src="/lovable-uploads/72660b3e-2b63-423d-86c3-d5f90e52aa22.png" 
-                    alt={t('landing.markets.cardTitle')} 
+                    alt="App GreenRiot mostrando funciones de venta de garaje y mercados" 
                     className="w-full h-auto rounded-3xl shadow-2xl"
                   />
                 </div>
@@ -123,81 +115,82 @@ export default function LandingPage() {
             </div>
             
             <div>
-              <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-white">{t('landing.markets.title')}</h2>
+              <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-white">EXPLORA TIENDAS DE SEGUNDA MANO CIRCULARES LOCALES Y VENTAS DE GARAJE</h2>
               <div className="space-y-6 mb-8">
                 <div className="flex gap-4">
                   <Eye className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">{t('landing.markets.feature1')}</p>
+                  <p className="text-lg text-white font-impact">NAVEGA CATÁLOGOS DE TIENDAS DE SEGUNDA MANO LOCALES, VENTAS DE GARAJE Y MERCADOS CIRCULARES DESDE CASA. CHATEA Y NEGOCIA</p>
                 </div>
                 <div className="flex gap-4">
                   <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">{t('landing.markets.feature2')}</p>
+                  <p className="text-lg text-white font-impact">VISITA SOLO LOS LUGARES QUE TIENEN LO QUE BUSCAS, AHORRANDO TIEMPO Y GASOLINA</p>
                 </div>
                 <div className="flex gap-4">
                   <Trash2 className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">ASK THEM TO COME TO YOUR HOUSE TO COLLECT YOUR UNWANTED ITEMS INSTEAD OF THROWING THEM IN THE TRASH</p>
+                  <p className="text-lg text-white font-impact">PÍDELES QUE VENGAN A TU CASA A RECOGER TUS OBJETOS NO DESEADOS EN LUGAR DE TIRARLOS A LA BASURA</p>
                 </div>
                 <div className="flex gap-4">
                   <Plus className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">{t('landing.markets.feature3')}</p>
+                  <p className="text-lg text-white font-impact">CREA TU PROPIO MERCADO CIRCULAR, GANA DINERO CON OBJETOS NO DESEADOS Y SALVA EL PLANETA</p>
                 </div>
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
-                <Link to="/app/markets">
-                  {t('landing.markets.cta')}
-                </Link>
+                
               </Button>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Final CTA */}
+      
+
       {/* Footer */}
       <footer className="bg-muted py-12 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">{t('landing.footer.title')}</h3>
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">GREENRIOT</h3>
               <p className="text-white mb-4 font-impact">
-                {t('landing.footer.description')}
+                la app de economía circular que hace la economía circular local fácil, divertida y rentable.
               </p>
               <div className="flex flex-wrap gap-2 mb-6">
-                <Badge variant="outline" className="border-accent text-accent font-impact">{t('landing.footer.circular')}</Badge>
-                <Badge variant="outline" className="border-accent text-accent font-impact">{t('landing.footer.profitable')}</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">♻️ CIRCULAR</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">💰 RENTABLE</Badge>
               </div>
               <div className="space-y-2">
                 <Link to="/cookies" className="block hover:text-accent transition-colors font-impact text-white">
-                  Cookies Policy
+                  Política de Cookies
                 </Link>
                 <Link to="/privacy" className="block hover:text-accent transition-colors font-impact text-white">
-                  Privacy Policy
+                  Política de Privacidad
                 </Link>
                 <Link to="/legal" className="block hover:text-accent transition-colors font-impact text-white">
-                  Legal Notice
+                  Aviso Legal
                 </Link>
               </div>
             </div>
             
             <div>
-              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">{t('landing.footer.refer')}</h3>
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">Refiere y Gana</h3>
               <p className="text-white mb-4 font-impact">
-                register now to get your affiliate code and help build circular economy markets. you can make easy money by sharing your link and helping the planet
+                regístrate ahora para conseguir tu código de afiliado y ayudar a construir mercados de economía circular. puedes ganar dinero fácilmente compartiendo tu enlace y ayudando al planeta
               </p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="border-accent text-accent font-impact flex items-center gap-1">
                   <DollarSign className="h-3 w-3" />
-                  bring circular markets and make $
+                  trae mercados circulares y gana $
                 </Badge>
                 <Badge variant="outline" className="border-accent text-accent font-impact flex items-center gap-1">
                   <Globe className="h-3 w-3 text-blue-500" />
-                  help the planet
+                  ayuda al planeta
                 </Badge>
               </div>
             </div>
           </div>
           
           <div className="border-t border-accent mt-8 pt-8 text-center text-white">
-            <p className="font-impact">{t('landing.footer.copyright')}</p>
+            <p className="font-impact">HACIENDO LA ECONOMÍA CIRCULAR LOCAL FÁCIL Y RENTABLE</p>
           </div>
         </div>
       </footer>
