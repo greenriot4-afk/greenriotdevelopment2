@@ -14,31 +14,31 @@ const tabs = [
     id: "abandons",
     labelKey: "nav.abandons",
     iconSrc: "/lovable-uploads/879e7bbc-f480-4a92-828d-077abd67eb7e.png",
-    path: "/app/abandons"
+    path: "/abandons"
   },
   {
     id: "donations", 
     labelKey: "nav.donations",
     iconSrc: "/lovable-uploads/1c4d7d84-8efb-46de-9f25-d9f67e6b3572.png",
-    path: "/app/donations"
+    path: "/donations"
   },
   {
     id: "products",
     labelKey: "nav.products", 
     iconSrc: "/lovable-uploads/6245700a-9f69-4791-b47e-aa1bd715be37.png",
-    path: "/app/products"
+    path: "/products"
   },
   {
     id: "markets",
     labelKey: "nav.markets",
     iconSrc: "/lovable-uploads/db565d88-e9c2-492d-bf27-7c312a6cd298.png",
-    path: "/app/markets"
+    path: "/markets"
   },
   {
     id: "affiliates",
     labelKey: "nav.affiliates",
     icon: DollarSign,
-    path: "/app/affiliates"
+    path: "/affiliates"
   }
 ];
 
@@ -49,14 +49,18 @@ export function MobileTabs() {
   const currentPath = location.pathname;
 
   const handleTabClick = (path: string) => {
-    navigate(path);
+    if (path === "/") {
+      window.location.href = "/";
+    } else {
+      navigate(`/app${path}`);
+    }
   };
 
   return (
     <div className="flex justify-center border-b bg-background">
       <div className="flex w-full max-w-md">
         {tabs.map((tab) => {
-          const isActive = currentPath === tab.path;
+          const isActive = tab.path === "/" ? currentPath === "/" : currentPath === `/app${tab.path}`;
           
           return (
             <Button
