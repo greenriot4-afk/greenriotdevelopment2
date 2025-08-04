@@ -63,23 +63,23 @@ export default function LandingPage() {
               <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8 text-left">
                 <div className="flex gap-3 sm:gap-4 justify-start">
                   <Camera className="h-5 w-5 sm:h-6 sm:w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-sm sm:text-lg text-foreground font-impact text-left">HUNT FURNITURES, ELECTRONICS OR ANY OTHER TREASURES ABANDONED ON THE STREET</p>
+                  <p className="text-sm sm:text-lg text-foreground font-impact text-left">{t('landing.coordinates.feature1')}</p>
                 </div>
                 <div className="flex gap-3 sm:gap-4 justify-start">
                   <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-primary mt-1 flex-shrink-0" />
                   <p className="text-sm sm:text-lg text-foreground font-impact text-left">
-                    SHARE THE APPROXIMATE LOCATION AND EARN MONEY WHEN SOMEONE BUYS THE EXACT COORDINATES
+                    {t('landing.coordinates.feature2')}
                   </p>
                 </div>
                 <div className="flex gap-3 sm:gap-4 justify-start">
                   <DollarSign className="h-5 w-5 sm:h-6 sm:w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-sm sm:text-lg text-foreground font-impact text-left">TURN YOUR DAILY WALKS INTO AN URBAN FUN BUSINESS OPPORTUNITY</p>
+                  <p className="text-sm sm:text-lg text-foreground font-impact text-left">{t('landing.coordinates.feature3')}</p>
                 </div>
               </div>
               <div className="flex justify-start">
                 <Button asChild size="sm" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-3">
                   <Link to="/objects">
-                    START MAKING MONEY AND HELPING THE PLANET <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-5 sm:w-5" />
+                    {t('landing.coordinates.cta')} <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-5 sm:w-5" />
                   </Link>
                 </Button>
               </div>

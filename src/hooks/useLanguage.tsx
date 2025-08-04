@@ -153,7 +153,7 @@ const translations = {
     'landing.coordinates.feature1': 'HUNT FURNITURE, ELECTRONICS OR TREASURES ABANDONED ON THE STREET',
     'landing.coordinates.feature2': 'SHARE THE APPROXIMATE LOCATION AND EARN MONEY WHEN SOMEONE BUYS THE EXACT COORDINATES',
     'landing.coordinates.feature3': 'TURN YOUR DAILY WALKS INTO AN URBAN BUSINESS OPPORTUNITY',
-    'landing.coordinates.cta': 'START EARNING',
+    'landing.coordinates.cta': 'START MAKING MONEY AND HELPING THE PLANET',
     'landing.coordinates.cardTitle': 'BUY COORDINATES AND GET BARGAINS',
     'landing.coordinates.cardDescription': 'You know there is a FREE COUCH 11 km away from you but not exactly where, buy the coordinates and get a €200 COUCH FOR €1',
     
@@ -364,7 +364,7 @@ const translations = {
     'landing.coordinates.feature1': 'CAZA MUEBLES, ELECTRÓNICOS O TESOROS ABANDONADOS EN LA CALLE',
     'landing.coordinates.feature2': 'COMPARTE LA UBICACIÓN APROXIMADA Y GANA PASTA CUANDO ALGUIEN COMPRE LAS COORDENADAS EXACTAS',
     'landing.coordinates.feature3': 'CONVIERTE TUS PASEOS DIARIOS EN UNA OPORTUNIDAD DE NEGOCIO URBANO',
-    'landing.coordinates.cta': 'EMPEZAR A GANAR',
+    'landing.coordinates.cta': 'EMPEZAR A GANAR DINERO Y AYUDAR AL PLANETA',
     'landing.coordinates.cardTitle': 'COMPRA COORDENADAS Y CONSIGUE CHOLLOS',
     'landing.coordinates.cardDescription': 'Sabes que hay un SOFÁ GRATIS a 11 km de ti pero no exactamente dónde, compra las coordenadas y consigue un SOFÁ DE 200€ POR 1€',
     
