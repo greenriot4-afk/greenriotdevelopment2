@@ -98,31 +98,18 @@ export default function LandingPage() {
       {/* Circular Markets Feature */}
       <section className="py-20 px-4 bg-secondary">
         <div className="container mx-auto max-w-6xl">
-          {/* App Screenshot - Markets List */}
-          <div className="flex justify-center mb-12">
-            <div className="w-80 max-w-sm">
-              <img 
-                src="/lovable-uploads/6596ef47-c390-485d-ad2f-866400f5dfb8.png" 
-                alt="GreenRiot app showing list of circular markets" 
-                className="w-full h-auto rounded-3xl shadow-2xl"
-              />
-            </div>
-          </div>
-          
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Card className="p-8 bg-card border-primary shadow-rebel">
-                <div className="text-center">
-                  <div className="bg-primary rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                    <Store className="h-10 w-10 text-primary-foreground" />
-                  </div>
-                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">CIRCULAR MARKETS NEAR YOU</h3>
-                  <p className="text-lg leading-relaxed font-impact text-[#1a4f39] text-center font-light">ASK THEM TO COME TO YOUR HOUSE TO COLLECT YOUR UNWANTED ITEMS INSTEAD OF THROWING THEM IN THE TRASH</p>
+              {/* App Screenshots - Aligned to left */}
+              <div className="space-y-8">
+                <div className="w-80 max-w-sm">
+                  <img 
+                    src="/lovable-uploads/6596ef47-c390-485d-ad2f-866400f5dfb8.png" 
+                    alt="GreenRiot app showing list of circular markets" 
+                    className="w-full h-auto rounded-3xl shadow-2xl"
+                  />
                 </div>
-              </Card>
-              
-              {/* App Screenshot - Market Detail */}
-              <div className="flex justify-center mt-8">
+                
                 <div className="w-80 max-w-sm">
                   <img 
                     src="/lovable-uploads/ec64fcd2-b654-48aa-b479-6901a38d24ce.png" 
@@ -134,12 +121,11 @@ export default function LandingPage() {
             </div>
             
             <div>
-              
               <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-white">EXPLORE LOCAL CIRCULAR THRIFT STORES AND GARAGE SALES</h2>
               <div className="space-y-6 mb-8">
                 <div className="flex gap-4">
                   <Eye className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">BROWSE CATALOGS OF LOCAL THRIFT  STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME. CHAT AND NEGOTIATE</p>
+                  <p className="text-lg text-white font-impact">BROWSE CATALOGS OF LOCAL THRIFT  STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME. CHAT AND NEGOTIATE</p>
                 </div>
                 <div className="flex gap-4">
                   <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
