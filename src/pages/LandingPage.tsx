@@ -98,6 +98,17 @@ export default function LandingPage() {
       {/* Circular Markets Feature */}
       <section className="py-20 px-4 bg-secondary">
         <div className="container mx-auto max-w-6xl">
+          {/* App Screenshot - Markets List */}
+          <div className="flex justify-center mb-12">
+            <div className="w-80 max-w-sm">
+              <img 
+                src="/lovable-uploads/6596ef47-c390-485d-ad2f-866400f5dfb8.png" 
+                alt="GreenRiot app showing list of circular markets" 
+                className="w-full h-auto rounded-3xl shadow-2xl"
+              />
+            </div>
+          </div>
+          
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <Card className="p-8 bg-card border-primary shadow-rebel">
@@ -109,6 +120,17 @@ export default function LandingPage() {
                   <p className="text-lg leading-relaxed font-impact text-[#1a4f39] text-center font-light">ASK THEM TO COME TO YOUR HOUSE TO COLLECT YOUR UNWANTED ITEMS INSTEAD OF THROWING THEM IN THE TRASH</p>
                 </div>
               </Card>
+              
+              {/* App Screenshot - Market Detail */}
+              <div className="flex justify-center mt-8">
+                <div className="w-80 max-w-sm">
+                  <img 
+                    src="/lovable-uploads/ec64fcd2-b654-48aa-b479-6901a38d24ce.png" 
+                    alt="GreenRiot app showing market details" 
+                    className="w-full h-auto rounded-3xl shadow-2xl"
+                  />
+                </div>
+              </div>
             </div>
             
             <div>
