@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, Store, Plus, Languages } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
+import Navbar from "@/components/Navbar";
 export default function LandingPage() {
   const {
     t,
@@ -11,13 +12,8 @@ export default function LandingPage() {
     setLanguage
   } = useLanguage();
   return <div className="min-h-screen bg-background">
-      {/* Language Selector */}
-      <div className="fixed top-4 right-4 z-50">
-        <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'en' ? 'es' : 'en')} className="bg-background/80 backdrop-blur border-primary hover:bg-primary hover:text-primary-foreground font-impact text-rebel shadow-rebel">
-          <Languages className="h-4 w-4 mr-2" />
-          {language === 'en' ? 'ES' : 'EN'}
-        </Button>
-      </div>
+      {/* Navigation Bar */}
+      <Navbar />
 
       {/* Header Image Section */}
       <section className="relative h-screen bg-cover bg-center bg-no-repeat overflow-hidden" style={{backgroundImage: "url('/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png')"}}>
