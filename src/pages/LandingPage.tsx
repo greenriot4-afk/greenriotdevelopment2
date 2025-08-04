@@ -11,11 +11,7 @@ export default function LandingPage() {
 
       {/* Header Image Section */}
       <section className="relative h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
-        <img 
-          src="/lovable-uploads/8e6c2a26-0331-4c87-b066-91363c63ef40.png" 
-          alt="Header" 
-          className="w-full h-full object-cover"
-        />
+        <img src="/lovable-uploads/8e6c2a26-0331-4c87-b066-91363c63ef40.png" alt="Header" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/20"></div>
       </section>
 
@@ -95,9 +91,7 @@ export default function LandingPage() {
                     <Eye className="h-10 w-10 text-primary-foreground" />
                   </div>
                   <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">BUY COORDINATES AND GET BARGAINS</h3>
-                  <p className="text-foreground text-lg leading-relaxed font-impact">
-                    You know there is a FREE COUCH 11 km away from you but not exactly where, buy the coordinates and get a €200 COUCH FOR €1
-                  </p>
+                  <p className="text-foreground text-lg leading-relaxed font-impact">You know there is a FREE COUCH 6 away from you but not exactly where, buy the coordinates and get a €200 COUCH FOR €1</p>
                 </div>
               </Card>
             </div>
