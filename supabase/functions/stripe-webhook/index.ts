@@ -189,6 +189,30 @@ serve(async (req) => {
 
         console.log('Successfully processed deposit:', result);
       }
+      
+      // Process affiliate commission for subscriptions
+      if (session.mode === 'subscription' && session.metadata?.user_id) {
+        try {
+          console.log('Processing affiliate commission for subscription session:', session.id);
+          
+          // Call process-affiliate-commission function
+          const { data: commissionResult, error: commissionError } = await supabaseClient.functions.invoke(
+            'process-affiliate-commission',
+            {
+              body: { sessionId: session.id }
+            }
+          );
+          
+          if (commissionError) {
+            console.error('Failed to process affiliate commission:', commissionError);
+          } else {
+            console.log('Affiliate commission processed successfully:', commissionResult);
+          }
+        } catch (error) {
+          console.error('Error calling process-affiliate-commission:', error);
+          // Don't throw here as the main payment was successful
+        }
+      }
     }
 
     return new Response(JSON.stringify({ received: true }), {

@@ -94,9 +94,20 @@ export default function Auth() {
     }
 
     setLoading(true);
+    
+    // Almacenar código de afiliado antes del registro si existe
+    if (affiliateCode) {
+      localStorage.setItem('pendingAffiliateCode', affiliateCode);
+    }
+    
     const { error } = await signUp(email, password, displayName);
     
     if (error) {
+      // Limpiar código almacenado si hay error
+      if (affiliateCode) {
+        localStorage.removeItem('pendingAffiliateCode');
+      }
+      
       if (error.message.includes("already registered")) {
         toast({
           title: t('error.signUpError'),
@@ -111,11 +122,6 @@ export default function Auth() {
         });
       }
     } else {
-      // Process affiliate referral if there's a code
-      if (affiliateCode && user) {
-        await processReferralSignup(affiliateCode, user.id);
-      }
-      
       toast({
         title: t('auth.registrationSuccessful'),
         description: affiliateCode 

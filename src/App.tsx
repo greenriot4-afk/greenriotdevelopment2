@@ -30,11 +30,13 @@ import { UserProfilePage } from "./pages/UserProfilePage";
 import NotFound from "./pages/NotFound";
 import { LocationPermissionDialog } from "@/components/LocationPermissionDialog";
 import { useFirstLogin } from "@/hooks/useFirstLogin";
+import { useAffiliateProcessor } from "@/hooks/useAffiliateProcessor";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
   const { showLocationDialog, isGettingLocation, handleLocationAccept, handleLocationDecline } = useFirstLogin();
+  useAffiliateProcessor(); // Process pending affiliate referrals
 
   return (
     <>
