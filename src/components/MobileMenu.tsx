@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, Settings, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus, Heart, Globe, Megaphone, Home } from "lucide-react";
+import { Menu, X, User, Settings, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus, Heart, Globe, Megaphone, Languages, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -180,28 +180,9 @@ export function MobileMenu() {
           )}
         </div>
 
-        {/* Language Toggle */}
-        <div className="p-4 border-b border-white/10">
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={toggleLanguage}
-          >
-            <Globe className="h-5 w-5 mr-3" />
-            {language === 'en' ? 'ES' : 'EN'}
-          </Button>
-        </div>
 
         {/* Menu Items */}
         <div className="p-4 space-y-2">
-          <Button
-            variant="ghost"
-            className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-            onClick={handleWebsiteClick}
-          >
-            <Home className="h-5 w-5 mr-3" />
-            Website
-          </Button>
           <Button
             variant="ghost"
             className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
@@ -272,6 +253,27 @@ export function MobileMenu() {
               {t('menu.affiliateProgram')}
             </span>
           </Button>
+
+          {/* Website and Language buttons */}
+          <div className="pt-4 border-t border-white/10 space-y-2">
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+              onClick={handleWebsiteClick}
+            >
+              <Monitor className="h-5 w-5 mr-3" />
+              Website
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+              onClick={toggleLanguage}
+            >
+              <Languages className="h-5 w-5 mr-3" />
+              {language === 'en' ? 'ES' : 'EN'}
+            </Button>
+          </div>
         </div>
 
         {/* Footer */}
