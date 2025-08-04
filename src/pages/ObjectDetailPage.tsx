@@ -10,6 +10,7 @@ import { ChatButton } from "@/components/ChatButton";
 import { useLocation } from "@/hooks/useLocation";
 import { useWallet } from "@/hooks/useWallet";
 import { useAuthAction } from "@/hooks/useAuthAction";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ObjectDetail {
   id: string;
@@ -36,6 +37,7 @@ export default function ObjectDetailPage() {
   const { calculateDistance, userLocation } = useLocation();
   const { hasEnoughBalance, deductBalance } = useWallet();
   const { requireAuth, isAuthenticated } = useAuthAction();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchObject = async () => {
@@ -61,7 +63,7 @@ export default function ObjectDetailPage() {
         });
       } catch (error) {
         console.error('Error fetching object:', error);
-        toast.error('Error al cargar el anuncio');
+        toast.error(t('object.errorLoading'));
         navigate(-1);
       } finally {
         setLoading(false);
@@ -79,7 +81,7 @@ export default function ObjectDetailPage() {
     });
 
     if (!hasEnoughBalance(object.price_credits)) {
-      toast.error('Saldo insuficiente para comprar las coordenadas');
+      toast.error(t('object.insufficientBalance'));
       return;
     }
 
@@ -101,11 +103,11 @@ export default function ObjectDetailPage() {
       if (result.data?.url) {
         window.location.href = result.data.url;
       } else {
-        toast.success('¡Coordenadas adquiridas! Se han abierto en Google Maps.');
+        toast.success(t('object.coordinatesAcquired'));
       }
     } catch (error) {
       console.error('Error purchasing coordinates:', error);
-      toast.error('Error al procesar el pago');
+      toast.error(t('object.paymentError'));
     } finally {
       setPurchasing(false);
     }
@@ -126,11 +128,11 @@ export default function ObjectDetailPage() {
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
     
     if (diffInMinutes < 60) {
-      return `hace ${diffInMinutes} min`;
+      return `${diffInMinutes} ${t('object.timeAgo.minutes')}`;
     } else if (diffInMinutes < 1440) {
-      return `hace ${Math.floor(diffInMinutes / 60)} h`;
+      return `${Math.floor(diffInMinutes / 60)} ${t('object.timeAgo.hours')}`;
     } else {
-      return `hace ${Math.floor(diffInMinutes / 1440)} días`;
+      return `${Math.floor(diffInMinutes / 1440)} ${t('object.timeAgo.days')}`;
     }
   };
 
@@ -139,7 +141,7 @@ export default function ObjectDetailPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Cargando anuncio...</p>
+          <p className="text-muted-foreground">{t('object.loading')}</p>
         </div>
       </div>
     );
@@ -148,7 +150,7 @@ export default function ObjectDetailPage() {
   if (!object) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <p className="text-center text-muted-foreground">Anuncio no encontrado</p>
+        <p className="text-center text-muted-foreground">{t('object.notFound')}</p>
       </div>
     );
   }
@@ -200,7 +202,7 @@ export default function ObjectDetailPage() {
             </div>
             <div className="flex-1">
               <p className="font-medium">
-                {object.user_display_name || object.username || 'Usuario'}
+                {object.user_display_name || object.username || t('object.user')}
               </p>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
@@ -223,7 +225,7 @@ export default function ObjectDetailPage() {
               <div className="flex items-center justify-between p-4 bg-primary/5 rounded-lg border">
                 <div>
                   <p className="text-sm text-muted-foreground">
-                    {object.type === 'product' ? 'Precio' : 'Precio de Coordenadas'}
+                    {object.type === 'product' ? t('object.price') : t('object.coordinatesPrice')}
                   </p>
                   <p className="text-2xl font-bold text-primary">
                     ${object.price_credits}
@@ -235,7 +237,7 @@ export default function ObjectDetailPage() {
                     disabled={purchasing || !isAuthenticated}
                     className="min-w-32"
                   >
-                    {purchasing ? 'Comprando...' : 'Ver Ubicación'}
+                    {purchasing ? t('object.purchasing') : t('object.viewLocation')}
                   </Button>
                 )}
               </div>

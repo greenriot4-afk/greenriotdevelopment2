@@ -6,6 +6,7 @@ import { ObjectsList } from '@/components/ObjectsList';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { useLocation } from '@/hooks/useLocation';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { MapPin } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -34,6 +35,7 @@ const ObjectsPage = () => {
   const [loading, setLoading] = useState(true);
   const { userLocation, getCurrentLocation, isLoading: locationLoading, calculateDistance } = useLocation();
   const { user } = useAuth();
+  const { t } = useLanguage();
   
   // Simple cache to prevent duplicate requests
   const lastFetchRef = useRef<{ type: string; timestamp: number } | null>(null);
@@ -52,18 +54,18 @@ const ObjectsPage = () => {
   
   const getTitle = () => {
     switch (type) {
-      case 'abandons': return 'Objetos Abandonos';
-      case 'donations': return 'Donaciones';
-      case 'products': return 'Productos';
+      case 'abandons': return t('objects.abandoned.title');
+      case 'donations': return t('objects.donations.title');
+      case 'products': return t('objects.products.title');
       default: return 'Objetos';
     }
   };
 
   const getDescription = () => {
     switch (type) {
-      case 'abandons': return 'Descubre objetos abandonos en tu área';
-      case 'donations': return 'Encuentra donaciones disponibles';
-      case 'products': return 'Explora productos en venta';
+      case 'abandons': return t('objects.abandoned.description');
+      case 'donations': return t('objects.donations.description');
+      case 'products': return t('objects.products.description');
       default: return '';
     }
   };
@@ -227,7 +229,7 @@ const ObjectsPage = () => {
   }) => {
     try {
       if (!user) {
-        toast.error('Debes iniciar sesión para publicar objetos');
+        toast.error(t('objects.loginRequired'));
         return;
       }
 
@@ -254,10 +256,10 @@ const ObjectsPage = () => {
       
       setObjects(prev => [newObject as AppObject, ...prev]);
       setShowUpload(false);
-      toast.success('¡Objeto publicado exitosamente!');
+      toast.success(t('objects.publishedSuccessfully'));
     } catch (error) {
       console.error('Error uploading object:', error);
-      toast.error('Error al publicar el objeto');
+      toast.error(t('objects.publishError'));
     }
   };
 
@@ -273,7 +275,7 @@ const ObjectsPage = () => {
   const handleObjectRemoved = (objectId: string) => {
     // Remove the object from the local state immediately
     setObjects(prevObjects => prevObjects.filter(obj => obj.id !== objectId));
-    toast.success('El anuncio ha sido eliminado tras la compra exitosa');
+    toast.success(t('objects.removedSuccess'));
   };
 
   const handleFloatingUpload = (objectType: 'abandoned' | 'donation' | 'product') => {
@@ -283,7 +285,7 @@ const ObjectsPage = () => {
   if (loading) {
     return (
       <div className="flex-1 p-6">
-        <div className="text-center py-8">Cargando objetos...</div>
+        <div className="text-center py-8">{t('objects.loading')}</div>
       </div>
     );
   }

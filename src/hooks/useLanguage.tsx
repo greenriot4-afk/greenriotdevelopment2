@@ -190,6 +190,35 @@ const translations = {
     'landing.footer.copyright': '© 2024 GREENRIOT. ALL RIGHTS RESERVED. MAKING CIRCULAR ECONOMY PROFITABLE.',
     'landing.footer.circular': '♻️ CIRCULAR',
     'landing.footer.profitable': '💰 PROFITABLE',
+    
+    // Object Detail Page
+    'object.loading': 'Loading ad...',
+    'object.notFound': 'Ad not found',
+    'object.price': 'Price',
+    'object.coordinatesPrice': 'Coordinates Price',
+    'object.purchasing': 'Purchasing...',
+    'object.viewLocation': 'View Location',
+    'object.errorLoading': 'Error loading ad',
+    'object.insufficientBalance': 'Insufficient balance to buy coordinates',
+    'object.coordinatesAcquired': 'Coordinates acquired! Opened in Google Maps.',
+    'object.paymentError': 'Error processing payment',
+    'object.timeAgo.minutes': 'min ago',
+    'object.timeAgo.hours': 'h ago',
+    'object.timeAgo.days': 'days ago',
+    'object.user': 'User',
+    
+    // Objects Page
+    'objects.abandoned.title': 'Abandoned Objects',
+    'objects.abandoned.description': 'Discover abandoned objects in your area',
+    'objects.donations.title': 'Donations',
+    'objects.donations.description': 'Find available donations',
+    'objects.products.title': 'Products',
+    'objects.products.description': 'Explore products for sale',
+    'objects.loading': 'Loading objects...',
+    'objects.loginRequired': 'You must sign in to post objects',
+    'objects.publishedSuccessfully': 'Object published successfully!',
+    'objects.publishError': 'Error publishing object',
+    'objects.removedSuccess': 'The ad has been removed after successful purchase',
   },
   es: {
     // Navigation
@@ -372,6 +401,35 @@ const translations = {
     'landing.footer.copyright': '© 2024 GREENRIOT. TODOS LOS DERECHOS RESERVADOS. HACIENDO LA ECONOMÍA CIRCULAR RENTABLE.',
     'landing.footer.circular': '♻️ CIRCULAR',
     'landing.footer.profitable': '💰 RENTABLE',
+    
+    // Object Detail Page
+    'object.loading': 'Cargando anuncio...',
+    'object.notFound': 'Anuncio no encontrado',
+    'object.price': 'Precio',
+    'object.coordinatesPrice': 'Precio de Coordenadas',
+    'object.purchasing': 'Comprando...',
+    'object.viewLocation': 'Ver Ubicación',
+    'object.errorLoading': 'Error al cargar el anuncio',
+    'object.insufficientBalance': 'Saldo insuficiente para comprar las coordenadas',
+    'object.coordinatesAcquired': '¡Coordenadas adquiridas! Se han abierto en Google Maps.',
+    'object.paymentError': 'Error al procesar el pago',
+    'object.timeAgo.minutes': 'min',
+    'object.timeAgo.hours': 'h',
+    'object.timeAgo.days': 'días',
+    'object.user': 'Usuario',
+    
+    // Objects Page
+    'objects.abandoned.title': 'Objetos Abandonos',
+    'objects.abandoned.description': 'Descubre objetos abandonos en tu área',
+    'objects.donations.title': 'Donaciones',
+    'objects.donations.description': 'Encuentra donaciones disponibles',
+    'objects.products.title': 'Productos',
+    'objects.products.description': 'Explora productos en venta',
+    'objects.loading': 'Cargando objetos...',
+    'objects.loginRequired': 'Debes iniciar sesión para publicar objetos',
+    'objects.publishedSuccessfully': '¡Objeto publicado exitosamente!',
+    'objects.publishError': 'Error al publicar el objeto',
+    'objects.removedSuccess': 'El anuncio ha sido eliminado tras la compra exitosa',
   }
 };
 

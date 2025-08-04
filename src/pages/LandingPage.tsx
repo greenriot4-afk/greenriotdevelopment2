@@ -4,7 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, Store, Plus, Languages, Globe, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
+import { useLanguage } from "@/hooks/useLanguage";
 export default function LandingPage() {
+  const { t } = useLanguage();
+  
   return <div className="min-h-screen bg-background">
       {/* Navigation Bar */}
       <Navbar />
@@ -22,9 +25,9 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-5xl text-center relative z-10">
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
-            <span className="text-accent">STOOPING & THRIFTING</span>
+            <span className="text-accent">{t('landing.hero.title')}</span>
             <br />
-            <span className="text-accent">URBAN REBELLION</span>
+            <span className="text-accent">{t('landing.hero.subtitle')}</span>
           </h1>
           
           <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">FIND FREE STUFF NEAR YOU –  SAVE OR MAKE MONEY – SAVE THE PLANET</p>
@@ -55,7 +58,7 @@ export default function LandingPage() {
             <div className="text-left lg:text-left">
               
               <h2 className="text-2xl sm:text-3xl md:text-5xl font-impact text-rebel mb-6 sm:mb-8 leading-tight text-foreground text-left">
-                MAKE MONEY SHARING PHOTOS AND COORDINATES OF ABANDONED STREET FINDS
+                {t('landing.coordinates.title')}
               </h2>
               <div className="space-y-4 sm:space-y-6 mb-6 sm:mb-8 text-left">
                 <div className="flex gap-3 sm:gap-4 justify-start">
