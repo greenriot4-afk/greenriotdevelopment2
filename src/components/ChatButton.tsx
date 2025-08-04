@@ -41,7 +41,7 @@ export const ChatButton = ({ userId, username, size = 'sm', variant = 'outline',
     try {
       const conversationId = await createOrGetConversation(userId);
       if (conversationId) {
-        navigate(`/chat/${conversationId}`);
+        navigate(`/app/chat/${conversationId}`);
       }
     } catch (error) {
       console.error('Error opening chat:', error);
