@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, User, Settings, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus, Heart, Globe, Megaphone, Languages, Monitor } from "lucide-react";
+import { Menu, X, User, Settings, WalletIcon, LogOut, Store, MessageCircle, DollarSign, Plus, Heart, Globe, Megaphone, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
@@ -148,11 +148,11 @@ export function MobileMenu() {
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
                 <User className="h-6 w-6 text-white" />
               </div>
-              <div>
-                <h3 className="text-white font-semibold">
-                  {user?.email?.split('@')[0] || t('menu.user')}
-                </h3>
-              </div>
+               <div>
+                 <h3 className="text-white font-semibold text-shadow-sm">
+                   {user?.email?.split('@')[0] || t('menu.user')}
+                 </h3>
+               </div>
             </div>
           ) : (
             <div className="text-center">
@@ -256,14 +256,14 @@ export function MobileMenu() {
 
           {/* Website and Language buttons */}
           <div className="pt-4 border-t border-white/10 space-y-2">
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
-              onClick={handleWebsiteClick}
-            >
-              <Monitor className="h-5 w-5 mr-3" />
-              Website
-            </Button>
+             <Button
+               variant="ghost"
+               className="w-full justify-start px-4 h-12 text-white hover:bg-white/10"
+               onClick={handleWebsiteClick}
+             >
+               <Globe className="h-5 w-5 mr-3" />
+               Website
+             </Button>
 
             <Button
               variant="ghost"
