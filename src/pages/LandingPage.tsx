@@ -91,8 +91,8 @@ export default function LandingPage() {
                   <div className="mb-6">
                     <img src="/lovable-uploads/d555150b-d59d-46cf-ad9e-2a7883671574.png" alt="Buy Coordinates" className="w-96 h-auto mx-auto" />
                   </div>
-                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">BUY COORDINATES AND GET BARGAINS</h3>
-                  <p className="text-foreground text-lg leading-relaxed font-impact">You know there is a FREE COUCH 6 away from you but not exactly where, buy the coordinates and get a $200 COUCH FOR $1</p>
+                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">{t('landing.coordinates.cardTitle')}</h3>
+                  <p className="text-foreground text-lg leading-relaxed font-impact">{t('landing.coordinates.cardDescription')}</p>
                 </div>
               </div>
             </div>
@@ -118,27 +118,29 @@ export default function LandingPage() {
             </div>
             
             <div>
-              <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-white">EXPLORE LOCAL CIRCULAR THRIFT STORES AND GARAGE SALES</h2>
+              <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-white">{t('landing.markets.title')}</h2>
               <div className="space-y-6 mb-8">
                 <div className="flex gap-4">
                   <Eye className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">BROWSE CATALOGS OF LOCAL THRIFT  STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME. CHAT AND NEGOTIATE</p>
+                  <p className="text-lg text-white font-impact">{t('landing.markets.feature1')}</p>
                 </div>
                 <div className="flex gap-4">
                   <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">VISIT ONLY THE PLACES THAT HAVE WHAT YOU'RE LOOKING FOR, SAVING TIME AND GAS</p>
+                  <p className="text-lg text-white font-impact">{t('landing.markets.feature2')}</p>
                 </div>
                 <div className="flex gap-4">
                   <Trash2 className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">ASK THEM TO COME TO YOUR HOUSE TO COLLECT YOUR UNWANTED ITEMS INSTEAD OF THROWING THEM IN THE TRASH</p>
+                  <p className="text-lg text-white font-impact">{t('landing.markets.feature3')}</p>
                 </div>
                 <div className="flex gap-4">
                   <Plus className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">CREATE YOUR OWN CIRCULAR MARKET, MAKE MONEY WITH UNWANTED STUFF AND SAVE THE PLANET</p>
+                  <p className="text-lg text-white font-impact">{t('landing.markets.feature4')}</p>
                 </div>
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
-                
+                <Link to="/markets">
+                  {t('landing.markets.cta')} <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
             </div>
           </div>
@@ -155,7 +157,7 @@ export default function LandingPage() {
             <div>
               <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">GREENRIOT</h3>
               <p className="text-white mb-4 font-impact">
-                the circular economy app that makes the local circular economy easy, fun, and profitable.
+                {t('footer.description')}
               </p>
               <div className="flex flex-wrap gap-2 mb-6">
                 <Badge variant="outline" className="border-accent text-accent font-impact">♻️ CIRCULAR</Badge>
@@ -177,7 +179,7 @@ export default function LandingPage() {
             <div>
               <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">Refer and Earn</h3>
               <p className="text-white mb-4 font-impact">
-                register now to get your affiliate code and help build circular economy markets. you can make easy money by sharing your link and helping the planet
+                {t('footer.affiliate.description')}
               </p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="border-accent text-accent font-impact flex items-center gap-1">

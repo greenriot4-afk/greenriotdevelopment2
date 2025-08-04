@@ -155,16 +155,22 @@ const translations = {
     'landing.coordinates.feature3': 'TURN YOUR DAILY WALKS INTO AN URBAN BUSINESS OPPORTUNITY',
     'landing.coordinates.cta': 'START MAKING MONEY AND HELPING THE PLANET',
     'landing.coordinates.cardTitle': 'BUY COORDINATES AND GET BARGAINS',
-    'landing.coordinates.cardDescription': 'You know there is a FREE COUCH 11 km away from you but not exactly where, buy the coordinates and get a €200 COUCH FOR €1',
+    'landing.coordinates.cardDescription': 'You know there is a FREE COUCH 6 away from you but not exactly where, buy the coordinates and get a $200 COUCH FOR $1',
     
+    // Circular markets section
     'landing.markets.badge': '🏪 CIRCULAR MARKETS',
-    'landing.markets.title': 'EXPLORE LOCAL UNDERGROUND THRIFT STORES AND GARAGE SALES',
-    'landing.markets.feature1': 'BROWSE CATALOGS OF LOCAL STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME',
-    'landing.markets.feature2': 'VISIT ONLY THE STORES THAT HAVE WHAT YOU\'RE LOOKING FOR, SAVING TIME AND GAS',
-    'landing.markets.feature3': 'CREATE YOUR OWN CIRCULAR MARKET, make money with unwanted stuff and save the planet',
+    'landing.markets.title': 'EXPLORE LOCAL CIRCULAR THRIFT STORES AND GARAGE SALES',
+    'landing.markets.feature1': 'BROWSE CATALOGS OF LOCAL THRIFT STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME. CHAT AND NEGOTIATE',
+    'landing.markets.feature2': 'VISIT ONLY THE PLACES THAT HAVE WHAT YOU\'RE LOOKING FOR, SAVING TIME AND GAS',
+    'landing.markets.feature3': 'ASK THEM TO COME TO YOUR HOUSE TO COLLECT YOUR UNWANTED ITEMS INSTEAD OF THROWING THEM IN THE TRASH',
+    'landing.markets.feature4': 'CREATE YOUR OWN CIRCULAR MARKET, MAKE MONEY WITH UNWANTED STUFF AND SAVE THE PLANET',
     'landing.markets.cta': 'EXPLORE MARKETS',
     'landing.markets.cardTitle': 'EXPLORE UNDERGROUND CIRCULAR STORES',
     'landing.markets.cardDescription': 'SEE THEIR CATALOG FROM THE COMFORT OF YOUR HOME AND THEN GO TO BUY LIVE',
+    
+    // Footer section
+    'footer.description': 'the circular economy app that makes the local circular economy easy, fun, and profitable.',
+    'footer.affiliate.description': 'register now to get your affiliate code and help build circular economy markets. you can make easy money by sharing your link and helping the planet',
     
     'landing.finalCta.title': 'READY TO TURN TRASH INTO CASH?',
     'landing.finalCta.description': 'JOIN THOUSANDS OF USERS WHO ARE ALREADY MAKING MONEY, SAVING MONEY AND HELPING THE PLANET THROUGH URBAN CIRCULAR ECONOMY.',
@@ -365,17 +371,23 @@ const translations = {
     'landing.coordinates.feature2': 'COMPARTE LA UBICACIÓN APROXIMADA Y GANA PASTA CUANDO ALGUIEN COMPRE LAS COORDENADAS EXACTAS',
     'landing.coordinates.feature3': 'CONVIERTE TUS PASEOS DIARIOS EN UNA OPORTUNIDAD DE NEGOCIO URBANO',
     'landing.coordinates.cta': 'EMPEZAR A GANAR DINERO Y AYUDAR AL PLANETA',
-    'landing.coordinates.cardTitle': 'COMPRA COORDENADAS Y CONSIGUE CHOLLOS',
-    'landing.coordinates.cardDescription': 'Sabes que hay un SOFÁ GRATIS a 11 km de ti pero no exactamente dónde, compra las coordenadas y consigue un SOFÁ DE 200€ POR 1€',
+    'landing.coordinates.cardTitle': 'COMPRA COORDENADAS Y CONSIGUE GANGAS',
+    'landing.coordinates.cardDescription': 'Sabes que hay un SOFÁ GRATIS a 6 km de ti, pero no exactamente dónde. Compra las coordenadas y consigue un SOFÁ DE $200 POR $1.',
     
+    // Circular markets section
     'landing.markets.badge': '🏪 MERCADOS CIRCULARES',
     'landing.markets.title': 'EXPLORA TIENDAS DE SEGUNDA MANO Y VENTAS DE GARAJE LOCALES',
-    'landing.markets.feature1': 'NAVEGA CATÁLOGOS DE TIENDAS LOCALES, VENTAS DE GARAJE Y MERCADOS CIRCULARES DESDE CASA',
-    'landing.markets.feature2': 'VISITA SOLO LAS TIENDAS QUE TIENEN LO QUE BUSCAS, AHORRANDO TIEMPO Y GASOLINA',
-    'landing.markets.feature3': 'CREA TU PROPIO MERCADO CIRCULAR, gana dinero con cosas que no quieres y salva el planeta',
+    'landing.markets.feature1': 'NAVEGA POR LOS CATÁLOGOS DE TIENDAS DE SEGUNDA MANO, VENTAS DE GARAJE Y MERCADOS CIRCULARES DESDE CASA. CHATEA Y NEGOCIA.',
+    'landing.markets.feature2': 'VISITA SOLO LOS LUGARES QUE TIENEN LO QUE BUSCAS, AHORRA TIEMPO Y COMBUSTIBLE.',
+    'landing.markets.feature3': 'PÍDELES QUE VAYAN A TU CASA A RECOGER TUS ARTÍCULOS NO DESEADOS EN LUGAR DE TIRARLOS A LA BASURA.',
+    'landing.markets.feature4': 'CREA TU PROPIO MERCADO CIRCULAR, GANA DINERO CON COSAS QUE YA NO QUIEREN Y SALVA EL PLANETA.',
     'landing.markets.cta': 'EXPLORAR MERCADOS',
     'landing.markets.cardTitle': 'EXPLORA TIENDAS CIRCULARES UNDERGROUND',
     'landing.markets.cardDescription': 'VE SU CATÁLOGO DESDE LA COMODIDAD DE TU CASA Y LUEGO VE A COMPRAR EN VIVO',
+    
+    // Footer section
+    'footer.description': 'La app que hace la economía circular local fácil, divertida y rentable.',
+    'footer.affiliate.description': 'Regístrate ahora para obtener tu código de afiliado y ayuda a construir mas mercados de economía circular. Puedes ganar dinero fácilmente compartiendo tu enlace y ayudando al planeta.',
     
     'landing.finalCta.title': '¿LISTO PARA CONVERTIR BASURA EN DINERO?',
     'landing.finalCta.description': 'ÚNETE A MILES DE USUARIOS QUE YA ESTÁN GANANDO DINERO, AHORRANDO DINERO Y AYUDANDO AL PLANETA A TRAVÉS DE LA ECONOMÍA CIRCULAR URBANA.',
