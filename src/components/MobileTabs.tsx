@@ -1,9 +1,15 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { DollarSign } from "lucide-react";
+import { DollarSign, Globe } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const tabs = [
+  {
+    id: "website",
+    labelKey: "nav.website",
+    icon: Globe,
+    path: "/"
+  },
   {
     id: "abandons",
     labelKey: "nav.abandons",
