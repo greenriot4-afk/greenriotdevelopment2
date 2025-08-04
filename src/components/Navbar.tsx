@@ -11,7 +11,7 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-lg border-b border-white/20 shadow-lg">
       <div className="container mx-auto px-1 sm:px-2 lg:px-4">
-        <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20">
+        <div className="flex items-center justify-start md:justify-between h-16 sm:h-18 lg:h-20 gap-4 md:gap-0">
           {/* Logo */}
           <Link to="/" className="flex items-center flex-shrink-0">
             <img 
@@ -64,9 +64,9 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu (sm and below) */}
-          <div className="md:hidden flex items-center space-x-0.5 -ml-[60px]">
+          <div className="md:hidden flex items-center space-x-0.5">
             {/* Mobile CTA Button */}
-            <Button asChild size="sm" className="bg-accent hover:bg-accent/90 text-green-800 font-impact text-xs px-2 sm:px-3 py-1.5 sm:py-2 min-w-0 -ml-[30px] md:ml-0">
+            <Button asChild size="sm" className="bg-accent hover:bg-accent/90 text-green-800 font-impact text-xs px-2 sm:px-3 py-1.5 sm:py-2 min-w-0">
               <Link to="/app/abandons">
                 {language === 'en' ? 'BETA' : 'BETA'}
               </Link>
