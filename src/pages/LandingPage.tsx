@@ -20,19 +20,21 @@ export default function LandingPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-24 px-4 overflow-hidden" style={{backgroundColor: '#17503a'}}>
+      <section className="relative py-24 px-4 overflow-hidden bg-cover bg-center bg-no-repeat" style={{backgroundImage: "url('/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png')"}}>
+        {/* Overlay para mejorar legibilidad del texto */}
+        <div className="absolute inset-0 bg-black/40"></div>
         <div className="container mx-auto max-w-5xl text-center relative z-10">
           
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
-            <span className="text-accent">
+            <span className="text-white">
               {t('landing.hero.title')}
             </span>
             <br />
-            <span className="text-accent">{t('landing.hero.subtitle')}</span>
+            <span className="text-white">{t('landing.hero.subtitle')}</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">
+          <p className="text-xl md:text-2xl text-white mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">
             {t('landing.hero.description')}
           </p>
           
