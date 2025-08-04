@@ -54,30 +54,32 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-left lg:text-left">
               
-              <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-foreground">
+              <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-foreground text-left">
                 MAKE MONEY SHARING PHOTOS AND COORDINATES OF ABANDONED STREET FINDS
               </h2>
-              <div className="space-y-6 mb-8">
-                <div className="flex gap-4">
+              <div className="space-y-6 mb-8 text-left">
+                <div className="flex gap-4 justify-start">
                   <Camera className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-foreground font-impact">HUNT FURNITURES, ELECTRONICS OR ANY OTHER TREASURES ABANDONED ON THE STREET</p>
+                  <p className="text-lg text-foreground font-impact text-left">HUNT FURNITURES, ELECTRONICS OR ANY OTHER TREASURES ABANDONED ON THE STREET</p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-4 justify-start">
                   <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-foreground font-impact">
+                  <p className="text-lg text-foreground font-impact text-left">
                     SHARE THE APPROXIMATE LOCATION AND EARN MONEY WHEN SOMEONE BUYS THE EXACT COORDINATES
                   </p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-4 justify-start">
                   <DollarSign className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-foreground font-impact">TURN YOUR DAILY WALKS INTO AN URBAN FUN BUSINESS OPPORTUNITY</p>
+                  <p className="text-lg text-foreground font-impact text-left">TURN YOUR DAILY WALKS INTO AN URBAN FUN BUSINESS OPPORTUNITY</p>
                 </div>
               </div>
-              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
-                <Link to="/objects">
-                  START MAKING MONEY AND HELPING THE PLANET <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+              <div className="flex justify-start">
+                <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
+                  <Link to="/objects">
+                    START MAKING MONEY AND HELPING THE PLANET <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
             </div>
             
             <div className="lg:order-first">
