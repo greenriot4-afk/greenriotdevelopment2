@@ -8,34 +8,34 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/20 via-background to-secondary/20 py-24 px-4 overflow-hidden">
+      <section className="relative bg-urban py-24 px-4 overflow-hidden">
         <div className="container mx-auto max-w-5xl text-center relative z-10">
-          <Badge variant="secondary" className="mb-8 text-lg px-6 py-2 animate-fade-in">
-            🌍 CIRCULAR ECONOMY MADE EASY
+          <Badge variant="secondary" className="mb-8 text-lg px-6 py-2 animate-fade-in font-impact text-rebel shadow-rebel">
+            🌍 ECONOMÍA CIRCULAR UNDERGROUND
           </Badge>
           
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-8 animate-fade-in delay-100">
-            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 text-white drop-shadow-2xl">
+            <span className="text-white">
               STOOPING & THRIFTING
             </span>
             <br />
-            <span className="text-foreground">APP</span>
+            <span className="text-primary-foreground">REBELIÓN URBANA</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200">
-            <span className="font-semibold text-primary">FIND FREE STUFF NEAR YOU</span> – give it a second life – 
-            <span className="font-semibold text-secondary"> SAVE OR MAKE MONEY</span> – help the planet
+          <p className="text-xl md:text-2xl text-white mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">
+            <span className="font-black text-white text-rebel">ENCUENTRA TESOROS GRATIS CERCA DE TI</span> – dales una segunda vida – 
+            <span className="font-black text-white text-rebel"> GANA O AHORRA DINERO</span> – salva el planeta
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in delay-300">
-            <Button asChild size="lg" className="text-lg px-8 py-4 h-auto">
+            <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
               <Link to="/auth">
-                Start Finding Free Stuff <ArrowRight className="ml-2 h-5 w-5" />
+                ÚNETE A LA REBELIÓN <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto">
+            <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-white text-white hover:bg-white hover:text-secondary font-impact text-rebel">
               <Link to="/abandons">
-                Explore Now
+                EXPLORA YA
               </Link>
             </Button>
           </div>
@@ -50,55 +50,55 @@ export default function LandingPage() {
       </section>
 
       {/* Coordinates Feature - Money Making */}
-      <section className="py-20 px-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
+      <section className="py-20 px-4 bg-background">
         <div className="container mx-auto max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="mb-6 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                💰 MAKE MONEY
+              <Badge className="mb-6 bg-primary text-primary-foreground font-impact text-rebel shadow-rebel">
+                💰 GANA PASTA
               </Badge>
-              <h2 className="text-3xl md:text-5xl font-bold mb-8 leading-tight">
-                <span className="text-green-600 dark:text-green-400">MAKE MONEY</span> SHARING PHOTOS AND COORDINATES 
-                <br />OF ABANDONED STREET FINDS
+              <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-foreground">
+                <span className="text-primary">GANA PASTA</span> COMPARTIENDO FOTOS Y COORDENADAS 
+                <br />DE TESOROS ABANDONADOS EN LA CALLE
               </h2>
               <div className="space-y-6 mb-8">
                 <div className="flex gap-4">
-                  <Camera className="h-6 w-6 text-green-600 dark:text-green-400 mt-1 flex-shrink-0" />
-                  <p className="text-lg text-muted-foreground">
-                    Snap a photo of abandoned furniture, electronics, or valuables you find on the street
+                  <Camera className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <p className="text-lg text-foreground font-impact">
+                    CAZA MUEBLES, ELECTRÓNICOS O TESOROS ABANDONADOS EN LA CALLE
                   </p>
                 </div>
                 <div className="flex gap-4">
-                  <MapPin className="h-6 w-6 text-green-600 dark:text-green-400 mt-1 flex-shrink-0" />
-                  <p className="text-lg text-muted-foreground">
-                    Share the approximate location and earn money when someone buys the exact coordinates
+                  <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <p className="text-lg text-foreground font-impact">
+                    COMPARTE LA UBICACIÓN APROXIMADA Y GANA PASTA CUANDO ALGUIEN COMPRE LAS COORDENADAS EXACTAS
                   </p>
                 </div>
                 <div className="flex gap-4">
-                  <DollarSign className="h-6 w-6 text-green-600 dark:text-green-400 mt-1 flex-shrink-0" />
-                  <p className="text-lg text-muted-foreground">
-                    Turn your daily walks into a money-making opportunity while helping others find treasures
+                  <DollarSign className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <p className="text-lg text-foreground font-impact">
+                    CONVIERTE TUS PASEOS DIARIOS EN UNA OPORTUNIDAD DE NEGOCIO URBANO
                   </p>
                 </div>
               </div>
-              <Button asChild size="lg" className="bg-green-600 hover:bg-green-700">
+              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
                 <Link to="/auth">
-                  Start Making Money <ArrowRight className="ml-2 h-5 w-5" />
+                  EMPEZAR A GANAR <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </div>
             
             <div className="lg:order-first">
-              <Card className="p-8 bg-white/80 dark:bg-card/80 backdrop-blur border-green-200 dark:border-green-800">
+              <Card className="p-8 bg-card border-primary shadow-rebel">
                 <div className="text-center">
-                  <div className="bg-green-100 dark:bg-green-900/50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                    <Eye className="h-10 w-10 text-green-600 dark:text-green-400" />
+                  <div className="bg-primary rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                    <Eye className="h-10 w-10 text-primary-foreground" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4">BUY COORDINATES AND GET BARGAINS</h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed">
-                    You know a <span className="font-semibold text-primary">FREE COUCH</span> is 6.8 miles away from you but not exactly where, 
-                    <span className="font-semibold text-green-600 dark:text-green-400"> buy the coordinates</span> and get a 
-                    <span className="font-semibold text-primary"> $200 COUCH for $1</span>
+                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">COMPRA COORDENADAS Y CONSIGUE CHOLLOS</h3>
+                  <p className="text-foreground text-lg leading-relaxed font-impact">
+                    Sabes que hay un <span className="font-black text-primary text-rebel">SOFÁ GRATIS</span> a 11 km de ti pero no exactamente dónde, 
+                    <span className="font-black text-primary text-rebel"> compra las coordenadas</span> y consigue un 
+                    <span className="font-black text-primary text-rebel"> SOFÁ DE 200€ POR 1€</span>
                   </p>
                 </div>
               </Card>
@@ -108,54 +108,54 @@ export default function LandingPage() {
       </section>
 
       {/* Circular Markets Feature */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-secondary">
         <div className="container mx-auto max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Card className="p-8 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 border-purple-200 dark:border-purple-800">
+              <Card className="p-8 bg-card border-primary shadow-rebel">
                 <div className="text-center">
-                  <div className="bg-purple-100 dark:bg-purple-900/50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                    <Store className="h-10 w-10 text-purple-600 dark:text-purple-400" />
+                  <div className="bg-primary rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                    <Store className="h-10 w-10 text-primary-foreground" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4">EXPLORE LOCAL CIRCULAR THRIFT STORES</h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed">
-                    <span className="font-semibold text-purple-600 dark:text-purple-400">SEE THEIR CATALOG FROM THE COMFORT OF YOUR HOME</span> 
-                    <br />AND THEN GO TO BUY LIVE
+                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">EXPLORA TIENDAS CIRCULARES UNDERGROUND</h3>
+                  <p className="text-foreground text-lg leading-relaxed font-impact">
+                    <span className="font-black text-primary text-rebel">VE SU CATÁLOGO DESDE LA COMODIDAD DE TU CASA</span> 
+                    <br />Y LUEGO VE A COMPRAR EN VIVO
                   </p>
                 </div>
               </Card>
             </div>
             
             <div>
-              <Badge className="mb-6 bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
-                🏪 CIRCULAR MARKETS
+              <Badge className="mb-6 bg-primary text-primary-foreground font-impact text-rebel shadow-rebel">
+                🏪 MERCADOS CIRCULARES
               </Badge>
-              <h2 className="text-3xl md:text-5xl font-bold mb-8 leading-tight">
-                EXPLORE LOCAL CIRCULAR THRIFT STORES OR GARAGE SALES
+              <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-white">
+                EXPLORA TIENDAS DE SEGUNDA MANO Y VENTAS DE GARAJE LOCALES
               </h2>
               <div className="space-y-6 mb-8">
                 <div className="flex gap-4">
-                  <Eye className="h-6 w-6 text-purple-600 dark:text-purple-400 mt-1 flex-shrink-0" />
-                  <p className="text-lg text-muted-foreground">
-                    Browse catalogs of local thrift stores, garage sales, and circular markets from home
+                  <Eye className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <p className="text-lg text-white font-impact">
+                    NAVEGA CATÁLOGOS DE TIENDAS LOCALES, VENTAS DE GARAJE Y MERCADOS CIRCULARES DESDE CASA
                   </p>
                 </div>
                 <div className="flex gap-4">
-                  <MapPin className="h-6 w-6 text-purple-600 dark:text-purple-400 mt-1 flex-shrink-0" />
-                  <p className="text-lg text-muted-foreground">
-                    Visit only the stores that have what you're looking for, saving time and gas
+                  <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <p className="text-lg text-white font-impact">
+                    VISITA SOLO LAS TIENDAS QUE TIENEN LO QUE BUSCAS, AHORRANDO TIEMPO Y GASOLINA
                   </p>
                 </div>
                 <div className="flex gap-4">
-                  <Plus className="h-6 w-6 text-purple-600 dark:text-purple-400 mt-1 flex-shrink-0" />
-                  <p className="text-lg text-muted-foreground">
-                    <span className="font-semibold">CREATE YOUR OWN CIRCULAR MARKET,</span> make money with unwanted stuff and save the planet
+                  <Plus className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <p className="text-lg text-white font-impact">
+                    <span className="font-black text-primary text-rebel">CREA TU PROPIO MERCADO CIRCULAR,</span> gana dinero con cosas que no quieres y salva el planeta
                   </p>
                 </div>
               </div>
-              <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700">
+              <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
                 <Link to="/markets">
-                  Explore Markets <ArrowRight className="ml-2 h-5 w-5" />
+                  EXPLORAR MERCADOS <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </div>
@@ -164,23 +164,23 @@ export default function LandingPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 px-4 bg-gradient-to-r from-primary to-secondary text-primary-foreground">
+      <section className="py-20 px-4 bg-urban text-white">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Ready to Turn Trash into Cash?
+          <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-6 drop-shadow-2xl">
+            ¿LISTO PARA CONVERTIR BASURA EN DINERO?
           </h2>
-          <p className="text-xl mb-12 opacity-90 max-w-2xl mx-auto">
-            Join thousands of users who are already making money, saving money, and helping the planet through circular economy.
+          <p className="text-xl mb-12 opacity-90 max-w-2xl mx-auto font-impact">
+            ÚNETE A MILES DE USUARIOS QUE YA ESTÁN GANANDO DINERO, AHORRANDO DINERO Y AYUDANDO AL PLANETA A TRAVÉS DE LA ECONOMÍA CIRCULAR URBANA.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-4 h-auto">
+            <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
               <Link to="/auth">
-                Join Free Now
+                ÚNETE GRATIS AHORA
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary text-lg px-8 py-4 h-auto">
+            <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-secondary text-lg px-8 py-4 h-auto font-impact text-rebel">
               <Link to="/abandons">
-                Start Exploring
+                EMPEZAR A EXPLORAR
               </Link>
             </Button>
           </div>
@@ -188,52 +188,52 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-muted py-12 px-4">
+      <footer className="bg-secondary py-12 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4">Greenriot</h3>
-              <p className="text-muted-foreground mb-4">
-                The circular economy app that turns your finds into cash while saving the planet.
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-white">GREENRIOT</h3>
+              <p className="text-white mb-4 font-impact">
+                LA APP DE ECONOMÍA CIRCULAR QUE CONVIERTE TUS HALLAZGOS EN DINERO MIENTRAS SALVAS EL PLANETA.
               </p>
               <div className="flex space-x-4">
-                <Badge variant="outline">♻️ Circular</Badge>
-                <Badge variant="outline">💰 Profitable</Badge>
+                <Badge variant="outline" className="border-primary text-primary font-impact">♻️ CIRCULAR</Badge>
+                <Badge variant="outline" className="border-primary text-primary font-impact">💰 RENTABLE</Badge>
               </div>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">Features</h4>
-              <ul className="space-y-2 text-muted-foreground">
-                <li><Link to="/abandons" className="hover:text-foreground transition-colors">Find Free Stuff</Link></li>
-                <li><Link to="/markets" className="hover:text-foreground transition-colors">Circular Markets</Link></li>
-                <li><Link to="/wallet" className="hover:text-foreground transition-colors">Earnings</Link></li>
-                <li><Link to="/affiliate" className="hover:text-foreground transition-colors">Refer & Earn</Link></li>
+              <h4 className="font-impact text-rebel mb-4 text-white">FUNCIONES</h4>
+              <ul className="space-y-2 text-white">
+                <li><Link to="/abandons" className="hover:text-primary transition-colors font-impact">ENCONTRAR COSAS GRATIS</Link></li>
+                <li><Link to="/markets" className="hover:text-primary transition-colors font-impact">MERCADOS CIRCULARES</Link></li>
+                <li><Link to="/wallet" className="hover:text-primary transition-colors font-impact">GANANCIAS</Link></li>
+                <li><Link to="/affiliate" className="hover:text-primary transition-colors font-impact">REFIERE Y GANA</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">Community</h4>
-              <ul className="space-y-2 text-muted-foreground">
-                <li><Link to="/chat" className="hover:text-foreground transition-colors">Chat</Link></li>
-                <li><Link to="/favorites" className="hover:text-foreground transition-colors">Favorites</Link></li>
-                <li><Link to="/account" className="hover:text-foreground transition-colors">My Account</Link></li>
+              <h4 className="font-impact text-rebel mb-4 text-white">COMUNIDAD</h4>
+              <ul className="space-y-2 text-white">
+                <li><Link to="/chat" className="hover:text-primary transition-colors font-impact">CHAT</Link></li>
+                <li><Link to="/favorites" className="hover:text-primary transition-colors font-impact">FAVORITOS</Link></li>
+                <li><Link to="/account" className="hover:text-primary transition-colors font-impact">MI CUENTA</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">Impact</h4>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>50k+ active users</li>
-                <li>85% waste reduction</li>
-                <li>€500 average savings</li>
-                <li>Growing community</li>
+              <h4 className="font-impact text-rebel mb-4 text-white">IMPACTO</h4>
+              <ul className="space-y-2 text-white font-impact">
+                <li>50K+ USUARIOS ACTIVOS</li>
+                <li>85% REDUCCIÓN DE RESIDUOS</li>
+                <li>€500 AHORRO PROMEDIO</li>
+                <li>COMUNIDAD CRECIENTE</li>
               </ul>
             </div>
           </div>
           
-          <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 Greenriot. All rights reserved. Making circular economy profitable.</p>
+          <div className="border-t border-primary mt-8 pt-8 text-center text-white">
+            <p className="font-impact">&copy; 2024 GREENRIOT. TODOS LOS DERECHOS RESERVADOS. HACIENDO LA ECONOMÍA CIRCULAR RENTABLE.</p>
           </div>
         </div>
       </footer>
