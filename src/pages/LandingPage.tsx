@@ -70,7 +70,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex gap-4">
                   <DollarSign className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-foreground font-impact">TURN YOUR DAILY WALKS INTO AN URBAN FUNBUSINESS OPPORTUNITY</p>
+                  <p className="text-lg text-foreground font-impact">TURN YOUR DAILY WALKS INTO AN URBAN FUN BUSINESS OPPORTUNITY</p>
                 </div>
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
