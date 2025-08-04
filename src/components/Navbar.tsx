@@ -48,7 +48,7 @@ export default function Navbar() {
           {/* Mobile Menu - Show CTA button and Menu button */}
           <div className="md:hidden flex items-center space-x-3">
             {/* Mobile CTA Button */}
-            <Button asChild size="sm" className="bg-accent hover:bg-accent/90 text-primary font-impact text-xs px-3 py-2">
+            <Button asChild size="sm" className="bg-accent hover:bg-accent/90 text-green-800 font-impact text-xs px-3 py-2">
               <Link to="/app/abandons">
                 {language === 'en' ? 'TRY BETA' : 'BETA'}
               </Link>
