@@ -43,7 +43,7 @@ const AppContent = () => {
   useAffiliateProcessor(); // Process pending affiliate referrals
 
   return (
-    <LanguageProvider>
+    <>
       <LocationPermissionDialog
         isOpen={showLocationDialog}
         onAccept={handleLocationAccept}
@@ -94,33 +94,35 @@ const AppContent = () => {
           </Routes>
         </main>
       </div>
-    </LanguageProvider>
+    </>
   );
 };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <SubscriptionProvider>
-        <FavoritesProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/cookies" element={<CookiesPage />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/legal" element={<LegalPage />} />
-              <Route path="/app/*" element={<AppContent />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-          </TooltipProvider>
-        </FavoritesProvider>
-      </SubscriptionProvider>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <SubscriptionProvider>
+          <FavoritesProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/cookies" element={<CookiesPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/legal" element={<LegalPage />} />
+                <Route path="/app/*" element={<AppContent />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+            </TooltipProvider>
+          </FavoritesProvider>
+        </SubscriptionProvider>
+      </AuthProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 
