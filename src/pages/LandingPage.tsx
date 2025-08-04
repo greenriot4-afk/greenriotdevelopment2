@@ -20,21 +20,19 @@ export default function LandingPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-24 px-4 overflow-hidden bg-cover bg-center bg-no-repeat" style={{backgroundImage: "url('/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png')"}}>
-        {/* Overlay para mejorar legibilidad del texto */}
-        <div className="absolute inset-0 bg-black/40"></div>
+      <section className="relative py-24 px-4 overflow-hidden" style={{backgroundColor: '#17503a'}}>
         <div className="container mx-auto max-w-5xl text-center relative z-10">
           
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
-            <span className="text-white">
+            <span className="text-accent">
               {t('landing.hero.title')}
             </span>
             <br />
-            <span className="text-white">{t('landing.hero.subtitle')}</span>
+            <span className="text-accent">{t('landing.hero.subtitle')}</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-white mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">
+          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">
             {t('landing.hero.description')}
           </p>
           
@@ -57,6 +55,21 @@ export default function LandingPage() {
           <div className="absolute top-20 left-10 w-32 h-32 bg-primary rounded-full animate-pulse"></div>
           <div className="absolute bottom-20 right-10 w-24 h-24 bg-secondary rounded-full animate-pulse delay-1000"></div>
           <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-accent rounded-full animate-pulse delay-500"></div>
+        </div>
+      </section>
+
+      
+      {/* Image Section - Save or Make Money */}
+      <section className="relative h-96 bg-cover bg-center bg-no-repeat overflow-hidden" style={{backgroundImage: "url('/lovable-uploads/33b0365e-92d9-4d4e-92b6-a0aa81533bb6.png')"}}>
+        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="container mx-auto h-full flex items-center justify-end px-4 relative z-10">
+          <div className="text-right max-w-2xl">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-impact text-rebel text-white drop-shadow-2xl">
+              SAVE OR MAKE MONEY
+              <br />
+              SAVE THE PLANET
+            </h2>
+          </div>
         </div>
       </section>
 
