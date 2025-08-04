@@ -141,9 +141,9 @@ const App = () => (
           <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/landing" element={<LandingPage />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/*" element={<AppContent />} />
+            <Route path="/app/*" element={<AppContent />} />
           </Routes>
         </BrowserRouter>
         </TooltipProvider>

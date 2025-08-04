@@ -9,10 +9,10 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
-    { label: language === 'en' ? 'HOME' : 'INICIO', href: '/landing' },
-    { label: language === 'en' ? 'STOOPING' : 'STOOPING', href: '/abandons' },
-    { label: language === 'en' ? 'THRIFTING' : 'THRIFTING', href: '/markets' },
-    { label: language === 'en' ? 'DUMPSTER DIVING' : 'DUMPSTER DIVING', href: '/wallet' },
+    { label: language === 'en' ? 'HOME' : 'INICIO', href: '/' },
+    { label: language === 'en' ? 'STOOPING' : 'STOOPING', href: '/app/abandons' },
+    { label: language === 'en' ? 'THRIFTING' : 'THRIFTING', href: '/app/markets' },
+    { label: language === 'en' ? 'DUMPSTER DIVING' : 'DUMPSTER DIVING', href: '/app/wallet' },
   ];
 
   return (
@@ -20,7 +20,7 @@ export default function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/landing" className="flex items-center">
+          <Link to="/" className="flex items-center">
             <img 
               src="/lovable-uploads/fed4e95f-7ec0-41bc-b194-9781cdc063de.png" 
               alt="Greenriot" 
@@ -42,7 +42,7 @@ export default function Navbar() {
             
             {/* CTA Button */}
             <Button asChild className="bg-accent hover:bg-accent/90 text-primary font-impact text-rebel shadow-rebel">
-              <Link to="/auth">
+              <Link to="/app">
                 {language === 'en' ? 'TRY BETA APP' : 'PRUEBA LA BETA'}
               </Link>
             </Button>
@@ -86,7 +86,7 @@ export default function Navbar() {
               ))}
               
               <Button asChild className="bg-accent hover:bg-accent/90 text-primary font-impact text-rebel shadow-rebel w-fit">
-                <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                <Link to="/app" onClick={() => setIsMenuOpen(false)}>
                   {language === 'en' ? 'TRY BETA APP' : 'PRUEBA LA BETA'}
                 </Link>
               </Button>
