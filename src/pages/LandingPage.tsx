@@ -52,7 +52,7 @@ export default function LandingPage() {
       <section className="py-20 px-4 bg-background">
         <div className="container mx-auto max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
+            <div className="text-left lg:text-left">
               
               <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-foreground">
                 MAKE MONEY SHARING PHOTOS AND COORDINATES OF ABANDONED STREET FINDS
