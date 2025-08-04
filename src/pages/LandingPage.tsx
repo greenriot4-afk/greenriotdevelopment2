@@ -4,20 +4,16 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, Store, Plus, Languages } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
-
 export default function LandingPage() {
-  const { t, language, setLanguage } = useLanguage();
-  
-  return (
-    <div className="min-h-screen bg-background">
+  const {
+    t,
+    language,
+    setLanguage
+  } = useLanguage();
+  return <div className="min-h-screen bg-background">
       {/* Language Selector */}
       <div className="fixed top-4 right-4 z-50">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
-          className="bg-background/80 backdrop-blur border-primary hover:bg-primary hover:text-primary-foreground font-impact text-rebel shadow-rebel"
-        >
+        <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'en' ? 'es' : 'en')} className="bg-background/80 backdrop-blur border-primary hover:bg-primary hover:text-primary-foreground font-impact text-rebel shadow-rebel">
           <Languages className="h-4 w-4 mr-2" />
           {language === 'en' ? 'ES' : 'EN'}
         </Button>
@@ -26,9 +22,7 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative bg-urban py-24 px-4 overflow-hidden">
         <div className="container mx-auto max-w-5xl text-center relative z-10">
-          <Badge variant="secondary" className="mb-8 text-lg px-6 py-2 animate-fade-in font-impact text-rebel shadow-rebel">
-            {t('landing.hero.badge')}
-          </Badge>
+          
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 text-white drop-shadow-2xl">
             <span className="text-white">
@@ -57,7 +51,7 @@ export default function LandingPage() {
         </div>
         
         {/* Background decoration */}
-        <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0 opacity-5 bg-[#17503a]">
           <div className="absolute top-20 left-10 w-32 h-32 bg-primary rounded-full animate-pulse"></div>
           <div className="absolute bottom-20 right-10 w-24 h-24 bg-secondary rounded-full animate-pulse delay-1000"></div>
           <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-accent rounded-full animate-pulse delay-500"></div>
@@ -69,9 +63,7 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="mb-6 bg-primary text-primary-foreground font-impact text-rebel shadow-rebel">
-                {t('landing.coordinates.badge')}
-              </Badge>
+              
               <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-foreground">
                 {t('landing.coordinates.title')}
               </h2>
@@ -248,6 +240,5 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 }
