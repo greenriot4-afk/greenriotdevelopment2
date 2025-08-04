@@ -3,14 +3,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, Store, Plus, Languages, Globe } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
+
 export default function LandingPage() {
-  const {
-    t,
-    language,
-    setLanguage
-  } = useLanguage();
   return <div className="min-h-screen bg-background">
       {/* Navigation Bar */}
       <Navbar />
@@ -30,22 +25,26 @@ export default function LandingPage() {
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
             <span className="text-accent">
-              {t('landing.hero.title')}
+              STOOPING & THRIFTING
             </span>
             <br />
-            <span className="text-accent">{t('landing.hero.subtitle')}</span>
+            <span className="text-accent">URBAN REBELLION</span>
           </h1>
           
           <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">
-            {t('landing.hero.description')}
+            FIND FREE TREASURES NEAR YOU – give them a second life – SAVE OR MAKE MONEY – save the planet
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in delay-300">
             <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
-              
+              <Link to="/auth">
+                JOIN THE REBELLION <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-4 h-auto border-white text-white hover:bg-white hover:text-secondary font-impact text-rebel">
-              
+              <Link to="/objects">
+                EXPLORE NOW <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
             </Button>
           </div>
         </div>
@@ -66,30 +65,32 @@ export default function LandingPage() {
             <div>
               
               <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-foreground">
-                {t('landing.coordinates.title')}
+                MAKE MONEY SHARING PHOTOS AND COORDINATES OF ABANDONED STREET FINDS
               </h2>
               <div className="space-y-6 mb-8">
                 <div className="flex gap-4">
                   <Camera className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                   <p className="text-lg text-foreground font-impact">
-                    {t('landing.coordinates.feature1')}
+                    HUNT FURNITURE, ELECTRONICS OR TREASURES ABANDONED ON THE STREET
                   </p>
                 </div>
                 <div className="flex gap-4">
                   <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                   <p className="text-lg text-foreground font-impact">
-                    {t('landing.coordinates.feature2')}
+                    SHARE THE APPROXIMATE LOCATION AND EARN MONEY WHEN SOMEONE BUYS THE EXACT COORDINATES
                   </p>
                 </div>
                 <div className="flex gap-4">
                   <DollarSign className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                   <p className="text-lg text-foreground font-impact">
-                    {t('landing.coordinates.feature3')}
+                    TURN YOUR DAILY WALKS INTO AN URBAN BUSINESS OPPORTUNITY
                   </p>
                 </div>
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
-                
+                <Link to="/objects">
+                  START EARNING <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
               </Button>
             </div>
             
@@ -99,9 +100,9 @@ export default function LandingPage() {
                   <div className="bg-primary rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                     <Eye className="h-10 w-10 text-primary-foreground" />
                   </div>
-                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">{t('landing.coordinates.cardTitle')}</h3>
+                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">BUY COORDINATES AND GET BARGAINS</h3>
                   <p className="text-foreground text-lg leading-relaxed font-impact">
-                    {t('landing.coordinates.cardDescription')}
+                    You know there is a FREE COUCH 11 km away from you but not exactly where, buy the coordinates and get a €200 COUCH FOR €1
                   </p>
                 </div>
               </Card>
@@ -120,9 +121,9 @@ export default function LandingPage() {
                   <div className="bg-primary rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                     <Store className="h-10 w-10 text-primary-foreground" />
                   </div>
-                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">{t('landing.markets.cardTitle')}</h3>
+                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">EXPLORE UNDERGROUND CIRCULAR STORES</h3>
                   <p className="text-foreground text-lg leading-relaxed font-impact">
-                    {t('landing.markets.cardDescription')}
+                    SEE THEIR CATALOG FROM THE COMFORT OF YOUR HOME AND THEN GO TO BUY LIVE
                   </p>
                 </div>
               </Card>
@@ -130,34 +131,34 @@ export default function LandingPage() {
             
             <div>
               <Badge className="mb-6 bg-primary text-primary-foreground font-impact text-rebel shadow-rebel">
-                {t('landing.markets.badge')}
+                🏪 CIRCULAR MARKETS
               </Badge>
               <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-white">
-                {t('landing.markets.title')}
+                EXPLORE LOCAL UNDERGROUND THRIFT STORES AND GARAGE SALES
               </h2>
               <div className="space-y-6 mb-8">
                 <div className="flex gap-4">
                   <Eye className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                   <p className="text-lg text-white font-impact">
-                    {t('landing.markets.feature1')}
+                    BROWSE CATALOGS OF LOCAL STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME
                   </p>
                 </div>
                 <div className="flex gap-4">
                   <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                   <p className="text-lg text-white font-impact">
-                    {t('landing.markets.feature2')}
+                    VISIT ONLY THE STORES THAT HAVE WHAT YOU'RE LOOKING FOR, SAVING TIME AND GAS
                   </p>
                 </div>
                 <div className="flex gap-4">
                   <Plus className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                   <p className="text-lg text-white font-impact">
-                    {t('landing.markets.feature3')}
+                    CREATE YOUR OWN CIRCULAR MARKET, make money with unwanted stuff and save the planet
                   </p>
                 </div>
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
                 <Link to="/markets">
-                  {t('landing.markets.cta')} <ArrowRight className="ml-2 h-5 w-5" />
+                  EXPLORE MARKETS <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </div>
@@ -173,13 +174,13 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">{t('landing.footer.title')}</h3>
+              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">GREENRIOT</h3>
               <p className="text-white mb-4 font-impact">
-                {t('landing.footer.description')}
+                THE CIRCULAR ECONOMY APP THAT TURNS YOUR FINDS INTO MONEY WHILE SAVING THE PLANET.
               </p>
               <div className="flex flex-wrap gap-2 mb-6">
-                <Badge variant="outline" className="border-accent text-accent font-impact">{t('landing.footer.circular')}</Badge>
-                <Badge variant="outline" className="border-accent text-accent font-impact">{t('landing.footer.profitable')}</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">♻️ CIRCULAR</Badge>
+                <Badge variant="outline" className="border-accent text-accent font-impact">💰 PROFITABLE</Badge>
               </div>
               <div className="space-y-2">
                 <Link to="/cookies" className="block hover:text-accent transition-colors font-impact text-white">
