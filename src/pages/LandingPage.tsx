@@ -158,7 +158,7 @@ export default function LandingPage() {
             <div>
               <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">GREENRIOT</h3>
               <p className="text-white mb-4 font-impact">
-                THE CIRCULAR ECONOMY APP THAT TURNS YOUR FINDS INTO MONEY WHILE SAVING THE PLANET.
+                the circular economy app that makes the local circular economy easy, fun, and profitable.
               </p>
               <div className="flex flex-wrap gap-2 mb-6">
                 <Badge variant="outline" className="border-accent text-accent font-impact">♻️ CIRCULAR</Badge>
@@ -180,7 +180,7 @@ export default function LandingPage() {
             <div>
               <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">Refer and Earn</h3>
               <p className="text-white mb-4 font-impact">
-                Invite your friends and earn rewards for every new user who signs up. Let's build a more sustainable and prosperous community together.
+                register now to get your affiliate code and help build circular economy markets. you can make easy money by sharing your link and helping the planet
               </p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="border-accent text-accent font-impact flex items-center gap-1">
