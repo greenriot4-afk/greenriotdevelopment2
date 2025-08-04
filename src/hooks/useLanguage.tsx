@@ -381,21 +381,48 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Detect browser language and default to appropriate language
   const getBrowserLanguage = (): Language => {
     const browserLang = navigator.language.toLowerCase();
+    const browserLangs = navigator.languages?.map(lang => lang.toLowerCase()) || [];
+    
+    console.log('Browser language detected:', browserLang);
+    console.log('Browser languages array:', browserLangs);
+    
+    // Check primary language first
     if (browserLang.startsWith('es')) {
+      console.log('Setting language to Spanish based on primary language');
       return 'es';
     }
+    
+    // Check all preferred languages
+    for (const lang of browserLangs) {
+      if (lang.startsWith('es')) {
+        console.log('Setting language to Spanish based on preferred languages');
+        return 'es';
+      }
+    }
+    
+    console.log('Setting language to English as default');
     return 'en'; // Default to English for all other languages
   };
 
-  const [language, setLanguageState] = useState<Language>(getBrowserLanguage());
+  const [language, setLanguageState] = useState<Language>(() => {
+    // Only detect browser language on client side
+    if (typeof window !== 'undefined') {
+      return getBrowserLanguage();
+    }
+    return 'en';
+  });
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language') as Language;
+    console.log('Saved language from localStorage:', savedLanguage);
+    
     if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'es')) {
+      console.log('Using saved language:', savedLanguage);
       setLanguageState(savedLanguage);
     } else {
       // If no saved language, use browser language
       const browserLang = getBrowserLanguage();
+      console.log('No saved language, using browser language:', browserLang);
       setLanguageState(browserLang);
       localStorage.setItem('language', browserLang);
     }
