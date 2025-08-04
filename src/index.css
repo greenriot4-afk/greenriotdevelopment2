@@ -10,34 +10,37 @@ Underground, urban and rebellious brand style with Impact font and uppercase tex
 
 @layer base {
   :root {
-    /* Brand colors: #729f31 (green) and #1e4e3a (dark green) */
+    /* Nueva nomenclatura de colores de marca:
+       Color 1: Verde oscuro #17503a (primary)
+       Color 2: Verde claro #729f31 (accent)  
+       Color 3: Gris (muted) */
     --background: 0 0% 100%;
-    --foreground: 150 46% 21%; /* #1e4e3a */
+    --foreground: 124 63% 20%; /* Color 1: #17503a */
 
     --card: 0 0% 100%;
-    --card-foreground: 150 46% 21%;
+    --card-foreground: 124 63% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 150 46% 21%;
+    --popover-foreground: 124 63% 20%;
 
-    --primary: 82 52% 41%; /* #729f31 */
+    --primary: 124 63% 20%; /* Color 1: Verde oscuro #17503a */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 150 46% 21%; /* #1e4e3a */
+    --secondary: 124 63% 20%; /* Color 1: Verde oscuro */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 82 30% 95%;
-    --muted-foreground: 150 46% 21%;
+    --muted: 210 11% 85%; /* Color 3: Gris claro */
+    --muted-foreground: 124 63% 20%;
 
-    --accent: 82 52% 41%;
+    --accent: 82 52% 41%; /* Color 2: Verde claro #729f31 */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 150 46% 21%;
+    --border: 210 11% 75%; /* Color 3: Gris para bordes */
     --input: 82 20% 90%;
-    --ring: 82 52% 41%;
+    --ring: 124 63% 20%; /* Color 1: Verde oscuro para focus */
 
     --radius: 0.5rem;
 
@@ -59,33 +62,33 @@ Underground, urban and rebellious brand style with Impact font and uppercase tex
   }
 
   .dark {
-    --background: 150 46% 8%; /* Very dark version of #1e4e3a */
+    --background: 124 63% 8%; /* Very dark version of Color 1 */
     --foreground: 0 0% 95%;
 
-    --card: 150 46% 10%;
+    --card: 124 63% 10%;
     --card-foreground: 0 0% 95%;
 
-    --popover: 150 46% 10%;
+    --popover: 124 63% 10%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 82 52% 50%; /* Brighter green for dark mode */
-    --primary-foreground: 150 46% 8%;
+    --primary: 124 63% 20%; /* Color 1: Verde oscuro mantiene consistencia */
+    --primary-foreground: 0 0% 95%;
 
-    --secondary: 150 46% 15%;
+    --secondary: 124 63% 15%;
     --secondary-foreground: 0 0% 95%;
 
-    --muted: 82 20% 15%;
-    --muted-foreground: 82 10% 65%;
+    --muted: 210 11% 25%; /* Color 3: Gris oscuro para dark mode */
+    --muted-foreground: 210 11% 65%;
 
-    --accent: 82 20% 15%;
-    --accent-foreground: 82 15% 95%;
+    --accent: 82 52% 50%; /* Color 2: Verde claro más brillante para dark mode */
+    --accent-foreground: 124 63% 8%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 82 20% 20%;
-    --input: 82 20% 20%;
-    --ring: 82 52% 50%;
+    --border: 210 11% 20%; /* Color 3: Gris oscuro para bordes */
+    --input: 210 11% 20%;
+    --ring: 124 63% 20%; /* Color 1: Verde oscuro para focus */
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

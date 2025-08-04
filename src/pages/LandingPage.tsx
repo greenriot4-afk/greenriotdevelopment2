@@ -20,19 +20,19 @@ export default function LandingPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative bg-urban py-24 px-4 overflow-hidden">
+      <section className="relative py-24 px-4 overflow-hidden" style={{backgroundColor: '#17503a'}}>
         <div className="container mx-auto max-w-5xl text-center relative z-10">
           
           
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 text-white drop-shadow-2xl">
-            <span className="text-white">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
+            <span className="text-accent">
               {t('landing.hero.title')}
             </span>
             <br />
-            <span className="text-primary-foreground">{t('landing.hero.subtitle')}</span>
+            <span className="text-accent">{t('landing.hero.subtitle')}</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-white mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">
+          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">
             {t('landing.hero.description')}
           </p>
           
