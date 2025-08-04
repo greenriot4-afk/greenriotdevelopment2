@@ -6,7 +6,8 @@ import { toast } from 'sonner';
 export interface Favorite {
   id: string;
   user_id: string;
-  object_id: string;
+  target_user_id: string;
+  like_type: string;
   created_at: string;
 }
 
@@ -24,12 +25,13 @@ export const useFavorites = () => {
 
     try {
       const { data, error } = await supabase
-        .from('favorites')
+        .from('user_likes')
         .select('*')
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .eq('like_type', 'favorite');
 
       if (error) throw error;
-      setFavorites(data || []);
+      setFavorites((data || []) as Favorite[]);
     } catch (error) {
       console.error('Error fetching favorites:', error);
       toast.error('Error al cargar favoritos');
@@ -39,7 +41,7 @@ export const useFavorites = () => {
   };
 
   const isFavorite = (objectId: string): boolean => {
-    return favorites.some(fav => fav.object_id === objectId);
+    return favorites.some(fav => fav.target_user_id === objectId);
   };
 
   const toggleFavorite = async (objectId: string) => {
@@ -54,22 +56,24 @@ export const useFavorites = () => {
       if (isCurrentlyFavorite) {
         // Remove from favorites
         const { error } = await supabase
-          .from('favorites')
+        .from('user_likes')
           .delete()
           .eq('user_id', user.id)
-          .eq('object_id', objectId);
+          .eq('target_user_id', objectId)
+          .eq('like_type', 'favorite');
 
         if (error) throw error;
 
-        setFavorites(prev => prev.filter(fav => fav.object_id !== objectId));
+        setFavorites(prev => prev.filter(fav => fav.target_user_id !== objectId));
         toast.success('Eliminado de favoritos');
       } else {
         // Add to favorites
         const { data, error } = await supabase
-          .from('favorites')
+          .from('user_likes')
           .insert({
             user_id: user.id,
-            object_id: objectId
+            target_user_id: objectId,
+            like_type: 'favorite'
           })
           .select()
           .single();
@@ -96,7 +100,7 @@ export const useFavorites = () => {
     }
 
     try {
-      const objectIds = favorites.map(fav => fav.object_id);
+      const objectIds = favorites.map(fav => fav.target_user_id);
       
       const { data, error } = await supabase
         .from('objects')

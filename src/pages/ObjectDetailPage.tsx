@@ -249,7 +249,6 @@ export default function ObjectDetailPage() {
                 <ChatButton 
                   userId={object.user_id}
                   username={object.user_display_name || object.username}
-                  requireAuth={true}
                 />
               </div>
             </div>
