@@ -53,9 +53,9 @@ const AppContent = () => {
         <header className="flex items-center justify-between h-14 px-4 border-b bg-primary backdrop-blur">
           <div className="flex items-center">
             <img 
-              src="/lovable-uploads/d8b5b7dc-f65c-45cf-acee-55fb29fdba7c.png" 
+              src="/lovable-uploads/fed4e95f-7ec0-41bc-b194-9781cdc063de.png" 
               alt="Greenriot" 
-              className="h-12 w-auto"
+              className="h-8 w-auto"
             />
           </div>
           <div className="flex items-center gap-3">

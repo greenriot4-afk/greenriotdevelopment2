@@ -20,11 +20,12 @@ export default function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/landing" className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
-              <span className="text-primary font-impact text-lg">S</span>
-            </div>
-            <span className="text-white font-impact text-xl">STOOPING</span>
+          <Link to="/landing" className="flex items-center">
+            <img 
+              src="/lovable-uploads/fed4e95f-7ec0-41bc-b194-9781cdc063de.png" 
+              alt="Greenriot" 
+              className="h-8 w-auto"
+            />
           </Link>
 
           {/* Desktop Menu */}
