@@ -28,6 +28,9 @@ import FavoritesPage from "./pages/FavoritesPage";
 import TestingPage from "./pages/TestingPage";
 import { UserProfilePage } from "./pages/UserProfilePage";
 import LandingPage from "./pages/LandingPage";
+import CookiesPage from "./pages/CookiesPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import LegalPage from "./pages/LegalPage";
 import NotFound from "./pages/NotFound";
 import { LocationPermissionDialog } from "@/components/LocationPermissionDialog";
 import { useFirstLogin } from "@/hooks/useFirstLogin";
@@ -108,6 +111,9 @@ const App = () => (
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/cookies" element={<CookiesPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/legal" element={<LegalPage />} />
             <Route path="/app/*" element={<AppContent />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
