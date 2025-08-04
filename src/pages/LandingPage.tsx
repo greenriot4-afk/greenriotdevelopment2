@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, Store, Plus, Languages, Globe } from "lucide-react";
+import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, Store, Plus, Languages, Globe, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 export default function LandingPage() {
@@ -70,12 +70,12 @@ export default function LandingPage() {
                 </div>
                 <div className="flex gap-4">
                   <DollarSign className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-foreground font-impact">TURN YOUR DAILY WALKS INTO AN URBAN FUN BUSINESS OPPORTUNITY</p>
+                  <p className="text-lg text-foreground font-impact">TURN YOUR DAILY WALKS INTO AN URBAN FUNBUSINESS OPPORTUNITY</p>
                 </div>
               </div>
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90 font-impact text-rebel shadow-rebel">
                 <Link to="/objects">
-                  START MAKING MONEY AND HELPING THE PLANET <ArrowRight className="ml-2 h-5 w-5" />
+                  START EARNING <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </div>
@@ -100,28 +100,40 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Card className="p-8 bg-card border-primary shadow-rebel">
-                <div className="text-center">
-                  <div className="bg-primary rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                    <Store className="h-10 w-10 text-primary-foreground" />
-                  </div>
-                  <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">CIRCULAR MARKETS NEAR YOU</h3>
-                  <p className="text-lg leading-relaxed font-impact text-[#1a4f39] text-center font-light">ASK THEM TO COME TO YOUR HOUSE TO COLLECT YOUR UNWANTED ITEMS INSTEAD OF THROWING THEM IN THE TRASH</p>
+              {/* App Screenshots - Aligned to left */}
+              <div className="space-y-8">
+                <div className="w-80 max-w-sm">
+                  <img 
+                    src="/lovable-uploads/6596ef47-c390-485d-ad2f-866400f5dfb8.png" 
+                    alt="GreenRiot app showing list of circular markets" 
+                    className="w-full h-auto rounded-3xl shadow-2xl"
+                  />
                 </div>
-              </Card>
+                
+                <div className="w-80 max-w-sm">
+                  <img 
+                    src="/lovable-uploads/ec64fcd2-b654-48aa-b479-6901a38d24ce.png" 
+                    alt="GreenRiot app showing market details" 
+                    className="w-full h-auto rounded-3xl shadow-2xl"
+                  />
+                </div>
+              </div>
             </div>
             
             <div>
-              
               <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-8 leading-tight text-white">EXPLORE LOCAL CIRCULAR THRIFT STORES AND GARAGE SALES</h2>
               <div className="space-y-6 mb-8">
-                <div className="flex gap-4 text-6xl py-[190px] my-0">
+                <div className="flex gap-4">
                   <Eye className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                  <p className="text-lg text-white font-impact">BROWSE CATALOGS OF LOCAL THRIFT  STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME. CHAT AND NEGOTIATE</p>
+                  <p className="text-lg text-white font-impact">BROWSE CATALOGS OF LOCAL THRIFT  STORES, GARAGE SALES AND CIRCULAR MARKETS FROM HOME. CHAT AND NEGOTIATE</p>
                 </div>
                 <div className="flex gap-4">
                   <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
                   <p className="text-lg text-white font-impact">VISIT ONLY THE PLACES THAT HAVE WHAT YOU'RE LOOKING FOR, SAVING TIME AND GAS</p>
+                </div>
+                <div className="flex gap-4">
+                  <Trash2 className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                  <p className="text-lg text-white font-impact">ASK THEM TO COME TO YOUR HOUSE TO COLLECT YOUR UNWANTED ITEMS INSTEAD OF THROWING THEM IN THE TRASH</p>
                 </div>
                 <div className="flex gap-4">
                   <Plus className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
