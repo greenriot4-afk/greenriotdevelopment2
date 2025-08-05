@@ -143,30 +143,7 @@ export default function LandingPage() {
       </section>
 
       {/* Affiliate Program CTA */}
-      <section className="py-20 px-4 bg-gradient-to-r from-primary to-secondary">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl md:text-5xl font-impact text-rebel mb-6 text-white">
-            💰 Únete al Programa de Afiliados
-          </h2>
-          <p className="text-xl text-white/90 mb-8 font-impact max-w-3xl mx-auto">
-            Gana dinero compartiendo nuestra plataforma. Recibe comisiones por cada usuario que se registre a través de tu enlace.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-white text-primary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
-              <Link to="/app/affiliates">
-                <DollarSign className="mr-2 h-5 w-5" />
-                Ver Programa de Afiliados
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary font-impact text-rebel">
-              <Link to="/auth">
-                <ArrowRight className="mr-2 h-5 w-5" />
-                Registrarse Ahora
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Final CTA */}
 
