@@ -56,11 +56,11 @@ export function FloatingActionButton({ onUpload }: FloatingActionButtonProps) {
         // Different page, navigate first then show upload form
         console.log('Navigating to different page', { from: currentPath, to: targetPath });
         navigate(targetPath);
-        // Use a timeout to ensure navigation completes and upload state is reset
+        // Use a shorter timeout to trigger upload before state reset
         setTimeout(() => {
           console.log('Navigation completed, triggering upload');
           onUpload(type);
-        }, 500); // Increased timeout to be more reliable
+        }, 50); // Reduced timeout to trigger before state reset
       }
       
       setIsOpen(false);

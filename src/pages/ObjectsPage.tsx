@@ -177,9 +177,13 @@ const ObjectsPage = () => {
       pathname: routerLocation.pathname 
     });
     
-    // Always reset upload form when route changes to prevent unexpected form visibility
-    setShowUpload(false);
-    setAutoOpenCamera(false);
+    // Reset upload form when route changes, but add a small delay to allow FAB navigation to work
+    const timer = setTimeout(() => {
+      setShowUpload(false);
+      setAutoOpenCamera(false);
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, [routerLocation.pathname]);
 
   // Separate effect for fetching objects - only when type changes
