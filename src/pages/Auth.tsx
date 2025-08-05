@@ -175,15 +175,15 @@ export default function Auth() {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-6">
             <img 
-              src="/lovable-uploads/ba5efc90-0b55-4a14-8409-ff08cc5a733e.png" 
+              src="/lovable-uploads/d9254515-de53-47fc-8a9a-ee0c186e2d9f.png" 
               alt="Greenriot" 
-              className="h-32 w-auto"
+              className="h-20 w-auto"
             />
           </div>
           <h1 className="text-green-800 text-xl font-bold mb-2 uppercase tracking-wide">
             STOOPING & THRIFTING CIRCULAR ECONOMY APP
           </h1>
-          <p className="text-green-700 text-lg font-semibold uppercase tracking-wide">
+          <p className="text-green-800 text-lg font-semibold uppercase tracking-wide">
             MAKE OR SAVE MONEY. SAVE THE PLANET
           </p>
           
