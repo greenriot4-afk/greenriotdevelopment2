@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Heart, Store, User } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useNavigate } from 'react-router-dom';
 import { ChatButton } from '@/components/ChatButton';
 import ShareButton from '@/components/ShareButton';
 
@@ -31,6 +32,7 @@ interface MarketsListProps {
 export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsListProps) => {
   const { calculateDistance } = useLocation();
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const getDistanceText = (market: CircularMarket) => {
     if (!userLocation) return t('markets.distance');
@@ -86,7 +88,7 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
         <Card 
           key={market.id} 
           className="overflow-hidden cursor-pointer hover:bg-accent/50 transition-colors"
-          onClick={() => window.location.href = `/market-detail/${market.id}`}
+          onClick={() => onMarketClick(market.id)}
         >
           {market.image_url && (
             <div className="aspect-video relative">
@@ -150,14 +152,14 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
                   <MapPin className="w-3 h-3" />
                 </Button>
                 
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.location.href = `/market-catalog/${market.id}`;
-                  }}
-                >
+                 <Button
+                   size="sm"
+                   variant="outline"
+                   onClick={(e) => {
+                     e.stopPropagation();
+                     navigate(`/app/market-catalog/${market.id}`);
+                   }}
+                 >
                   <Store className="w-3 h-3" />
                 </Button>
                 
