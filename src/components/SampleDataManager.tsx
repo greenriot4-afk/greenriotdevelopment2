@@ -680,6 +680,84 @@ export const SampleDataManager = () => {
     }
   };
 
+  // Function to upload garage sale photos from user uploads
+  const uploadGarageSalePhotos = async () => {
+    if (!user) {
+      toast.error('Debes estar autenticado para subir fotos');
+      return;
+    }
+
+    const garageSaleData = [
+      {
+        imageUrl: 'https://0a522484-1d74-46b5-a7dc-22519140aef6.lovableproject.com/lovable-uploads/bd1aa7f6-cbd5-4ff4-8616-864996727025.png',
+        title: 'Multi-Family Garage Sale - Queens',
+        description: 'Venta de garaje de varias familias este fin de semana! Ropa de niños y adultos, juguetes, libros, artículos del hogar y mucho más. Precios súper bajos, todo debe venderse. Solo efectivo. Sábado y domingo de 8am a 4pm. ¡Grandes ofertas te esperan!',
+        locationName: 'Astoria, Queens, NY'
+      },
+      {
+        imageUrl: 'https://0a522484-1d74-46b5-a7dc-22519140aef6.lovableproject.com/lovable-uploads/912501ce-95c1-44bc-85f4-02977217d50b.png',
+        title: 'Annual Neighborhood Garage Sale',
+        description: 'Venta anual del vecindario con más de 15 familias participando. Encontrarás de todo: muebles, electrodomésticos, herramientas, deportes, decoración y ropa vintage. Precios negociables después de las 2pm. Parking disponible. ¡Una tradición comunitaria que no te puedes perder!',
+        locationName: 'Bay Ridge, Brooklyn, NY'
+      },
+      {
+        imageUrl: 'https://0a522484-1d74-46b5-a7dc-22519140aef6.lovableproject.com/lovable-uploads/210f24e3-1a57-48e0-a67b-8b8af66bc3fa.png',
+        title: 'Moving Sale - Everything Must Go!',
+        description: 'Nos mudamos y todo debe venderse! Herramientas, equipos deportivos, libros, discos de vinilo, artículos de cocina y muebles. 30 años de acumulación familiar a precios increíbles. Acepto ofertas razonables. Domingo desde las 9am hasta que se acabe todo.',
+        locationName: 'Forest Hills, Queens, NY'
+      },
+      {
+        imageUrl: 'https://0a522484-1d74-46b5-a7dc-22519140aef6.lovableproject.com/lovable-uploads/507c4e04-2216-4255-8867-26a6ada6c311.png',
+        title: 'Family Garage Sale - Baby & Kids Items',
+        description: 'Venta especial de familia con muchos artículos para bebés y niños. Ropa, juguetes, libros, carritos, sillas para auto y más. También artículos para adultos y decoración del hogar. Precios marcados pero negociables. Perfecto para familias jóvenes. Solo este sábado!',
+        locationName: 'Park Slope, Brooklyn, NY'
+      }
+    ];
+
+    setLoading(true);
+    setProgress(0);
+    setUploadedItems([]);
+
+    try {
+      for (let i = 0; i < garageSaleData.length; i++) {
+        const sale = garageSaleData[i];
+        const { latitude, longitude } = generateNYCCoordinates();
+        
+        const { error } = await supabase
+          .from('circular_markets')
+          .insert({
+            user_id: user.id,
+            title: sale.title,
+            description: sale.description,
+            image_url: sale.imageUrl,
+            latitude: latitude,
+            longitude: longitude,
+            location_name: sale.locationName,
+            accepts_donations: false, // Los garage sales típicamente no aceptan donaciones
+            is_active: true
+          });
+
+        if (error) {
+          console.error('Error creating garage sale:', error);
+          throw error;
+        }
+
+        setUploadedItems(prev => [...prev, `Garage Sale: ${sale.title}`]);
+        setProgress(((i + 1) / garageSaleData.length) * 100);
+        
+        // Pausa para mostrar progreso
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+
+      toast.success(`¡${garageSaleData.length} garage sales creados exitosamente en NYC!`);
+    } catch (error) {
+      console.error('Error uploading garage sales:', error);
+      toast.error('Error al crear garage sales');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'abandoned': return <MapPin className="w-4 h-4" />;
@@ -844,6 +922,24 @@ export const SampleDataManager = () => {
                     className="w-full bg-green-100 hover:bg-green-200 border-green-300"
                   >
                     {loading ? 'Creando...' : 'Crear Tiendas NYC'}
+                  </Button>
+                </Card>
+
+                <Card className="p-4 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <Package className="w-4 h-4" />
+                    Garage Sales NYC
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Crea 4 garage sales reales con las fotos subidas y coordenadas de Nueva York.
+                  </p>
+                  <Button 
+                    onClick={uploadGarageSalePhotos} 
+                    disabled={loading}
+                    variant="outline"
+                    className="w-full bg-yellow-100 hover:bg-yellow-200 border-yellow-300"
+                  >
+                    {loading ? 'Creando...' : 'Crear Garage Sales NYC'}
                   </Button>
                 </Card>
 
