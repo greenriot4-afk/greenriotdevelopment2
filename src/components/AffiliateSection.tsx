@@ -90,6 +90,28 @@ export const AffiliateSection = () => {
           <p className="text-sm text-muted-foreground">
             {t('affiliate.description')}
           </p>
+          
+          {/* Sección motivacional para compartir anuncios */}
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 mt-4">
+            <div className="flex items-start gap-3">
+              <Share2 className="w-6 h-6 text-green-600 mt-1 flex-shrink-0" />
+              <div>
+                <h4 className="font-semibold text-green-800 mb-2">
+                  💰 ¡Gana dinero compartiendo anuncios!
+                </h4>
+                <p className="text-sm text-green-700 leading-relaxed">
+                  <strong>Cada vez que compartes un anuncio o mercadillo puedes ganar dinero.</strong> 
+                  Tu código de afiliado se incluye automáticamente en todos los enlaces que compartes. 
+                  Cuando alguien se registra y compra una suscripción premium desde tu enlace, 
+                  ¡recibes una comisión!
+                </p>
+                <div className="mt-3 flex items-center gap-2 text-xs text-green-600">
+                  <Gift className="w-4 h-4" />
+                  <span className="font-medium">Comparte → Registros → Comisiones automáticas</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Nivel del afiliado */}
