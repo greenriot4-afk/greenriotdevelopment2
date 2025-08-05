@@ -16,7 +16,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
-  const affiliateCode = searchParams.get('ref');
+  const urlAffiliateCode = searchParams.get('ref');
+  const [affiliateCode, setAffiliateCode] = useState<string | null>(null);
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,6 +28,23 @@ export default function Auth() {
   const { user, signIn, signUp } = useAuth();
   const { processReferralSignup } = useAffiliates();
   const { t } = useLanguage();
+
+  // Detectar código de afiliado desde URL o localStorage
+  useEffect(() => {
+    if (urlAffiliateCode) {
+      // Si viene de URL, usar ese y almacenarlo
+      console.log('Affiliate code detected from URL:', urlAffiliateCode);
+      setAffiliateCode(urlAffiliateCode);
+      localStorage.setItem('pendingAffiliateCode', urlAffiliateCode);
+    } else {
+      // Si no hay en URL, verificar localStorage (para links compartidos)
+      const storedCode = localStorage.getItem('pendingAffiliateCode');
+      if (storedCode) {
+        console.log('Affiliate code detected from localStorage:', storedCode);
+        setAffiliateCode(storedCode);
+      }
+    }
+  }, [urlAffiliateCode]);
 
   // Redirigir si ya está autenticado
   if (user) {
