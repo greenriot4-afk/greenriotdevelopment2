@@ -48,18 +48,28 @@ export default function ObjectDetailPage() {
         const { data, error } = await supabase
           .from('objects')
           .select(`
-            *,
-            profiles!inner(display_name, username)
+            *
           `)
           .eq('id', objectId)
           .single();
 
         if (error) throw error;
 
+        // Fetch user profile separately to avoid join issues
+        let profileData = null;
+        if (data.user_id) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('display_name, username')
+            .eq('user_id', data.user_id)
+            .single();
+          profileData = profile;
+        }
+
         setObject({
           ...data,
-          user_display_name: (data.profiles as any)?.display_name,
-          username: (data.profiles as any)?.username,
+          user_display_name: profileData?.display_name,
+          username: profileData?.username,
           type: data.type as 'abandoned' | 'donation' | 'product'
         });
       } catch (error) {
