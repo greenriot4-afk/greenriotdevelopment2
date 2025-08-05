@@ -172,21 +172,6 @@ const SharedObjectMeta = ({ objectId }: { objectId: string }) => {
 // Main shared object app component
 const SharedObjectApp = () => {
   const { objectId } = useParams<{ objectId: string }>();
-  const location = useLocation();
-  const [shouldRedirect, setShouldRedirect] = useState(false);
-
-  useEffect(() => {
-    // Check if we should redirect to the object detail view
-    if (objectId && location.pathname === `/shared/object/${objectId}`) {
-      // Set a flag to redirect after the app is mounted
-      setShouldRedirect(true);
-    }
-  }, [objectId, location.pathname]);
-
-  // If we should redirect, navigate to the object detail page
-  if (shouldRedirect && objectId) {
-    return <Navigate to={`/shared/object/${objectId}/app/object/${objectId}`} replace />;
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -222,6 +207,7 @@ const SharedObjectApp = () => {
           <Route path="profile/:userId" element={<UserProfilePage />} />
           
           {/* Default redirect to the shared object */}
+          <Route index element={objectId ? <Navigate to={`object/${objectId}`} replace /> : <Navigate to="abandons" replace />} />
           <Route path="*" element={objectId ? <Navigate to={`object/${objectId}`} replace /> : <Navigate to="abandons" replace />} />
         </Routes>
       </main>
@@ -244,13 +230,7 @@ const SharedObjectPage = () => {
               {/* Add meta tags for sharing */}
               {objectId && <SharedObjectMeta objectId={objectId} />}
               
-              <Routes>
-                {/* Route for the shared object with full app navigation */}
-                <Route path="/app/*" element={<SharedObjectApp />} />
-                
-                {/* Default route - redirect to app view */}
-                <Route path="*" element={objectId ? <Navigate to={`/shared/object/${objectId}/app/object/${objectId}`} replace /> : <Navigate to="/app/abandons" replace />} />
-              </Routes>
+              <SharedObjectApp />
             </TooltipProvider>
           </FavoritesProvider>
         </SubscriptionProvider>

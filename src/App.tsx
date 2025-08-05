@@ -122,8 +122,8 @@ const App = () => (
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/admin-content" element={<SuperAdminRoute><AdminContentPage /></SuperAdminRoute>} />
-                <Route path="/shared/object/:objectId" element={<SharedObjectPage />} />
-                <Route path="/shared/market/:marketId" element={<SharedMarketPage />} />
+                <Route path="/shared/object/:objectId/*" element={<SharedObjectPage />} />
+                <Route path="/shared/market/:marketId/*" element={<SharedMarketPage />} />
                 <Route path="/cookies" element={<CookiesPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/legal" element={<LegalPage />} />
