@@ -111,6 +111,32 @@ const MarketCatalogPage = () => {
         )}
       </div>
 
+      {/* Market Image */}
+      {market.image_url && (
+        <Card className="mb-4 overflow-hidden">
+          <div className="aspect-video relative">
+            <img 
+              src={market.image_url} 
+              alt={market.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute top-2 left-2">
+              <Badge variant="secondary" className="bg-white/90">
+                <Store className="w-3 h-3 mr-1" />
+                Market
+              </Badge>
+            </div>
+            {market.accepts_donations && (
+              <div className="absolute top-2 right-2">
+                <Badge variant="default" className="bg-green-500">
+                  Accepts donations
+                </Badge>
+              </div>
+            )}
+          </div>
+        </Card>
+      )}
+
       {/* Market Info */}
       <Card className="mb-4">
         <CardHeader className="pb-2">
