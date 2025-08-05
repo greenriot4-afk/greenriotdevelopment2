@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Heart, Store, User } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
+import { useLanguage } from '@/hooks/useLanguage';
 import { ChatButton } from '@/components/ChatButton';
 
 export interface CircularMarket {
@@ -28,9 +29,10 @@ interface MarketsListProps {
 
 export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsListProps) => {
   const { calculateDistance } = useLocation();
+  const { t } = useLanguage();
 
   const getDistanceText = (market: CircularMarket) => {
-    if (!userLocation) return 'Distancia desconocida';
+    if (!userLocation) return t('markets.distance');
     
     const distance = calculateDistance(
       userLocation.latitude,
@@ -69,9 +71,9 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
     return (
       <div className="text-center py-8">
         <Store className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-        <p className="text-muted-foreground">No hay mercadillos circulares disponibles.</p>
+        <p className="text-muted-foreground">{t('markets.noMarketsAvailable')}</p>
         <p className="text-sm text-muted-foreground mt-2">
-          ¡Sé el primero en crear uno en tu área!
+          {t('markets.circularMarketsDescription')}
         </p>
       </div>
     );
@@ -95,14 +97,14 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
               <div className="absolute top-2 left-2">
                 <Badge variant="secondary" className="bg-white/90">
                   <Store className="w-3 h-3 mr-1" />
-                  Mercadillo
+                  {t('markets.market')}
                 </Badge>
               </div>
               {market.accepts_donations && (
                 <div className="absolute top-2 right-2">
                   <Badge variant="default" className="bg-green-500">
                     <Heart className="w-3 h-3 mr-1" />
-                    Donaciones
+                    {t('markets.acceptsDonations')}
                   </Badge>
                 </div>
               )}
@@ -127,7 +129,7 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
               </div>
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <User className="w-3 h-3" />
-                Creado {new Date(market.created_at).toLocaleDateString()}
+                {t('markets.created')} {new Date(market.created_at).toLocaleDateString()}
               </div>
             </div>
             
@@ -145,7 +147,7 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
                   }}
                 >
                   <MapPin className="w-3 h-3 mr-1" />
-                  Maps
+                  {t('markets.openInMaps')}
                 </Button>
                 
                 <Button
@@ -157,7 +159,7 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
                   }}
                 >
                   <Store className="w-3 h-3 mr-1" />
-                  Catálogo
+                  {t('markets.viewCatalog')}
                 </Button>
                 
                 <ChatButton 

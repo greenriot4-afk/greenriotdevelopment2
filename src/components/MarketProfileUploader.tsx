@@ -10,6 +10,7 @@ import { Upload, Store, Car, Image, CheckCircle, AlertCircle } from 'lucide-reac
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface MarketProfile {
   type: 'thrift_store' | 'garage_sale';
@@ -30,6 +31,7 @@ export const MarketProfileUploader = () => {
   const [activeTab, setActiveTab] = useState('thrift');
   const [uploadedProfiles, setUploadedProfiles] = useState<string[]>([]);
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   // Estados para tienda de segunda mano
   const [thriftStore, setThriftStore] = useState<MarketProfile>({
@@ -187,7 +189,7 @@ export const MarketProfileUploader = () => {
 
   const handleCreateThriftStore = async () => {
     if (!thriftStore.imageFile) {
-      toast.error('Por favor selecciona una imagen para la tienda de segunda mano');
+      toast.error(t('profile.selectThriftImage'));
       return;
     }
 
@@ -196,8 +198,8 @@ export const MarketProfileUploader = () => {
 
     try {
       const title = await createMarketProfile(thriftStore);
-      setUploadedProfiles(prev => [...prev, `Tienda de Segunda Mano: ${title}`]);
-      toast.success('¡Perfil de tienda de segunda mano creado exitosamente!');
+      setUploadedProfiles(prev => [...prev, `${t('admin.thriftStore')}: ${title}`]);
+      toast.success(t('profile.thriftStoreProfile'));
       
       // Reset form
       setThriftStore(prev => ({ ...prev, imageFile: null }));
@@ -207,7 +209,7 @@ export const MarketProfileUploader = () => {
       
     } catch (error) {
       console.error('Error creating thrift store:', error);
-      toast.error(`Error al crear tienda de segunda mano: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      toast.error(`${t('profile.thriftStoreError')}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     } finally {
       setLoading(false);
       setProgress(0);
@@ -216,7 +218,7 @@ export const MarketProfileUploader = () => {
 
   const handleCreateGarageSale = async () => {
     if (!garageSale.imageFile) {
-      toast.error('Por favor selecciona una imagen para el mercadillo de garaje');
+      toast.error(t('profile.selectGarageImage'));
       return;
     }
 
@@ -225,8 +227,8 @@ export const MarketProfileUploader = () => {
 
     try {
       const title = await createMarketProfile(garageSale);
-      setUploadedProfiles(prev => [...prev, `Mercadillo de Garaje: ${title}`]);
-      toast.success('¡Perfil de mercadillo de garaje creado exitosamente!');
+      setUploadedProfiles(prev => [...prev, `${t('admin.garageSale')}: ${title}`]);
+      toast.success(t('profile.garageSaleProfile'));
       
       // Reset form
       setGarageSale(prev => ({ ...prev, imageFile: null }));
@@ -236,7 +238,7 @@ export const MarketProfileUploader = () => {
       
     } catch (error) {
       console.error('Error creating garage sale:', error);
-      toast.error(`Error al crear mercadillo de garaje: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      toast.error(`${t('profile.garageSaleError')}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     } finally {
       setLoading(false);
       setProgress(0);
@@ -249,11 +251,10 @@ export const MarketProfileUploader = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Store className="w-5 h-5" />
-            Creador de Perfiles de Mercado
+            {t('admin.marketProfileCreator')}
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Sube imágenes para crear perfiles diferenciados de tiendas de segunda mano y mercadillos de garaje.
-            El sistema generará automáticamente títulos y descripciones apropiadas para cada tipo.
+            {t('admin.uploadImagesDescription')}
           </p>
         </CardHeader>
         
@@ -262,11 +263,11 @@ export const MarketProfileUploader = () => {
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="thrift" className="flex items-center gap-2">
                 <Store className="w-4 h-4" />
-                Tienda de Segunda Mano
+                {t('admin.thriftStore')}
               </TabsTrigger>
               <TabsTrigger value="garage" className="flex items-center gap-2">
                 <Car className="w-4 h-4" />
-                Mercadillo de Garaje
+                {t('admin.garageSale')}
               </TabsTrigger>
             </TabsList>
 
@@ -277,17 +278,16 @@ export const MarketProfileUploader = () => {
                     <Store className="w-8 h-8 text-blue-600 mt-1" />
                     <div>
                       <h3 className="font-semibold text-blue-700 dark:text-blue-300 mb-2">
-                        Tienda de Segunda Mano (Thrift Store)
+                        {t('admin.thriftStoreTitle')}
                       </h3>
                       <p className="text-sm text-blue-600 dark:text-blue-400 mb-3">
-                        Sube una imagen que represente una tienda de segunda mano profesional. 
-                        Se generará automáticamente un perfil con enfoque en sostenibilidad, productos vintage y acepta donaciones.
+                        {t('admin.thriftStoreDescription')}
                       </p>
                       
                       <div className="space-y-4">
                         <div>
                           <Label htmlFor="thrift-image" className="text-sm font-medium">
-                            Imagen de la Tienda
+                            {t('admin.storeImage')}
                           </Label>
                           <Input
                             id="thrift-image"
@@ -300,7 +300,7 @@ export const MarketProfileUploader = () => {
                           {thriftStore.imageFile && (
                             <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
                               <CheckCircle className="w-3 h-3" />
-                              Imagen seleccionada: {thriftStore.imageFile.name}
+                              {t('admin.imageSelected')} {thriftStore.imageFile.name}
                             </p>
                           )}
                         </div>
@@ -311,7 +311,7 @@ export const MarketProfileUploader = () => {
                           className="w-full"
                         >
                           <Upload className="w-4 h-4 mr-2" />
-                          {loading ? 'Creando Perfil...' : 'Crear Tienda de Segunda Mano'}
+                          {loading ? t('admin.creatingProfile') : t('admin.createThriftStore')}
                         </Button>
                       </div>
                     </div>
@@ -327,17 +327,16 @@ export const MarketProfileUploader = () => {
                     <Car className="w-8 h-8 text-orange-600 mt-1" />
                     <div>
                       <h3 className="font-semibold text-orange-700 dark:text-orange-300 mb-2">
-                        Mercadillo de Garaje (Garage Sale)
+                        {t('admin.garageSaleTitle')}
                       </h3>
                       <p className="text-sm text-orange-600 dark:text-orange-400 mb-3">
-                        Sube una imagen que represente un mercadillo de garaje familiar.
-                        Se generará automáticamente un perfil casual con precios de oportunidad y enfoque temporal.
+                        {t('admin.garageSaleDescription')}
                       </p>
                       
                       <div className="space-y-4">
                         <div>
                           <Label htmlFor="garage-image" className="text-sm font-medium">
-                            Imagen del Mercadillo
+                            {t('admin.marketImage')}
                           </Label>
                           <Input
                             id="garage-image"
@@ -350,7 +349,7 @@ export const MarketProfileUploader = () => {
                           {garageSale.imageFile && (
                             <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
                               <CheckCircle className="w-3 h-3" />
-                              Imagen seleccionada: {garageSale.imageFile.name}
+                              {t('admin.imageSelected')} {garageSale.imageFile.name}
                             </p>
                           )}
                         </div>
@@ -362,7 +361,7 @@ export const MarketProfileUploader = () => {
                           variant="outline"
                         >
                           <Upload className="w-4 h-4 mr-2" />
-                          {loading ? 'Creando Perfil...' : 'Crear Mercadillo de Garaje'}
+                          {loading ? t('admin.creatingProfile') : t('admin.createGarageSale')}
                         </Button>
                       </div>
                     </div>
@@ -375,7 +374,7 @@ export const MarketProfileUploader = () => {
           {loading && (
             <div className="space-y-2 mt-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Creando perfil...</span>
+                <span className="text-sm font-medium">{t('admin.creatingProfile')}</span>
                 <span className="text-sm text-muted-foreground">{Math.round(progress)}%</span>
               </div>
               <Progress value={progress} className="w-full" />
@@ -386,7 +385,7 @@ export const MarketProfileUploader = () => {
             <Card className="p-4 mt-4">
               <h3 className="font-semibold mb-2 flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-green-500" />
-                Perfiles Creados ({uploadedProfiles.length})
+                {t('admin.profilesCreated')} ({uploadedProfiles.length})
               </h3>
               <div className="space-y-1 max-h-32 overflow-y-auto">
                 {uploadedProfiles.map((profile, index) => (
@@ -403,14 +402,14 @@ export const MarketProfileUploader = () => {
             <CardContent className="p-0">
               <h3 className="font-semibold mb-2 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-blue-500" />
-                Información Importante
+                {t('admin.importantInfo')}
               </h3>
               <div className="text-sm text-muted-foreground space-y-1">
-                <p>• Las imágenes se suben a tu cuenta personal y se generan coordenadas aleatorias de NYC</p>
-                <p>• Los títulos y descripciones se generan automáticamente según el tipo de mercado</p>
-                <p>• Las tiendas de segunda mano aceptan donaciones por defecto</p>
-                <p>• Los mercadillos de garaje son solo de venta sin donaciones</p>
-                <p>• Máximo 5MB por imagen, formatos soportados: JPG, PNG, WebP</p>
+                <p>• {t('admin.imagesUploadedToAccount')}</p>
+                <p>• {t('admin.titlesAutoGenerated')}</p>
+                <p>• {t('admin.thriftStoresAcceptDonations')}</p>
+                <p>• {t('admin.garageSalesOnlySell')}</p>
+                <p>• {t('admin.maxFileSize')}</p>
               </div>
             </CardContent>
           </Card>

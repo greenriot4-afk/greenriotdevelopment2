@@ -199,7 +199,7 @@ export function MobileMenu() {
              {user?.email === 'inigoloperena@gmail.com' && (
                <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleAdminContentClick}>
                  <Database className="h-5 w-5 mr-3" />
-                 Gestión de Contenido
+                 {t('admin.contentManagement')}
                </Button>
              )}
 
