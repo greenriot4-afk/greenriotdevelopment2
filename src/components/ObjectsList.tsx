@@ -348,7 +348,14 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
             </div>
             
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg">{object.title}</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">{object.title}</CardTitle>
+                {objectType === 'product' && object.price_credits > 0 && (
+                  <div className="text-lg font-bold text-primary">
+                    ${object.price_credits}
+                  </div>
+                )}
+              </div>
               {object.description && (
                 <p className="text-sm text-muted-foreground">{object.description}</p>
               )}
