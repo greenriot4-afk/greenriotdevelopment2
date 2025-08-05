@@ -170,20 +170,20 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-green-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-white p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-6">
             <img 
               src="/lovable-uploads/b8718597-8055-40ab-be67-40fc8bd1fac3.png" 
               alt="Greenriot" 
-              className="h-24 w-auto"
+              className="h-32 w-auto"
             />
           </div>
-          <h1 className="text-white text-xl font-bold mb-2 uppercase tracking-wide">
+          <h1 className="text-green-800 text-xl font-bold mb-2 uppercase tracking-wide">
             STOOPING & THRIFTING CIRCULAR ECONOMY APP
           </h1>
-          <p className="text-green-100 text-lg font-semibold uppercase tracking-wide">
+          <p className="text-green-700 text-lg font-semibold uppercase tracking-wide">
             MAKE OR SAVE MONEY. SAVE THE PLANET
           </p>
           
