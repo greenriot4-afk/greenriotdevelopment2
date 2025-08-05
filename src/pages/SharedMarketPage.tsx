@@ -88,89 +88,98 @@ const SharedMarketPage = () => {
   // Meta tags para compartir en redes sociales
   useEffect(() => {
     if (market) {
+      // Clear existing meta tags first
+      const existingMetas = document.querySelectorAll('meta[property^="og:"], meta[name^="twitter:"]');
+      existingMetas.forEach(meta => meta.remove());
+
       document.title = `${market.title} - GreenRiot`;
-      
-      // Meta description
-      const metaDescription = document.querySelector('meta[name="description"]') || 
-                             document.createElement('meta');
-      metaDescription.setAttribute('name', 'description');
-      metaDescription.setAttribute('content', market.description || market.title);
-      if (!document.head.contains(metaDescription)) {
-        document.head.appendChild(metaDescription);
-      }
-      
-      // Open Graph meta tags
-      const ogTitle = document.querySelector('meta[property="og:title"]') || 
-                     document.createElement('meta');
-      ogTitle.setAttribute('property', 'og:title');
-      ogTitle.setAttribute('content', market.title);
-      if (!document.head.contains(ogTitle)) {
-        document.head.appendChild(ogTitle);
-      }
-      
-      const ogDescription = document.querySelector('meta[property="og:description"]') || 
-                           document.createElement('meta');
-      ogDescription.setAttribute('property', 'og:description');
-      ogDescription.setAttribute('content', market.description || market.title);
-      if (!document.head.contains(ogDescription)) {
-        document.head.appendChild(ogDescription);
-      }
-      
-      const ogImage = document.querySelector('meta[property="og:image"]') || 
-                     document.createElement('meta');
-      ogImage.setAttribute('property', 'og:image');
       
       // Convert relative URLs to absolute URLs
       let imageUrl = market.image_url || '/lovable-uploads/991c69cf-b058-411d-b885-f70ba12f255b.png';
       if (imageUrl.startsWith('/')) {
         imageUrl = `${window.location.origin}${imageUrl}`;
       }
-      
-      ogImage.setAttribute('content', imageUrl);
-      if (!document.head.contains(ogImage)) {
-        document.head.appendChild(ogImage);
-      }
-      
-      // Additional meta tags for better social sharing
-      const ogImageWidth = document.querySelector('meta[property="og:image:width"]') || 
-                          document.createElement('meta');
-      ogImageWidth.setAttribute('property', 'og:image:width');
-      ogImageWidth.setAttribute('content', '1200');
-      if (!document.head.contains(ogImageWidth)) {
-        document.head.appendChild(ogImageWidth);
-      }
-      
-      const ogImageHeight = document.querySelector('meta[property="og:image:height"]') || 
-                           document.createElement('meta');
-      ogImageHeight.setAttribute('property', 'og:image:height');
-      ogImageHeight.setAttribute('content', '630');
-      if (!document.head.contains(ogImageHeight)) {
-        document.head.appendChild(ogImageHeight);
-      }
-      
-      const ogImageAlt = document.querySelector('meta[property="og:image:alt"]') || 
-                        document.createElement('meta');
-      ogImageAlt.setAttribute('property', 'og:image:alt');
-      ogImageAlt.setAttribute('content', market.title);
-      if (!document.head.contains(ogImageAlt)) {
-        document.head.appendChild(ogImageAlt);
-      }
-      
-      const ogUrl = document.querySelector('meta[property="og:url"]') || 
-                   document.createElement('meta');
-      ogUrl.setAttribute('property', 'og:url');
-      ogUrl.setAttribute('content', window.location.href);
-      if (!document.head.contains(ogUrl)) {
-        document.head.appendChild(ogUrl);
-      }
 
-      const ogType = document.querySelector('meta[property="og:type"]') || 
-                     document.createElement('meta');
-      ogType.setAttribute('property', 'og:type');
-      ogType.setAttribute('content', 'website');
-      if (!document.head.contains(ogType)) {
-        document.head.appendChild(ogType);
-      }
+      console.log('Setting meta tags with image URL:', imageUrl);
+      
+      // Basic meta description
+      const metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      metaDescription.setAttribute('content', market.description || market.title);
+      document.head.appendChild(metaDescription);
+      
+      // Open Graph meta tags (Facebook, WhatsApp, etc.)
+      const ogTags = [
+        { property: 'og:title', content: market.title },
+        { property: 'og:description', content: market.description || market.title },
+        { property: 'og:image', content: imageUrl },
+        { property: 'og:image:secure_url', content: imageUrl },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
+        { property: 'og:image:alt', content: market.title },
+        { property: 'og:url', content: window.location.href },
+        { property: 'og:type', content: 'article' },
+        { property: 'og:site_name', content: 'GreenRiot' },
+        { property: 'og:locale', content: 'es_ES' }
+      ];
+
+      ogTags.forEach(tag => {
+        const meta = document.createElement('meta');
+        meta.setAttribute('property', tag.property);
+        meta.setAttribute('content', tag.content);
+        document.head.appendChild(meta);
+      });
+
+      // Twitter Card meta tags
+      const twitterTags = [
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: market.title },
+        { name: 'twitter:description', content: market.description || market.title },
+        { name: 'twitter:image', content: imageUrl },
+        { name: 'twitter:image:alt', content: market.title },
+        { name: 'twitter:site', content: '@GreenRiot' },
+        { name: 'twitter:creator', content: '@GreenRiot' }
+      ];
+
+      twitterTags.forEach(tag => {
+        const meta = document.createElement('meta');
+        meta.setAttribute('name', tag.name);
+        meta.setAttribute('content', tag.content);
+        document.head.appendChild(meta);
+      });
+
+      // WhatsApp specific (uses Open Graph but sometimes needs help)
+      const whatsappMeta = document.createElement('meta');
+      whatsappMeta.setAttribute('property', 'og:image:type');
+      whatsappMeta.setAttribute('content', 'image/jpeg');
+      document.head.appendChild(whatsappMeta);
+
+      // Telegram specific
+      const telegramMeta = document.createElement('meta');
+      telegramMeta.setAttribute('name', 'telegram:channel');
+      telegramMeta.setAttribute('content', '@greenriot');
+      document.head.appendChild(telegramMeta);
+
+      // Additional meta for better compatibility
+      const additionalMetas = [
+        { property: 'article:author', content: market.profiles?.display_name || 'Usuario GreenRiot' },
+        { property: 'article:published_time', content: market.created_at },
+        { name: 'robots', content: 'index, follow' },
+        { name: 'theme-color', content: '#10b981' }
+      ];
+
+      additionalMetas.forEach(tag => {
+        const meta = document.createElement('meta');
+        if (tag.property) {
+          meta.setAttribute('property', tag.property);
+        } else {
+          meta.setAttribute('name', tag.name);
+        }
+        meta.setAttribute('content', tag.content);
+        document.head.appendChild(meta);
+      });
+
+      console.log('Meta tags set for market:', market.title);
     }
   }, [market]);
 
