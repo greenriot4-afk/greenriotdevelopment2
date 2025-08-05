@@ -84,7 +84,11 @@ const ShareButton = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant={variant} size={size}>
+        <Button 
+          variant={variant} 
+          size={size}
+          onClick={(e) => e.stopPropagation()}
+        >
           <Share2 className="w-4 h-4 mr-1" />
           Compartir
         </Button>
