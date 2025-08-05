@@ -119,11 +119,51 @@ const SharedObjectPage = () => {
       const ogImage = document.querySelector('meta[property="og:image"]') || 
                      document.createElement('meta');
       ogImage.setAttribute('property', 'og:image');
-      ogImage.setAttribute('content', object.image_url || '/lovable-uploads/991c69cf-b058-411d-b885-f70ba12f255b.png');
+      
+      // Convert relative URLs to absolute URLs
+      let imageUrl = object.image_url || '/lovable-uploads/991c69cf-b058-411d-b885-f70ba12f255b.png';
+      if (imageUrl.startsWith('/')) {
+        imageUrl = `${window.location.origin}${imageUrl}`;
+      }
+      
+      ogImage.setAttribute('content', imageUrl);
       if (!document.head.contains(ogImage)) {
         document.head.appendChild(ogImage);
       }
       
+      // Additional meta tags for better social sharing
+      const ogImageWidth = document.querySelector('meta[property="og:image:width"]') || 
+                          document.createElement('meta');
+      ogImageWidth.setAttribute('property', 'og:image:width');
+      ogImageWidth.setAttribute('content', '1200');
+      if (!document.head.contains(ogImageWidth)) {
+        document.head.appendChild(ogImageWidth);
+      }
+      
+      const ogImageHeight = document.querySelector('meta[property="og:image:height"]') || 
+                           document.createElement('meta');
+      ogImageHeight.setAttribute('property', 'og:image:height');
+      ogImageHeight.setAttribute('content', '630');
+      if (!document.head.contains(ogImageHeight)) {
+        document.head.appendChild(ogImageHeight);
+      }
+      
+      const ogImageAlt = document.querySelector('meta[property="og:image:alt"]') || 
+                        document.createElement('meta');
+      ogImageAlt.setAttribute('property', 'og:image:alt');
+      ogImageAlt.setAttribute('content', object.title);
+      if (!document.head.contains(ogImageAlt)) {
+        document.head.appendChild(ogImageAlt);
+      }
+      
+      const ogUrl = document.querySelector('meta[property="og:url"]') || 
+                   document.createElement('meta');
+      ogUrl.setAttribute('property', 'og:url');
+      ogUrl.setAttribute('content', window.location.href);
+      if (!document.head.contains(ogUrl)) {
+        document.head.appendChild(ogUrl);
+      }
+
       const ogType = document.querySelector('meta[property="og:type"]') || 
                      document.createElement('meta');
       ogType.setAttribute('property', 'og:type');
