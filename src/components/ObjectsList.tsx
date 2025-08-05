@@ -181,6 +181,30 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
       });
 
       console.log('Raw edge function response:', response);
+      
+      // Try to get error details from the response object
+      if (response.error && response.error.context) {
+        console.log('Error context:', response.error.context);
+      }
+      
+      // If there's a response object, try to extract more details
+      if (response.error && response.error.response) {
+        try {
+          const errorText = await response.error.response.text();
+          console.log('Error response text:', errorText);
+          
+          try {
+            const errorJson = JSON.parse(errorText);
+            console.log('Parsed error JSON:', errorJson);
+            throw new Error(errorJson.error || errorJson.message || 'Unknown error');
+          } catch (parseError) {
+            console.log('Could not parse error as JSON:', parseError);
+            throw new Error(errorText || 'Unknown error');
+          }
+        } catch (textError) {
+          console.log('Could not get error text:', textError);
+        }
+      }
 
       const { data, error } = response;
       
