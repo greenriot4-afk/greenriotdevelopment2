@@ -21,9 +21,10 @@ interface PhotoUploadProps {
   }) => Promise<void>;
   objectType: 'abandoned' | 'donation' | 'product';
   onCancel?: () => void;
+  autoOpenCamera?: boolean; // New prop to control auto-camera opening
 }
 
-export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps) => {
+export const PhotoUpload = ({ onUpload, objectType, onCancel, autoOpenCamera = false }: PhotoUploadProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState(objectType === 'donation' ? 0 : 1);
@@ -55,9 +56,13 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
   // For abandoned items, ONLY camera is allowed - no gallery option
   const allowGallery = objectType !== 'abandoned';
 
-  // Auto-open camera for abandoned items on all platforms - only if user explicitly requested it
-  // Remove auto-opening to prevent unwanted camera activations
-  const shouldAutoOpenCamera = false; // Disabled to prevent auto-camera issues
+  // Auto-open camera for abandoned items when explicitly requested
+  useEffect(() => {
+    if (objectType === 'abandoned' && autoOpenCamera && user && !photo && !isCameraLoading) {
+      console.log('Auto-opening camera for abandoned item...');
+      handleCapturePhoto();
+    }
+  }, [objectType, autoOpenCamera, user]);
 
   const handleCapturePhoto = async () => {
     try {

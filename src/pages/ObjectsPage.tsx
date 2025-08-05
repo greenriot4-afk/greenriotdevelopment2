@@ -32,6 +32,7 @@ const ObjectsPage = () => {
   const routerLocation = useRouterLocation();
   const [objects, setObjects] = useState<AppObject[]>([]);
   const [showUpload, setShowUpload] = useState(false);
+  const [autoOpenCamera, setAutoOpenCamera] = useState(false);
   const [loading, setLoading] = useState(true);
   const { userLocation, getCurrentLocation, isLoading: locationLoading, calculateDistance } = useLocation();
   const { user } = useAuth();
@@ -181,6 +182,7 @@ const ObjectsPage = () => {
     const currentObjectType = getTypeFromPath(routerLocation.pathname);
     if (currentObjectType !== type) {
       setShowUpload(false);
+      setAutoOpenCamera(false);
     }
     
     // Check cache to prevent duplicate requests
@@ -263,6 +265,7 @@ const ObjectsPage = () => {
       
       setObjects(prev => [newObject as AppObject, ...prev]);
       setShowUpload(false);
+      setAutoOpenCamera(false);
       toast.success(t('objects.publishedSuccessfully'));
     } catch (error) {
       console.error('Error uploading object:', error);
@@ -289,6 +292,8 @@ const ObjectsPage = () => {
     // Only show upload form if the selected type matches the current page type
     if (uploadType === objectType) {
       setShowUpload(true);
+      // Auto-open camera for abandoned items when coming from FAB
+      setAutoOpenCamera(uploadType === 'abandoned');
     }
   };
 
@@ -316,7 +321,11 @@ const ObjectsPage = () => {
           <PhotoUpload 
             onUpload={handleUploadObject} 
             objectType={objectType}
-            onCancel={() => setShowUpload(false)}
+            onCancel={() => {
+              setShowUpload(false);
+              setAutoOpenCamera(false);
+            }}
+            autoOpenCamera={autoOpenCamera}
           />
         </div>
       )}
