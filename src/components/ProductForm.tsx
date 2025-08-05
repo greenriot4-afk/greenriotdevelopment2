@@ -34,7 +34,7 @@ export const ProductForm = ({ product, marketId, onSubmit, onCancel }: ProductFo
   const [title, setTitle] = useState(product?.title || '');
   const [description, setDescription] = useState(product?.description || '');
   const [type, setType] = useState<'product' | 'donation'>(product?.type || 'product');
-  const [priceCredits, setPriceCredits] = useState(product?.price_credits?.toString() || '');
+  const [priceCredits, setPriceCredits] = useState(product?.price_credits?.toString() || '1');
   const [photo, setPhoto] = useState<PhotoWithLocation | null>(
     product ? {
       image: product.image_url,
@@ -142,7 +142,7 @@ export const ProductForm = ({ product, marketId, onSubmit, onCancel }: ProductFo
         setTitle('');
         setDescription('');
         setType('product');
-        setPriceCredits('');
+        setPriceCredits('1');
         setPhoto(null);
       }
       
