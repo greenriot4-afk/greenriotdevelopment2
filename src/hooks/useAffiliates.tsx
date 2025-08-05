@@ -196,8 +196,10 @@ export const useAffiliates = () => {
   };
 
   useEffect(() => {
-    fetchAffiliateData();
-  }, [user]);
+    if (user?.id) {
+      fetchAffiliateData();
+    }
+  }, [user?.id]); // Solo depender del user ID para evitar bucles infinitos
 
   return {
     affiliateCode,

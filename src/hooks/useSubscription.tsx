@@ -20,8 +20,16 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
   const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
   const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lastCheckTime, setLastCheckTime] = useState<number>(0);
 
   const checkSubscription = async () => {
+    // Rate limiting: no hacer la llamada si se hizo recientemente (menos de 10 segundos)
+    const now = Date.now();
+    if (now - lastCheckTime < 10000) {
+      return;
+    }
+    setLastCheckTime(now);
+
     if (!user) {
       setSubscribed(false);
       setSubscriptionTier(null);
@@ -103,16 +111,20 @@ export const SubscriptionProvider = ({ children }: { children: React.ReactNode }
   };
 
   useEffect(() => {
-    checkSubscription();
-  }, [user]);
-
-  // Auto-refresh subscription status less frequently to reduce server load
-  useEffect(() => {
     if (user) {
-      const interval = setInterval(checkSubscription, 300000); // Check every 5 minutes instead of 30 seconds
+      checkSubscription();
+    }
+  }, [user?.id]); // Solo depender del user ID, no del objeto completo
+
+  // Auto-refresh subscription status menos frecuentemente para reducir carga del servidor
+  useEffect(() => {
+    if (user?.id) {
+      const interval = setInterval(() => {
+        checkSubscription();
+      }, 300000); // Verificar cada 5 minutos
       return () => clearInterval(interval);
     }
-  }, [user]);
+  }, [user?.id]); // Solo depender del user ID
 
   return (
     <SubscriptionContext.Provider value={{

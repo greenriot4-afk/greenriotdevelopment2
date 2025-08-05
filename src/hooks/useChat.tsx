@@ -201,12 +201,14 @@ export const useChat = () => {
   };
 
   useEffect(() => {
-    fetchConversations();
-  }, [user]);
+    if (user?.id) {
+      fetchConversations();
+    }
+  }, [user?.id]); // Solo depender del user ID para evitar bucles infinitos
 
   // Set up real-time subscription for conversations
   useEffect(() => {
-    if (!user) return;
+    if (!user?.id) return;
 
     const channel = supabase
       .channel('conversations-changes')
@@ -238,7 +240,7 @@ export const useChat = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user?.id]); // Solo depender del user ID
 
   return {
     conversations,
