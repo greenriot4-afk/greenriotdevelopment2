@@ -87,10 +87,10 @@ export default function ObjectDetailPage() {
 
     setPurchasing(true);
     try {
-      const result = await supabase.functions.invoke('create-coordinate-payment-checkout', {
+      const result = await supabase.functions.invoke('create-coordinate-payment', {
         body: {
           amount: object.price_credits,
-          description: `Coordenadas de ${object.title}`,
+          description: `Coordenadas para: ${object.title}`,
           objectType: object.type,
           currency: 'USD',
           objectId: object.id
@@ -99,11 +99,11 @@ export default function ObjectDetailPage() {
 
       if (result.error) throw result.error;
 
-      // Redirect to Stripe checkout
-      if (result.data?.url) {
-        window.location.href = result.data.url;
+      if (result.data?.success) {
+        toast.success(`${t('object.coordinatesAcquired')} - Saldo restante: $${result.data.new_balance}`);
+        // Opcional: navegar a una página de éxito o refrescar datos
       } else {
-        toast.success(t('object.coordinatesAcquired'));
+        throw new Error(result.data?.error || 'Error en el pago');
       }
     } catch (error) {
       console.error('Error purchasing coordinates:', error);
