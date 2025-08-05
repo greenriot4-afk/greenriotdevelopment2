@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Share2, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ShareButtonProps {
   type: 'object' | 'market';
@@ -24,8 +26,43 @@ const ShareButton = ({
   size = 'sm'
 }: ShareButtonProps) => {
   const [copied, setCopied] = useState(false);
+  const [userAffiliateCode, setUserAffiliateCode] = useState<string | null>(null);
+  const { user } = useAuth();
 
-  const shareUrl = `${window.location.origin}/shared/${type}/${id}`;
+  // Fetch user's affiliate code
+  useEffect(() => {
+    const fetchAffiliateCode = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('affiliate_codes')
+          .select('code')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .single();
+
+        if (!error && data) {
+          setUserAffiliateCode(data.code);
+        }
+      } catch (error) {
+        console.log('No affiliate code found for user');
+      }
+    };
+
+    fetchAffiliateCode();
+  }, [user]);
+
+  // Build the share URL with optional affiliate code
+  const buildShareUrl = () => {
+    const baseUrl = `${window.location.origin}/shared/${type}/${id}`;
+    if (userAffiliateCode) {
+      return `${baseUrl}?ref=${userAffiliateCode}`;
+    }
+    return baseUrl;
+  };
+
+  const shareUrl = buildShareUrl();
   
   const shareText = description 
     ? `${title}\n\n${description}\n\n`

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Navigate, useLocation } from 'react-router-dom';
+import { useParams, Navigate, useLocation, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -172,6 +172,16 @@ const SharedObjectMeta = ({ objectId }: { objectId: string }) => {
 // Main shared object app component
 const SharedObjectApp = () => {
   const { objectId } = useParams<{ objectId: string }>();
+  const [searchParams] = useSearchParams();
+
+  // Handle affiliate code detection
+  useEffect(() => {
+    const affiliateCode = searchParams.get('ref');
+    if (affiliateCode) {
+      console.log('Affiliate code detected in shared object:', affiliateCode);
+      localStorage.setItem('pendingAffiliateCode', affiliateCode);
+    }
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

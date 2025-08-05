@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Routes, Route, Navigate } from 'react-router-dom';
+import { useParams, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '@/hooks/useAuth';
 import { LanguageProvider } from '@/hooks/useLanguage';
@@ -167,6 +167,16 @@ const SharedMarketMeta = () => {
 // Main app component for shared market
 const SharedMarketApp = () => {
   const { marketId } = useParams<{ marketId: string }>();
+  const [searchParams] = useSearchParams();
+
+  // Handle affiliate code detection
+  useEffect(() => {
+    const affiliateCode = searchParams.get('ref');
+    if (affiliateCode) {
+      console.log('Affiliate code detected in shared market:', affiliateCode);
+      localStorage.setItem('pendingAffiliateCode', affiliateCode);
+    }
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
