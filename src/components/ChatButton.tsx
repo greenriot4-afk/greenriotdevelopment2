@@ -23,13 +23,10 @@ export const ChatButton = ({ userId, username, size = 'sm', variant = 'outline',
   const handleChatClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    if (requireAuth && !user) {
-      authAction(() => {}, 'Debes crear una cuenta para chatear');
-      return;
-    }
-
     if (!user) {
-      toast.error('Debes iniciar sesión para chatear');
+      // Redirigir a login/signup en lugar de mostrar error
+      console.log('User not logged in, redirecting to auth...');
+      navigate('/auth');
       return;
     }
 
