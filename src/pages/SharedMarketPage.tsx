@@ -31,7 +31,12 @@ const SharedMarketPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!marketId) return;
+    if (!marketId) {
+      console.log('SharedMarketPage: No marketId provided');
+      return;
+    }
+
+    console.log('SharedMarketPage: Fetching market with ID:', marketId);
 
     const fetchMarket = async () => {
       try {
@@ -50,11 +55,15 @@ const SharedMarketPage = () => {
           .eq('is_active', true)
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('SharedMarketPage: Error fetching market:', error);
+          throw error;
+        }
         
+        console.log('SharedMarketPage: Market data fetched:', data);
         setMarket(data as SharedMarket);
       } catch (error) {
-        console.error('Error fetching market:', error);
+        console.error('SharedMarketPage: Catch block error:', error);
       } finally {
         setLoading(false);
       }

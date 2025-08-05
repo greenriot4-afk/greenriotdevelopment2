@@ -32,7 +32,12 @@ const SharedObjectPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!objectId) return;
+    if (!objectId) {
+      console.log('SharedObjectPage: No objectId provided');
+      return;
+    }
+
+    console.log('SharedObjectPage: Fetching object with ID:', objectId);
 
     const fetchObject = async () => {
       try {
@@ -50,11 +55,15 @@ const SharedObjectPage = () => {
           .eq('id', objectId)
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('SharedObjectPage: Error fetching object:', error);
+          throw error;
+        }
         
+        console.log('SharedObjectPage: Object data fetched:', data);
         setObject(data as SharedObject);
       } catch (error) {
-        console.error('Error fetching object:', error);
+        console.error('SharedObjectPage: Catch block error:', error);
       } finally {
         setLoading(false);
       }
