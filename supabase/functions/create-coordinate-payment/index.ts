@@ -33,7 +33,7 @@ serve(async (req) => {
       throw new Error(`Authentication failed: ${userError?.message || 'User not found'}`);
     }
 
-    const { amount, description, objectType = 'coordinate', currency = 'USD' } = await req.json();
+    const { amount, description, objectType = 'coordinate', currency = 'USD', objectId } = await req.json();
     
     if (!amount || amount <= 0) {
       throw new Error('Invalid amount');
@@ -43,6 +43,10 @@ serve(async (req) => {
       throw new Error('Unsupported currency');
     }
 
+    if (!objectId) {
+      throw new Error('Object ID is required');
+    }
+
     // Create service role client
     const serviceSupabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -50,15 +54,30 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Get or create user wallet for the specified currency
+    // Get object details to find the seller
+    const { data: object, error: objectError } = await serviceSupabase
+      .from('objects')
+      .select('user_id, title, price_credits')
+      .eq('id', objectId)
+      .single();
+
+    if (objectError || !object) {
+      throw new Error('Object not found');
+    }
+
+    const sellerId = object.user_id;
+    const sellerAmount = Math.round(amount * 0.8); // 80% to seller
+    const platformFee = amount - sellerAmount; // 20% platform fee
+
+    // Get or create buyer wallet for the specified currency
     const { data: walletId } = await serviceSupabase
       .rpc('get_or_create_wallet', {
         p_user_id: user.id,
         p_currency: currency
       });
 
-    // Use atomic wallet update function
-    const { data: result, error: atomicError } = await serviceSupabase
+    // 1. Deduct from buyer
+    const { data: buyerResult, error: buyerError } = await serviceSupabase
       .rpc('update_wallet_balance_atomic', {
         p_wallet_id: walletId,
         p_amount: amount,
@@ -69,13 +88,50 @@ serve(async (req) => {
         p_currency: currency
       });
 
-    if (atomicError) {
-      console.error('Error in atomic wallet update:', atomicError);
-      throw new Error(atomicError.message || 'Error processing payment');
+    if (buyerError) {
+      throw new Error(`Failed to process buyer payment: ${buyerError.message}`);
+    }
+
+    // 2. Add to seller (only if not the same user)
+    let sellerResult = null;
+    if (sellerId !== user.id) {
+      const { data: sellerWalletId } = await serviceSupabase
+        .rpc('get_or_create_wallet', {
+          p_user_id: sellerId,
+          p_currency: currency
+        });
+
+      const { data: result, error: sellerError } = await serviceSupabase
+        .rpc('update_wallet_balance_atomic', {
+          p_wallet_id: sellerWalletId,
+          p_amount: sellerAmount,
+          p_transaction_type: 'credit',
+          p_user_id: sellerId,
+          p_description: `Venta de coordenadas: ${object.title} (80% after platform fee)`,
+          p_object_type: 'coordinate_sale',
+          p_currency: currency
+        });
+
+      if (sellerError) {
+        throw new Error(`Failed to process seller payment: ${sellerError.message}`);
+      }
+      
+      sellerResult = result;
+    }
+
+    // 3. Add platform commission to company wallet (20%)
+    const { data: companyResult, error: companyError } = await serviceSupabase
+      .rpc('update_company_wallet_balance_atomic', {
+        p_amount: platformFee,
+        p_description: `Comisión 20% - Venta coordenadas: ${object.title}`
+      });
+
+    if (companyError) {
+      throw new Error(`Failed to process platform commission: ${companyError.message}`);
     }
 
     // Type assertion for the RPC result
-    const walletResult = result as {
+    const walletResult = buyerResult as {
       success: boolean;
       transaction_id: string;
       previous_balance: number;
