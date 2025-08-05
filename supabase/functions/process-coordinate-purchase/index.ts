@@ -69,7 +69,10 @@ serve(async (req) => {
       .eq('id', objectId)
       .single();
 
+    console.log('Object fetch result:', { object, error: objectError?.message });
+
     if (objectError || !object) {
+      console.error('Failed to fetch object:', objectError);
       throw new Error('Object not found');
     }
 
@@ -103,7 +106,7 @@ serve(async (req) => {
     console.log('Balance check:', { required: amount, available: buyerWallet.balance });
     if (buyerWallet.balance < amount) {
       console.error('Insufficient balance:', { required: amount, available: buyerWallet.balance });
-      throw new Error('Insufficient balance');
+      throw new Error(`No tienes suficiente saldo. Necesitas $${amount} pero solo tienes $${buyerWallet.balance}.`);
     }
 
     // Get or create seller's wallet
@@ -142,9 +145,11 @@ serve(async (req) => {
         p_object_type: objectType || 'coordinate'
       });
 
+    console.log('Buyer debit result:', { buyerResult, buyerError });
+
     if (buyerError) {
       console.error('Failed to deduct from buyer:', buyerError);
-      throw new Error('Failed to process buyer payment');
+      throw new Error(`Failed to process buyer payment: ${buyerError.message}`);
     }
 
     // 2. Add to seller (only if not the same user)
@@ -160,10 +165,12 @@ serve(async (req) => {
           p_object_type: 'coordinate_sale'
         });
 
+      console.log('Seller credit result:', { result, sellerError });
+
       if (sellerError) {
         console.error('Failed to credit seller:', sellerError);
         // Note: In a real system, we'd want to rollback the buyer transaction here
-        throw new Error('Failed to process seller payment');
+        throw new Error(`Failed to process seller payment: ${sellerError.message}`);
       }
       
       sellerResult = result;
@@ -178,10 +185,12 @@ serve(async (req) => {
         p_description: `Comisión 20% - Venta coordenadas: ${object.title}`
       });
 
+    console.log('Company wallet result:', { companyResult, companyError });
+
     if (companyError) {
       console.error('Failed to add commission to company wallet:', companyError);
       // Note: In a real system, we'd want to rollback the previous transactions here
-      throw new Error('Failed to process platform commission');
+      throw new Error(`Failed to process platform commission: ${companyError.message}`);
     }
 
     // 4. Delete the object immediately after successful payment (only for abandoned objects)
