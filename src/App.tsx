@@ -73,23 +73,26 @@ const AppContent = () => {
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
           <Routes>
+            {/* Rutas públicas - no requieren autenticación */}
             <Route path="abandons" element={<ObjectsPage />} />
             <Route path="donations" element={<ObjectsPage />} />
             <Route path="products" element={<ObjectsPage />} />
             <Route path="object/:objectId" element={<ObjectDetailPage />} />
             <Route path="markets" element={<MarketsPage />} />
-            <Route path="affiliates" element={<AffiliatePage />} />
             <Route path="market-detail/:marketId" element={<MarketDetailPage />} />
             <Route path="market-catalog/:marketId" element={<MarketCatalogPage />} />
             <Route path="profile/:userId" element={<UserProfilePage />} />
-            <Route path="wallet" element={<WalletPage />} />
-            <Route path="account" element={<AccountSettings />} />
-            <Route path="my-market" element={<MyMarketPage />} />
-            <Route path="my-ads" element={<MyAdsPage />} />
-            <Route path="chat" element={<ChatListPage />} />
-            <Route path="chat/:conversationId" element={<ChatPage />} />
-            <Route path="favorites" element={<FavoritesPage />} />
-            <Route path="testing" element={<TestingPage />} />
+            
+            {/* Rutas protegidas - requieren autenticación */}
+            <Route path="affiliates" element={<ProtectedRoute><AffiliatePage /></ProtectedRoute>} />
+            <Route path="wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
+            <Route path="account" element={<ProtectedRoute><AccountSettings /></ProtectedRoute>} />
+            <Route path="my-market" element={<ProtectedRoute><MyMarketPage /></ProtectedRoute>} />
+            <Route path="my-ads" element={<ProtectedRoute><MyAdsPage /></ProtectedRoute>} />
+            <Route path="chat" element={<ProtectedRoute><ChatListPage /></ProtectedRoute>} />
+            <Route path="chat/:conversationId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+            <Route path="favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
+            <Route path="testing" element={<ProtectedRoute><TestingPage /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/app/abandons" replace />} />
           </Routes>
         </main>
@@ -114,7 +117,7 @@ const App = () => (
                 <Route path="/cookies" element={<CookiesPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/legal" element={<LegalPage />} />
-                <Route path="/app/*" element={<ProtectedRoute><AppContent /></ProtectedRoute>} />
+                <Route path="/app/*" element={<AppContent />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
