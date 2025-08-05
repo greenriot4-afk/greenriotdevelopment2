@@ -6,18 +6,13 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[MANUAL-COMMISSION-PROCESSING] ${step}${detailsStr}`);
-};
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    logStep("Function started");
+    console.log("Function started");
 
     const supabaseService = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -26,14 +21,13 @@ serve(async (req) => {
     );
 
     const { referralId } = await req.json();
+    console.log("Processing referral:", referralId);
     
     if (!referralId) {
       throw new Error("Referral ID is required");
     }
 
-    logStep("Processing referral", { referralId });
-
-    // Get referral details
+    // Step 1: Get referral
     const { data: referral, error: referralError } = await supabaseService
       .from('referrals')
       .select('*')
@@ -42,68 +36,22 @@ serve(async (req) => {
       .single();
 
     if (referralError) {
-      throw referralError;
+      console.error("Referral error:", referralError);
+      throw new Error(`Referral error: ${referralError.message}`);
     }
 
     if (!referral) {
       throw new Error("No eligible referral found");
     }
 
-    logStep("Eligible referral found", { 
-      referralId: referral.id, 
-      affiliateUserId: referral.affiliate_user_id,
-      referredUserId: referral.referred_user_id
-    });
+    console.log("Referral found:", referral.id);
 
-    // Get affiliate code and level
-    const { data: affiliateCode, error: affiliateError } = await supabaseService
-      .from('affiliate_codes')
-      .select('level')
-      .eq('user_id', referral.affiliate_user_id)
-      .eq('code', referral.affiliate_code)
-      .single();
+    // Step 2: Calculate commission (fixed 4.75 EUR for Premium)
+    const commissionAmount = 4.75;
+    
+    console.log("Commission amount:", commissionAmount);
 
-    if (affiliateError) {
-      throw affiliateError;
-    }
-
-    const affiliateLevel = affiliateCode.level || 'level_3';
-    logStep("Affiliate level retrieved", { affiliateLevel });
-
-    // Check if the referred user has an active subscription
-    const { data: subscriber, error: subscriberError } = await supabaseService
-      .from('subscribers')
-      .select('subscription_tier, subscribed')
-      .eq('user_id', referral.referred_user_id)
-      .eq('subscribed', true)
-      .single();
-
-    if (subscriberError) {
-      throw new Error("Referenced user does not have an active subscription");
-    }
-
-    // Calculate commission based on Premium subscription (19 EUR)
-    const baseAmount = 19.00; // Premium subscription price
-
-    // Calculate commission based on affiliate level
-    const { data: commissionPercentageResult, error: percentageError } = await supabaseService
-      .rpc('get_affiliate_commission_percentage', { affiliate_level: affiliateLevel });
-
-    if (percentageError) {
-      throw percentageError;
-    }
-
-    const commissionPercentage = commissionPercentageResult || 0.25; // Default to 25%
-    const commissionAmount = baseAmount * commissionPercentage;
-
-    logStep("Commission amount calculated", { 
-      baseAmount, 
-      affiliateLevel,
-      commissionPercentage, 
-      commissionAmount 
-    });
-
-    // Update referral with subscription info
+    // Step 3: Update referral
     const { error: updateReferralError } = await supabaseService
       .from('referrals')
       .update({
@@ -114,10 +62,13 @@ serve(async (req) => {
       .eq('id', referral.id);
 
     if (updateReferralError) {
-      throw updateReferralError;
+      console.error("Update referral error:", updateReferralError);
+      throw new Error(`Update referral error: ${updateReferralError.message}`);
     }
 
-    // Create commission record
+    console.log("Referral updated");
+
+    // Step 4: Create commission record
     const { data: commission, error: commissionError } = await supabaseService
       .from('affiliate_commissions')
       .insert({
@@ -126,35 +77,38 @@ serve(async (req) => {
         amount: commissionAmount,
         status: 'paid',
         stripe_session_id: 'manual_processing',
-        affiliate_level: affiliateLevel,
+        affiliate_level: 'level_3',
         processed_at: new Date().toISOString()
       })
       .select()
       .single();
 
     if (commissionError) {
-      throw commissionError;
+      console.error("Commission error:", commissionError);
+      throw new Error(`Commission error: ${commissionError.message}`);
     }
 
-    logStep("Commission record created", { commissionId: commission.id });
+    console.log("Commission record created:", commission.id);
 
-    // Get or create EUR wallet for affiliate user
-    logStep("Getting or creating EUR wallet", { affiliateUserId: referral.affiliate_user_id });
-    
-    let walletId;
+    // Step 5: Handle wallet
+    // Check if EUR wallet exists
     const { data: existingWallet } = await supabaseService
       .from('wallets')
       .select('id, balance')
       .eq('user_id', referral.affiliate_user_id)
       .eq('currency', 'EUR')
-      .single();
+      .maybeSingle();
+
+    let walletId;
+    let currentBalance = 0;
 
     if (existingWallet) {
       walletId = existingWallet.id;
-      logStep("Existing EUR wallet found", { walletId, currentBalance: existingWallet.balance });
+      currentBalance = parseFloat(existingWallet.balance.toString());
+      console.log("Existing EUR wallet found:", walletId, "balance:", currentBalance);
     } else {
       // Create new EUR wallet
-      const { data: newWallet, error: createWalletError } = await supabaseService
+      const { data: newWallet, error: createError } = await supabaseService
         .from('wallets')
         .insert({
           user_id: referral.affiliate_user_id,
@@ -164,58 +118,35 @@ serve(async (req) => {
         .select()
         .single();
 
-      if (createWalletError) {
-        logStep("Error creating EUR wallet", { error: createWalletError });
-        throw createWalletError;
+      if (createError) {
+        console.error("Create wallet error:", createError);
+        throw new Error(`Create wallet error: ${createError.message}`);
       }
 
       walletId = newWallet.id;
-      logStep("New EUR wallet created", { walletId });
+      console.log("New EUR wallet created:", walletId);
     }
 
-    // Update wallet balance directly
-    logStep("Updating wallet balance", { walletId, commissionAmount });
-    
-    // First get current balance
-    const { data: currentWallet, error: getWalletError } = await supabaseService
-      .from('wallets')
-      .select('balance')
-      .eq('id', walletId)
-      .single();
-
-    if (getWalletError) {
-      logStep("Error getting current wallet balance", { error: getWalletError });
-      throw getWalletError;
-    }
-
-    const currentBalance = parseFloat(currentWallet.balance.toString());
+    // Step 6: Update wallet balance
     const newBalance = currentBalance + commissionAmount;
-
-    // Update with new balance
-    const { data: updatedWallet, error: updateError } = await supabaseService
+    
+    const { error: updateWalletError } = await supabaseService
       .from('wallets')
       .update({ 
         balance: newBalance,
         updated_at: new Date().toISOString()
       })
-      .eq('id', walletId)
-      .select()
-      .single();
+      .eq('id', walletId);
 
-    if (updateError) {
-      logStep("Error updating wallet balance", { error: updateError });
-      throw updateError;
+    if (updateWalletError) {
+      console.error("Update wallet error:", updateWalletError);
+      throw new Error(`Update wallet error: ${updateWalletError.message}`);
     }
 
-    logStep("Wallet balance updated successfully", { 
-      walletId, 
-      previousBalance: currentBalance,
-      commissionAmount,
-      newBalance: updatedWallet.balance 
-    });
+    console.log("Wallet updated. New balance:", newBalance);
 
-    // Create transaction record manually
-    const { data: transaction, error: transactionError } = await supabaseService
+    // Step 7: Create transaction
+    const { error: transactionError } = await supabaseService
       .from('transactions')
       .insert({
         user_id: referral.affiliate_user_id,
@@ -226,41 +157,31 @@ serve(async (req) => {
         description: `Affiliate commission for referral ${referral.id}`,
         object_type: 'affiliate_commission',
         currency: 'EUR'
-      })
-      .select()
-      .single();
+      });
 
     if (transactionError) {
-      logStep("Error creating transaction", { error: transactionError });
-      throw transactionError;
+      console.error("Transaction error:", transactionError);
+      throw new Error(`Transaction error: ${transactionError.message}`);
     }
 
-    logStep("Transaction created successfully", { transactionId: transaction.id });
-
-    logStep("Commission processed successfully", { 
-      affiliateUserId: referral.affiliate_user_id,
-      affiliateLevel,
-      commissionPercentage,
-      commissionAmount,
-      newBalance: updatedWallet.balance
-    });
+    console.log("Transaction created successfully");
 
     return new Response(JSON.stringify({ 
       success: true, 
       commission: commissionAmount,
       affiliateUserId: referral.affiliate_user_id,
-      affiliateLevel,
-      commissionPercentage,
-      newBalance: updatedWallet.balance
+      newBalance: newBalance,
+      message: "Commission processed successfully"
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
 
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
-    logStep("ERROR", { message: errorMessage, stack: error instanceof Error ? error.stack : undefined });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    console.error("ERROR:", error);
+    return new Response(JSON.stringify({ 
+      error: error.message || String(error) 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
