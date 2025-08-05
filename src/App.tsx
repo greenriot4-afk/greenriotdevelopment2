@@ -29,6 +29,7 @@ import TestingPage from "./pages/TestingPage";
 import { UserProfilePage } from "./pages/UserProfilePage";
 import LandingPage from "./pages/LandingPage";
 import AdminCommissionPage from "./pages/AdminCommissionPage";
+import AdminContentPage from "./pages/AdminContentPage";
 import NotFound from "./pages/NotFound";
 import CookiesPage from "./pages/CookiesPage";
 import PrivacyPage from "./pages/PrivacyPage";
@@ -95,6 +96,7 @@ const AppContent = () => {
             <Route path="favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
             <Route path="testing" element={<ProtectedRoute><TestingPage /></ProtectedRoute>} />
             <Route path="admin-commission" element={<ProtectedRoute><AdminCommissionPage /></ProtectedRoute>} />
+            <Route path="admin-content" element={<ProtectedRoute><AdminContentPage /></ProtectedRoute>} />
             <Route path="*" element={<Navigate to="/app/abandons" replace />} />
           </Routes>
         </main>
