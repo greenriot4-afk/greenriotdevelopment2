@@ -85,8 +85,10 @@ serve(async (req) => {
     }
 
     console.log('Purchase validation passed, proceeding with payment');
-    const sellerAmount = Math.round(amount * 0.8); // 80% to seller
-    const platformFee = amount - sellerAmount; // 20% platform fee
+    
+    // Calculate platform fee first to ensure it's at least 1 cent
+    const platformFee = Math.max(1, Math.round(amount * 0.2)); // At least 1 cent/euro cent platform fee
+    const sellerAmount = amount - platformFee; // Seller gets the remainder
 
     // Get or create buyer wallet for the specified currency
     const { data: walletId } = await serviceSupabase
