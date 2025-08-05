@@ -180,11 +180,11 @@ export default function Auth() {
               className="h-20 w-auto"
             />
           </div>
-          <h1 className="text-green-800 text-xl font-bold mb-2 uppercase tracking-wide">
-            STOOPING & THRIFTING CIRCULAR ECONOMY APP
+          <h1 className="text-green-800 text-2xl font-bold mb-2 uppercase tracking-wide">
+            MAKE OR SAVE MONEY. SAVE THE PLANET
           </h1>
           <p className="text-green-800 text-lg font-semibold uppercase tracking-wide">
-            MAKE OR SAVE MONEY. SAVE THE PLANET
+            STOOPING & THRIFTING CIRCULAR ECONOMY APP
           </p>
           
           {affiliateCode && (
