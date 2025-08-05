@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 
 // Precio por defecto - se puede cambiar aquí
-const PREMIUM_PRICE_USD = 19;
+const PREMIUM_PRICE_USD = 20;
 
 export const AffiliateSection = () => {
   const { user } = useAuth();
