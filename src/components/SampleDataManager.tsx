@@ -556,6 +556,78 @@ export const SampleDataManager = () => {
     }
   };
 
+  // Function to upload thrift store photos from user uploads
+  const uploadThriftStorePhotos = async () => {
+    if (!user) {
+      toast.error('Debes estar autenticado para subir fotos');
+      return;
+    }
+
+    const thriftStoreData = [
+      {
+        imageUrl: '/lovable-uploads/8721f4eb-340f-4d1f-aab9-f612d81bebff.png',
+        title: 'Brooklyn Thrift Emporium',
+        description: 'Tienda de segunda mano establecida en el corazón de Brooklyn. Especialistas en ropa vintage, muebles restaurados y artículos únicos del hogar. Cada pieza es cuidadosamente seleccionada para ofrecer calidad y estilo a precios accesibles. Aceptamos donaciones y ofrecemos descuentos especiales los fines de semana.',
+        locationName: 'Park Slope, Brooklyn, NY'
+      },
+      {
+        imageUrl: '/lovable-uploads/3ae68ed8-5e4d-4e2c-aa6c-60595fbf0dd8.png',
+        title: 'Family Pathways Donation Center',
+        description: 'Centro de donaciones y tienda de segunda mano con propósito comunitario. Todos los ingresos se destinan a programas familiares locales. Amplia selección de ropa, libros, juguetes y artículos para el hogar en excelente estado. Misión: crear oportunidades para familias necesitadas mientras promovemos la sostenibilidad.',
+        locationName: 'Queens Village, Queens, NY'
+      },
+      {
+        imageUrl: '/lovable-uploads/8d7b7ad4-ea76-4385-af65-def830e90d9d.png',
+        title: 'Praha Vintage Thrift Store',
+        description: 'Tienda de segunda mano con sabor internacional en el Lower East Side. Especializada en piezas vintage europeas, ropa étnica y objetos de arte únicos. Ambiente acogedor donde cada visita es una aventura de descubrimiento. Perfecto para encontrar piezas de conversación y tesoros culturales auténticos.',
+        locationName: 'Lower East Side, Manhattan, NY'
+      }
+    ];
+
+    setLoading(true);
+    setProgress(0);
+    setUploadedItems([]);
+
+    try {
+      for (let i = 0; i < thriftStoreData.length; i++) {
+        const store = thriftStoreData[i];
+        const { latitude, longitude } = generateNYCCoordinates();
+        
+        const { error } = await supabase
+          .from('circular_markets')
+          .insert({
+            user_id: user.id,
+            title: store.title,
+            description: store.description,
+            image_url: store.imageUrl,
+            latitude: latitude,
+            longitude: longitude,
+            location_name: store.locationName,
+            accepts_donations: true, // Las tiendas de segunda mano aceptan donaciones
+            is_active: true
+          });
+
+        if (error) {
+          console.error('Error creating thrift store:', error);
+          throw error;
+        }
+
+        setUploadedItems(prev => [...prev, `Tienda: ${store.title}`]);
+        setProgress(((i + 1) / thriftStoreData.length) * 100);
+        
+        // Pausa para mostrar progreso
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+
+      toast.success(`¡${thriftStoreData.length} tiendas de segunda mano creadas exitosamente en NYC!`);
+    } catch (error) {
+      console.error('Error uploading thrift stores:', error);
+      toast.error('Error al crear tiendas de segunda mano');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'abandoned': return <MapPin className="w-4 h-4" />;
@@ -702,6 +774,24 @@ export const SampleDataManager = () => {
                     className="w-full"
                   >
                     {loading ? 'Subiendo...' : 'Subir Productos NYC'}
+                  </Button>
+                </Card>
+
+                <Card className="p-4 border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <Store className="w-4 h-4" />
+                    Tiendas de Segunda Mano NYC
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Crea 3 tiendas de segunda mano reales con las fotos subidas y coordenadas de Nueva York.
+                  </p>
+                  <Button 
+                    onClick={uploadThriftStorePhotos} 
+                    disabled={loading}
+                    variant="outline"
+                    className="w-full bg-green-100 hover:bg-green-200 border-green-300"
+                  >
+                    {loading ? 'Creando...' : 'Crear Tiendas NYC'}
                   </Button>
                 </Card>
 
