@@ -218,6 +218,38 @@ export const SampleDataManager = () => {
     }
   };
 
+  const clearAbandonedObjects = async () => {
+    if (!user) {
+      toast.error('Debes estar autenticado');
+      return;
+    }
+
+    if (!confirm('¿Estás seguro de que quieres eliminar TODOS los objetos abandonados? Esta acción no se puede deshacer.')) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Eliminar solo objetos abandonados del usuario
+      const { error } = await supabase
+        .from('objects')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('type', 'abandoned');
+
+      if (error) throw error;
+
+      toast.success('Todos los objetos abandonados han sido eliminados');
+      setUploadedItems(prev => prev.filter(item => !item.startsWith('abandoned:')));
+    } catch (error) {
+      console.error('Error clearing abandoned objects:', error);
+      toast.error('Error al eliminar los objetos abandonados');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const clearAllData = async () => {
     if (!user) {
       toast.error('Debes estar autenticado');
@@ -301,7 +333,7 @@ export const SampleDataManager = () => {
             </TabsList>
 
             <TabsContent value="load" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2 flex items-center gap-2">
                     <Upload className="w-4 h-4" />
@@ -321,8 +353,26 @@ export const SampleDataManager = () => {
 
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Eliminar Solo Abandonados
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Elimina únicamente los objetos abandonados de tu usuario.
+                  </p>
+                  <Button 
+                    onClick={clearAbandonedObjects} 
+                    disabled={loading}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    {loading ? 'Eliminando...' : 'Eliminar Abandonados'}
+                  </Button>
+                </Card>
+
+                <Card className="p-4">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
                     <Trash2 className="w-4 h-4" />
-                    Limpiar Datos
+                    Limpiar Todos los Datos
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4">
                     Elimina todos los objetos y mercados creados por tu usuario.
