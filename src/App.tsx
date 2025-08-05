@@ -31,6 +31,8 @@ import { UserProfilePage } from "./pages/UserProfilePage";
 import LandingPage from "./pages/LandingPage";
 import AdminCommissionPage from "./pages/AdminCommissionPage";
 import AdminContentPage from "./pages/AdminContentPage";
+import SharedObjectPage from "./pages/SharedObjectPage";
+import SharedMarketPage from "./pages/SharedMarketPage";
 import NotFound from "./pages/NotFound";
 import CookiesPage from "./pages/CookiesPage";
 import PrivacyPage from "./pages/PrivacyPage";
@@ -120,6 +122,8 @@ const App = () => (
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/admin-content" element={<SuperAdminRoute><AdminContentPage /></SuperAdminRoute>} />
+                <Route path="/shared/object/:objectId" element={<SharedObjectPage />} />
+                <Route path="/shared/market/:marketId" element={<SharedMarketPage />} />
                 <Route path="/cookies" element={<CookiesPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/legal" element={<LegalPage />} />

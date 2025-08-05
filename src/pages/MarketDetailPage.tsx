@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, MapPin, Heart, Store, User, Phone, Mail, Calendar } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocation } from '@/hooks/useLocation';
+import ShareButton from '@/components/ShareButton';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { CircularMarket } from '@/components/MarketsList';
@@ -205,19 +206,28 @@ const MarketDetailPage = () => {
           Abrir en Google Maps
         </Button>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           <Button
             variant="outline"
             onClick={() => navigate(`/app/market-catalog/${market.id}`)}
+            size="sm"
           >
-            <Store className="w-4 h-4 mr-2" />
-            Ver Catálogo
+            <Store className="w-4 h-4" />
           </Button>
 
           <ChatButton
             userId={market.user_id}
-            size="default"
+            size="sm"
             variant="outline"
+          />
+
+          <ShareButton 
+            type="market" 
+            id={market.id} 
+            title={market.title} 
+            description={market.description}
+            imageUrl={market.image_url}
+            size="sm"
           />
         </div>
       </div>

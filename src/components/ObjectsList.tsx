@@ -8,6 +8,7 @@ import { useLocation } from '@/hooks/useLocation';
 import { useWallet } from '@/hooks/useWallet';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import { ChatButton } from '@/components/ChatButton';
+import ShareButton from '@/components/ShareButton';
 import { UserLikes } from '@/components/UserLikes';
 import { toast } from 'sonner';
 import { Link, useNavigate } from 'react-router-dom';
@@ -394,7 +395,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
               
               <div className="space-y-2">
                 {/* Botones de acción */}
-                <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                 <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                    {/* Solo mostrar botón de chat para donaciones y productos */}
                    {objectType !== 'abandoned' && (
                      <ChatButton 
@@ -404,6 +405,16 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
                        requireAuth={true}
                      />
                    )}
+                   
+                   {/* Botón de compartir para todos los tipos */}
+                   <ShareButton 
+                     type="object" 
+                     id={object.id} 
+                     title={object.title} 
+                     description={object.description}
+                     imageUrl={object.image_url}
+                     size="sm"
+                   />
                   
                    {/* Solo mostrar botón de maps para abandonados */}
                    {objectType === 'abandoned' && (

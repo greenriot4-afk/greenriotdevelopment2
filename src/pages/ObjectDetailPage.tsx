@@ -7,6 +7,7 @@ import { ArrowLeft, MapPin, User, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { ChatButton } from "@/components/ChatButton";
+import ShareButton from "@/components/ShareButton";
 import { useLocation } from "@/hooks/useLocation";
 import { useWallet } from "@/hooks/useWallet";
 import { useAuthAction } from "@/hooks/useAuthAction";
@@ -251,6 +252,13 @@ export default function ObjectDetailPage() {
                   username={object.user_display_name || object.username}
                 />
               </div>
+              <ShareButton 
+                type="object" 
+                id={object.id} 
+                title={object.title} 
+                description={object.description}
+                imageUrl={object.image_url}
+              />
             </div>
           </div>
         </div>

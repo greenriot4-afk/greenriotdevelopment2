@@ -6,6 +6,7 @@ import { MapPin, Heart, Store, User } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
 import { useLanguage } from '@/hooks/useLanguage';
 import { ChatButton } from '@/components/ChatButton';
+import ShareButton from '@/components/ShareButton';
 
 export interface CircularMarket {
   id: string;
@@ -136,7 +137,7 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
             <div className="flex items-center justify-between">
               <div></div>
               
-              <div className="flex gap-2">
+               <div className="flex gap-1">
                 <Button
                   size="sm"
                   variant="outline"
@@ -146,8 +147,7 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
                     window.open(mapsUrl, '_blank');
                   }}
                 >
-                  <MapPin className="w-3 h-3 mr-1" />
-                  {t('markets.openInMaps')}
+                  <MapPin className="w-3 h-3" />
                 </Button>
                 
                 <Button
@@ -158,14 +158,22 @@ export const MarketsList = ({ markets, onMarketClick, userLocation }: MarketsLis
                     window.location.href = `/market-catalog/${market.id}`;
                   }}
                 >
-                  <Store className="w-3 h-3 mr-1" />
-                  {t('markets.viewCatalog')}
+                  <Store className="w-3 h-3" />
                 </Button>
                 
                 <ChatButton 
                   userId={market.user_id}
                   size="sm"
                   variant="outline"
+                />
+
+                <ShareButton 
+                  type="market" 
+                  id={market.id} 
+                  title={market.title} 
+                  description={market.description}
+                  imageUrl={market.image_url}
+                  size="sm"
                 />
               </div>
             </div>
