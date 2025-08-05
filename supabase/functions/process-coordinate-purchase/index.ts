@@ -29,13 +29,6 @@ serve(async (req) => {
       });
     }
 
-    // Initialize Supabase client with service role key for admin operations
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-    console.log('Service client initialized');
-
     // Get user from JWT using anon key
     const userClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -80,24 +73,33 @@ serve(async (req) => {
       });
     }
 
-    // For now, just return success with debug info
-    console.log('All validation passed, returning success');
-    
-    return new Response(JSON.stringify({ 
-      success: true,
-      debug: {
-        userId: user.id,
-        objectId,
-        amount,
-        objectType,
-        step: 'debug_success'
-      },
-      platformFee: 0,
-      sellerAmount: 0
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
+    // Initialize Supabase client with service role key for admin operations
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+    console.log('Service client initialized');
+
+    // Get object details to find the seller
+    const { data: object, error: objectError } = await supabaseClient
+      .from('objects')
+      .select('user_id, title, price_credits')
+      .eq('id', objectId)
+      .single();
+
+    console.log('Object fetch result:', { object, error: objectError?.message });
+
+    if (objectError || !object) {
+      console.error('Failed to fetch object:', objectError);
+      return new Response(JSON.stringify({ 
+        error: 'Object not found',
+        step: 'object_fetch',
+        details: objectError?.message
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 404,
+      });
+    }
 
     const sellerId = object.user_id;
     const sellerAmount = Math.round(amount * 0.8); // 80% to seller (20% commission)
@@ -122,174 +124,57 @@ serve(async (req) => {
 
     if (buyerWalletError || !buyerWallet) {
       console.error('Buyer wallet error:', buyerWalletError);
-      throw new Error('Buyer wallet not found');
+      return new Response(JSON.stringify({ 
+        error: 'Buyer wallet not found',
+        step: 'buyer_wallet',
+        details: buyerWalletError?.message
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
     // Check if buyer has enough balance
     console.log('Balance check:', { required: amount, available: buyerWallet.balance });
     if (buyerWallet.balance < amount) {
       console.error('Insufficient balance:', { required: amount, available: buyerWallet.balance });
-      throw new Error(`No tienes suficiente saldo. Necesitas $${amount} pero solo tienes $${buyerWallet.balance}.`);
-    }
-
-    // Get or create seller's wallet
-    let { data: sellerWallet, error: sellerWalletError } = await supabaseClient
-      .from('wallets')
-      .select('*')
-      .eq('user_id', sellerId)
-      .single();
-
-    if (sellerWalletError || !sellerWallet) {
-      // Create seller wallet if it doesn't exist
-      const { data: newWallet, error: createError } = await supabaseClient
-        .from('wallets')
-        .insert({
-          user_id: sellerId,
-          balance: 0
-        })
-        .select()
-        .single();
-
-      if (createError) {
-        throw new Error('Failed to create seller wallet');
-      }
-      sellerWallet = newWallet;
-    }
-
-    // Process the transaction atomically
-    // 1. Deduct from buyer
-    const { data: buyerResult, error: buyerError } = await supabaseClient
-      .rpc('update_wallet_balance_atomic', {
-        p_wallet_id: buyerWallet.id,
-        p_amount: amount,
-        p_transaction_type: 'debit',
-        p_user_id: user.id,
-        p_description: description || `Coordenadas para: ${object.title}`,
-        p_object_type: objectType || 'coordinate'
+      return new Response(JSON.stringify({ 
+        error: `No tienes suficiente saldo. Necesitas $${amount} pero solo tienes $${buyerWallet.balance}.`,
+        step: 'balance_check',
+        required: amount,
+        available: buyerWallet.balance
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
       });
-
-    console.log('Buyer debit result:', { buyerResult, buyerError });
-
-    if (buyerError) {
-      console.error('Failed to deduct from buyer:', buyerError);
-      throw new Error(`Failed to process buyer payment: ${buyerError.message}`);
     }
 
-    // 2. Add to seller (only if not the same user)
-    let sellerResult = null;
-    if (sellerId !== user.id) {
-      const { data: result, error: sellerError } = await supabaseClient
-        .rpc('update_wallet_balance_atomic', {
-          p_wallet_id: sellerWallet.id,
-          p_amount: sellerAmount,
-          p_transaction_type: 'credit',
-          p_user_id: sellerId,
-          p_description: `Venta de coordenadas: ${object.title} (80% after platform fee)`,
-          p_object_type: 'coordinate_sale'
-        });
-
-      console.log('Seller credit result:', { result, sellerError });
-
-      if (sellerError) {
-        console.error('Failed to credit seller:', sellerError);
-        // Note: In a real system, we'd want to rollback the buyer transaction here
-        throw new Error(`Failed to process seller payment: ${sellerError.message}`);
-      }
-      
-      sellerResult = result;
-    } else {
-      console.log('Buyer and seller are the same user, no seller credit needed');
-    }
-
-    // 3. Add platform commission to company wallet (20%)
-    const { data: companyResult, error: companyError } = await supabaseClient
-      .rpc('update_company_wallet_balance_atomic', {
-        p_amount: platformFee,
-        p_description: `Comisión 20% - Venta coordenadas: ${object.title}`
-      });
-
-    console.log('Company wallet result:', { companyResult, companyError });
-
-    if (companyError) {
-      console.error('Failed to add commission to company wallet:', companyError);
-      // Note: In a real system, we'd want to rollback the previous transactions here
-      throw new Error(`Failed to process platform commission: ${companyError.message}`);
-    }
-
-    // 4. Delete the object immediately after successful payment (only for abandoned objects)
-    if (objectType === 'abandoned') {
-      const { error: deleteError } = await supabaseClient
-        .from('objects')
-        .delete()
-        .eq('id', objectId);
-
-      if (deleteError) {
-        console.error('Failed to delete object after payment:', deleteError);
-        // Don't throw error here as payment was successful - log the issue
-        console.log('Object deletion failed but payment was processed successfully');
-      } else {
-        console.log(`Successfully deleted abandoned object: ${objectId}`);
-      }
-    }
-
-    console.log('Payment processed successfully:', {
-      buyerTransaction: buyerResult,
-      sellerTransaction: sellerResult,
-      companyCommission: companyResult,
-      objectDeleted: objectType === 'abandoned'
+    // For debugging, let's just return success here first
+    console.log('All checks passed, returning debug success');
+    
+    return new Response(JSON.stringify({ 
+      success: true,
+      debug: true,
+      step: 'all_checks_passed',
+      buyerTransaction: { test: true },
+      sellerAmount,
+      platformFee
+    }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
     });
-
-    return new Response(
-      JSON.stringify({ 
-        success: true,
-        buyerTransaction: buyerResult,
-        sellerAmount: sellerId !== user.id ? sellerAmount : 0,
-        platformFee
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
 
   } catch (error) {
     console.error('Error processing coordinate purchase:', error.message);
     console.error('Full error details:', error);
     
-    let userFriendlyMessage = error.message;
-    let statusCode = 400;
-    
-    // Provide more user-friendly error messages
-    if (error.message.includes('Insufficient balance') || error.message.includes('No tienes suficiente saldo')) {
-      userFriendlyMessage = 'No tienes suficiente saldo para esta compra. Recarga tu wallet.';
-      statusCode = 400;
-    } else if (error.message.includes('Object not found')) {
-      userFriendlyMessage = 'El objeto ya no está disponible.';
-      statusCode = 404;
-    } else if (error.message.includes('Invalid user token') || error.message.includes('Authentication')) {
-      userFriendlyMessage = 'Sesión expirada. Inicia sesión nuevamente.';
-      statusCode = 401;
-    } else if (error.message.includes('Missing objectId or amount')) {
-      userFriendlyMessage = 'Error en los datos del pago.';
-      statusCode = 400;
-    } else if (error.message.includes('Company wallet') || error.message.includes('commission')) {
-      userFriendlyMessage = 'Error interno del sistema. Intenta de nuevo.';
-      statusCode = 500;
-    } else {
-      userFriendlyMessage = 'Error al procesar el pago. Intenta de nuevo.';
-      statusCode = 500;
-    }
-    
-    return new Response(
-      JSON.stringify({ 
-        error: userFriendlyMessage,
-        details: error.message,
-        timestamp: new Date().toISOString()
-      }),
-      { 
-        status: statusCode,
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        } 
-      }
-    );
+    return new Response(JSON.stringify({ 
+      error: error.message || 'Unknown error occurred',
+      step: 'catch_block',
+      timestamp: new Date().toISOString()
+    }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+    });
   }
 });
