@@ -26,7 +26,7 @@ interface PhotoUploadProps {
 export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState<number | string>(objectType === 'donation' ? 0 : 1);
+  const [price, setPrice] = useState(objectType === 'donation' ? 0 : 50);
   const [photo, setPhoto] = useState<PhotoWithLocation | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -160,13 +160,13 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
         image: photo.image,
         latitude: photo.latitude,
         longitude: photo.longitude,
-        price: typeof price === 'string' ? (parseInt(price) || 1) : price,
+        price,
       });
       
       // Reset form
       setTitle('');
       setDescription('');
-      setPrice(1);
+      setPrice(50);
       setPhoto(null);
       toast.success('¡Objeto publicado exitosamente!');
     } catch (error) {
@@ -310,7 +310,7 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
                 onChange={(e) => {
                   const val = e.target.value;
                   if (val === '') {
-                    setPrice(''); // Permitir campo vacío
+                    setPrice(0);
                   } else {
                     const numVal = parseInt(val);
                     setPrice(isNaN(numVal) ? 1 : Math.max(1, Math.min(20, numVal)));
