@@ -241,13 +241,16 @@ export const SampleDataManager = () => {
       console.log('Admin delete - User:', user?.id, 'IsAdmin:', isGlobalDelete);
       
       // Si es admin, eliminar todos los objetos abandonados, sino solo los del usuario
-      const query = supabase
+      let query = supabase
         .from('objects')
         .delete()
         .eq('type', 'abandoned');
 
       if (!isGlobalDelete) {
-        query.eq('user_id', user.id);
+        query = query.eq('user_id', user.id);
+      } else {
+        // Para eliminación global, usar una condición que sea siempre verdadera
+        query = query.neq('id', '00000000-0000-0000-0000-000000000000');
       }
 
       console.log('Executing delete query for abandoned objects, global:', isGlobalDelete);
@@ -288,21 +291,31 @@ export const SampleDataManager = () => {
     setLoading(true);
 
     try {
+      console.log('Admin delete all data - User:', user?.id, 'IsAdmin:', isGlobalDelete);
+      
       // Eliminar objetos
-      const objectsQuery = supabase.from('objects').delete();
+      let objectsQuery = supabase.from('objects').delete();
       if (!isGlobalDelete) {
-        objectsQuery.eq('user_id', user.id);
+        objectsQuery = objectsQuery.eq('user_id', user.id);
+      } else {
+        // Para eliminación global, usar una condición que sea siempre verdadera
+        objectsQuery = objectsQuery.neq('id', '00000000-0000-0000-0000-000000000000');
       }
       
+      console.log('Executing delete objects query, global:', isGlobalDelete);
       const { error: objectsError } = await objectsQuery;
       if (objectsError) throw objectsError;
 
       // Eliminar mercados
-      const marketsQuery = supabase.from('circular_markets').delete();
+      let marketsQuery = supabase.from('circular_markets').delete();
       if (!isGlobalDelete) {
-        marketsQuery.eq('user_id', user.id);
+        marketsQuery = marketsQuery.eq('user_id', user.id);
+      } else {
+        // Para eliminación global, usar una condición que sea siempre verdadera
+        marketsQuery = marketsQuery.neq('id', '00000000-0000-0000-0000-000000000000');
       }
       
+      console.log('Executing delete markets query, global:', isGlobalDelete);
       const { error: marketsError } = await marketsQuery;
       if (marketsError) throw marketsError;
 
