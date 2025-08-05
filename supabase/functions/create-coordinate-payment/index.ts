@@ -35,16 +35,30 @@ serve(async (req) => {
 
     const { amount, description, objectType = 'coordinate', currency = 'USD', objectId } = await req.json();
     
+    console.log('Request payload:', { amount, objectType, currency, objectId });
+    
     if (!amount || amount <= 0) {
-      throw new Error('Invalid amount');
+      console.log('Invalid amount error:', amount);
+      return new Response(JSON.stringify({ error: 'Cantidad inválida' }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
     if (!['USD', 'EUR'].includes(currency)) {
-      throw new Error('Unsupported currency');
+      console.log('Unsupported currency error:', currency);
+      return new Response(JSON.stringify({ error: 'Moneda no soportada' }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
     if (!objectId) {
-      throw new Error('Object ID is required');
+      console.log('Missing objectId error');
+      return new Response(JSON.stringify({ error: 'ID del objeto es requerido' }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
     // Create service role client
@@ -62,7 +76,11 @@ serve(async (req) => {
       .single();
 
     if (objectError || !object) {
-      throw new Error('Object not found');
+      console.log('Object not found error:', { objectError, objectId, object });
+      return new Response(JSON.stringify({ error: 'Objeto no encontrado' }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
     const sellerId = object.user_id;
