@@ -175,7 +175,7 @@ export default function Auth() {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-6">
             <img 
-              src="/lovable-uploads/b8718597-8055-40ab-be67-40fc8bd1fac3.png" 
+              src="/lovable-uploads/ba5efc90-0b55-4a14-8409-ff08cc5a733e.png" 
               alt="Greenriot" 
               className="h-32 w-auto"
             />
