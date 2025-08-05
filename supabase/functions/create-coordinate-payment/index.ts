@@ -14,10 +14,7 @@ serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'No se proporcionó autorización' }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+      throw new Error("No authorization header provided");
     }
 
     // Create client for user authentication
@@ -33,23 +30,21 @@ serve(async (req) => {
 
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !user?.email) {
-      return new Response(JSON.stringify({ error: 'Error de autenticación' }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+      throw new Error(`Authentication failed: ${userError?.message || 'User not found'}`);
     }
 
-    const requestBody = await req.json();
-    const { amount, objectId, currency = 'USD' } = requestBody;
+    const { amount, description, objectType = 'coordinate', currency = 'USD', objectId } = await req.json();
     
-    console.log('Payment request:', { amount, objectId, currency, userId: user.id });
-    
-    // Basic validation
-    if (!amount || amount <= 0 || !objectId) {
-      return new Response(JSON.stringify({ error: 'Datos de pago inválidos' }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      });
+    if (!amount || amount <= 0) {
+      throw new Error('Invalid amount');
+    }
+
+    if (!['USD', 'EUR'].includes(currency)) {
+      throw new Error('Unsupported currency');
+    }
+
+    if (!objectId) {
+      throw new Error('Object ID is required');
     }
 
     // Create service role client
@@ -67,11 +62,7 @@ serve(async (req) => {
       .single();
 
     if (objectError || !object) {
-      console.log('Object not found:', { objectError, objectId });
-      return new Response(JSON.stringify({ error: 'Objeto no encontrado' }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      });
+      throw new Error('Object not found');
     }
 
     const sellerId = object.user_id;
@@ -94,9 +85,8 @@ serve(async (req) => {
     }
 
     console.log('Purchase validation passed, proceeding with payment');
-    // Ensure platform fee is always at least 1 unit for company commission
-    const platformFee = Math.max(1, Math.round(amount * 0.2)); // Minimum 1 unit commission
-    const sellerAmount = amount - platformFee; // Rest goes to seller
+    const sellerAmount = Math.round(amount * 0.8); // 80% to seller
+    const platformFee = amount - sellerAmount; // 20% platform fee
 
     // Get or create buyer wallet for the specified currency
     const { data: walletId } = await serviceSupabase
@@ -112,8 +102,8 @@ serve(async (req) => {
         p_amount: amount,
         p_transaction_type: 'debit',
         p_user_id: user.id,
-        p_description: `Compra de coordenadas: ${object.title}`,
-        p_object_type: 'coordinate',
+        p_description: description || `${objectType} purchase`,
+        p_object_type: objectType,
         p_currency: currency
       });
 
@@ -154,17 +144,6 @@ serve(async (req) => {
       throw new Error(`Failed to process platform commission: ${companyError.message}`);
     }
 
-    // 4. Delete the abandoned object after successful purchase
-    const { error: deleteError } = await serviceSupabase
-      .from('objects')
-      .delete()
-      .eq('id', objectId);
-
-    if (deleteError) {
-      console.error('Warning: Failed to delete object after purchase:', deleteError.message);
-      // Don't throw error here as payment was successful
-    }
-
     // Type assertion for the RPC result
     const walletResult = buyerResult as {
       success: boolean;
@@ -181,7 +160,7 @@ serve(async (req) => {
       currency: currency,
       sellerAmount: sellerAmount,
       platformFee: platformFee,
-      message: `Coordenadas compradas exitosamente por ${currency === 'EUR' ? '€' : '$'}${amount}`
+      message: `Successfully purchased ${objectType} for ${currency === 'EUR' ? '€' : '$'}${amount}`
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
