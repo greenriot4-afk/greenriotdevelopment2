@@ -567,6 +567,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       wallets: {
         Row: {
           balance: number
@@ -647,6 +668,13 @@ export type Database = {
         Args: { p_user_id: string; p_currency?: string }
         Returns: string
       }
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
       refresh_objects_view: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -717,6 +745,7 @@ export type Database = {
     }
     Enums: {
       affiliate_level: "level_1" | "level_2" | "level_3"
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -845,6 +874,7 @@ export const Constants = {
   public: {
     Enums: {
       affiliate_level: ["level_1", "level_2", "level_3"],
+      app_role: ["admin", "moderator", "user"],
     },
   },
 } as const
