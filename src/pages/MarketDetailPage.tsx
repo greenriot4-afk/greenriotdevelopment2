@@ -40,8 +40,8 @@ const MarketDetailPage = () => {
         
         setMarket(marketData as CircularMarket);
 
-        // Get user location for distance calculation
-        if (navigator.geolocation) {
+        // Get user location for distance calculation - only for authenticated users
+        if (user && navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
               setUserLocation({
@@ -51,6 +51,11 @@ const MarketDetailPage = () => {
             },
             () => {
               // Ignore geolocation errors
+            },
+            {
+              timeout: 10000,
+              maximumAge: 300000,
+              enableHighAccuracy: false
             }
           );
         }

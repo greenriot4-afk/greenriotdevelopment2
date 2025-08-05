@@ -113,6 +113,12 @@ export const useLocation = () => {
   };
 
   const getCurrentLocation = async (saveToProfile: boolean = true): Promise<UserLocation | null> => {
+    // Only request location for authenticated users
+    if (!user) {
+      console.log('useLocation: getCurrentLocation called for non-authenticated user, skipping');
+      return null;
+    }
+    
     setIsLoading(true);
     try {
       const position = await Geolocation.getCurrentPosition({
@@ -145,6 +151,12 @@ export const useLocation = () => {
 
   // High precision location for critical operations (like sharing objects)
   const getHighPrecisionLocation = async (): Promise<UserLocation | null> => {
+    // Only request location for authenticated users
+    if (!user) {
+      console.log('useLocation: getHighPrecisionLocation called for non-authenticated user, skipping');
+      return null;
+    }
+    
     setIsLoading(true);
     try {
       // First attempt with maximum precision settings
