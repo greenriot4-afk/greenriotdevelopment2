@@ -183,14 +183,14 @@ export default function Auth() {
           <p className="text-muted-foreground mt-2">{t('auth.slogan')}</p>
           
           {affiliateCode && (
-            <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Gift className="w-4 h-4 text-primary" />
-                <Badge variant="secondary" className="text-primary">
+            <div className="mt-6 p-6 bg-primary/10 rounded-xl border-2 border-primary/20 shadow-lg">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Gift className="w-8 h-8 text-primary" />
+                <Badge variant="secondary" className="text-primary text-lg px-4 py-2 font-semibold">
                   {t('auth.referredByAffiliateTitle')}
                 </Badge>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-base text-muted-foreground text-center leading-relaxed px-2">
                 {t('auth.affiliateBonus')}
               </p>
             </div>
