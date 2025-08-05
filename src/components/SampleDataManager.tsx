@@ -426,6 +426,70 @@ export const SampleDataManager = () => {
     }
   };
 
+  // Function to upload donation photos
+  const uploadDonationPhotos = async () => {
+    if (!user) {
+      toast.error('Debes estar autenticado para subir fotos');
+      return;
+    }
+
+    const donationPhotoUrls = [
+      '/lovable-uploads/9781a77d-c672-4108-a5b5-bd1d36dc896b.png', // Armario negro elegante
+      '/lovable-uploads/49c3e213-9f18-49a9-8c31-5ae3a312cb52.png', // Mesa con patrón decorativo
+      '/lovable-uploads/44b3a59e-c1b2-4cbd-be16-d142dd71fb0f.png', // Cómoda con espejo
+      '/lovable-uploads/28f35017-da07-4231-a9f7-2f19797f3dc1.png'  // Estantería auxiliar
+    ];
+
+    setLoading(true);
+    setProgress(0);
+    setUploadedItems([]);
+
+    try {
+      const itemsToUpload = donationPhotoUrls.map((url, index) => {
+        const { latitude, longitude } = generateNYCCoordinates();
+        return {
+          type: 'donation' as const,
+          title: '', // Sin título como solicita el usuario
+          description: '', // Sin descripción como solicita el usuario
+          location: { latitude, longitude },
+          image_url: url
+        };
+      });
+
+      for (let i = 0; i < itemsToUpload.length; i++) {
+        const item = itemsToUpload[i];
+        
+        const { error } = await supabase
+          .from('objects')
+          .insert({
+            type: item.type,
+            title: item.title || 'Donación disponible',
+            description: item.description,
+            image_url: item.image_url,
+            user_id: user.id,
+            latitude: item.location.latitude,
+            longitude: item.location.longitude,
+            price_credits: 0 // Las donaciones no tienen precio
+          });
+
+        if (error) {
+          console.error('Error uploading donation:', error);
+          throw error;
+        }
+
+        setUploadedItems(prev => [...prev, `donation: Donación NYC #${i + 1}`]);
+        setProgress(((i + 1) / itemsToUpload.length) * 100);
+      }
+
+      toast.success(`¡${itemsToUpload.length} donaciones creadas exitosamente con coordenadas de NYC!`);
+    } catch (error) {
+      console.error('Error uploading donation photos:', error);
+      toast.error('Error al crear donaciones');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'abandoned': return <MapPin className="w-4 h-4" />;
@@ -503,7 +567,7 @@ export const SampleDataManager = () => {
             </TabsList>
 
             <TabsContent value="load" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2 flex items-center gap-2">
                     <Upload className="w-4 h-4" />
@@ -536,6 +600,24 @@ export const SampleDataManager = () => {
                     className="w-full"
                   >
                     {loading ? 'Subiendo...' : 'Subir Fotos NYC'}
+                  </Button>
+                </Card>
+
+                <Card className="p-4">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <Heart className="w-4 h-4" />
+                    Donaciones NYC
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Carga 4 donaciones con fotos reales y coordenadas aleatorias de Nueva York.
+                  </p>
+                  <Button 
+                    onClick={uploadDonationPhotos} 
+                    disabled={loading}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    {loading ? 'Subiendo...' : 'Subir Donaciones NYC'}
                   </Button>
                 </Card>
 
