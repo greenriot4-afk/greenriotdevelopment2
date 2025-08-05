@@ -11,10 +11,13 @@ export const useUserRole = () => {
 
   const fetchUserRoles = async () => {
     if (!user) {
+      console.log('useUserRole: No user found');
       setRoles([]);
       setLoading(false);
       return;
     }
+
+    console.log('useUserRole: Fetching roles for user:', user.id);
 
     try {
       const { data, error } = await supabase
@@ -22,9 +25,13 @@ export const useUserRole = () => {
         .select('role')
         .eq('user_id', user.id);
 
+      console.log('useUserRole: Query result:', { data, error });
+
       if (error) throw error;
 
-      setRoles(data?.map(r => r.role as UserRole) || []);
+      const userRoles = data?.map(r => r.role as UserRole) || [];
+      console.log('useUserRole: User roles:', userRoles);
+      setRoles(userRoles);
     } catch (error) {
       console.error('Error fetching user roles:', error);
       setRoles([]);
@@ -38,16 +45,22 @@ export const useUserRole = () => {
   };
 
   const isAdmin = (): boolean => {
-    return hasRole('admin');
+    const adminStatus = hasRole('admin');
+    console.log('useUserRole: isAdmin check:', adminStatus, 'roles:', roles);
+    return adminStatus;
   };
 
   const makeCurrentUserAdmin = async (): Promise<void> => {
     if (!user) throw new Error('No user logged in');
 
+    console.log('useUserRole: Making user admin:', user.id);
+
     try {
       const { error } = await supabase.rpc('make_user_admin', {
         _user_id: user.id
       });
+
+      console.log('useUserRole: make_user_admin result:', { error });
 
       if (error) throw error;
 

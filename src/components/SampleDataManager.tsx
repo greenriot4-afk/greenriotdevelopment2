@@ -238,6 +238,8 @@ export const SampleDataManager = () => {
     setLoading(true);
 
     try {
+      console.log('Admin delete - User:', user?.id, 'IsAdmin:', isGlobalDelete);
+      
       // Si es admin, eliminar todos los objetos abandonados, sino solo los del usuario
       const query = supabase
         .from('objects')
@@ -248,19 +250,21 @@ export const SampleDataManager = () => {
         query.eq('user_id', user.id);
       }
 
-      const { error } = await query;
+      console.log('Executing delete query for abandoned objects, global:', isGlobalDelete);
+      const { data, error, count } = await query;
+      console.log('Delete result:', { data, error, count });
 
       if (error) throw error;
 
       const message = isGlobalDelete 
-        ? 'Todos los objetos abandonados han sido eliminados (todos los usuarios)'
-        : 'Todos los objetos abandonados han sido eliminados (tu usuario)';
+        ? `Todos los objetos abandonados han sido eliminados (todos los usuarios) - ${count || 0} elementos`
+        : `Todos los objetos abandonados han sido eliminados (tu usuario) - ${count || 0} elementos`;
       
       toast.success(message);
       setUploadedItems(prev => prev.filter(item => !item.startsWith('abandoned:')));
     } catch (error) {
       console.error('Error clearing abandoned objects:', error);
-      toast.error('Error al eliminar los objetos abandonados');
+      toast.error('Error al eliminar los objetos abandonados: ' + (error instanceof Error ? error.message : 'Error desconocido'));
     } finally {
       setLoading(false);
     }
