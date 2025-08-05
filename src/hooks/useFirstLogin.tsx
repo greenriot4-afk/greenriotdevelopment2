@@ -10,9 +10,20 @@ export const useFirstLogin = () => {
   const [showLocationDialog, setShowLocationDialog] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
 
+  // Log whenever the dialog state changes
   useEffect(() => {
-    // Only show location dialog for authenticated users
-    if (!user) return;
+    console.log('useFirstLogin: Dialog state changed', { showLocationDialog, user: !!user });
+  }, [showLocationDialog, user]);
+
+  useEffect(() => {
+    console.log('useFirstLogin: Effect triggered', { user: !!user });
+    
+    // Hide dialog and exit early if no user
+    if (!user) {
+      console.log('useFirstLogin: No user, hiding location dialog');
+      setShowLocationDialog(false);
+      return;
+    }
 
     const checkFirstLogin = async () => {
       try {
