@@ -195,10 +195,13 @@ export function MobileMenu() {
 
           {/* Admin and Website buttons */}
           <div className="pt-4 border-t border-white/10 space-y-2">
-             <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleAdminContentClick}>
-               <Database className="h-5 w-5 mr-3" />
-               Gestión de Contenido
-             </Button>
+             {/* Show admin content only for specific user */}
+             {user?.email === 'inigoloeprena@gmail.com' && (
+               <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleAdminContentClick}>
+                 <Database className="h-5 w-5 mr-3" />
+                 Gestión de Contenido
+               </Button>
+             )}
 
              <Button variant="ghost" className="w-full justify-start px-4 h-12 text-white hover:bg-white/10" onClick={handleWebsiteClick}>
                <Globe className="h-5 w-5 mr-3" />
