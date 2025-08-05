@@ -295,6 +295,8 @@ const translations = {
     'profile.selectGarageImage': 'Please select an image for the garage sale',
     
     // Market Lists and Details
+    'markets.circularMarkets': 'Circular markets',
+    'markets.secondHandDescription': 'Thrift stores and garage sales near you',
     'markets.noMarketsAvailable': 'No circular markets available.',
     'markets.market': 'Market',
     'markets.created': 'Created',
