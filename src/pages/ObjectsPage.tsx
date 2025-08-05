@@ -176,6 +176,9 @@ const ObjectsPage = () => {
       pathname: routerLocation.pathname 
     });
     
+    // Reset the upload form when changing routes/types
+    setShowUpload(false);
+    
     // Check cache to prevent duplicate requests
     const now = Date.now();
     const lastFetch = lastFetchRef.current;
@@ -197,7 +200,7 @@ const ObjectsPage = () => {
       console.log('Missing dependencies for fetchObjects', { type, objectType });
       setLoading(false);
     }
-  }, [type, objectType]); // Remove userLocation dependency to prevent excessive re-fetching
+  }, [type, objectType, routerLocation.pathname]); // Add pathname to reset form on route change
 
   // Separate effect for sorting when location changes
   useEffect(() => {

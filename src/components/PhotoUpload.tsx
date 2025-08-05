@@ -55,13 +55,9 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
   // For abandoned items, ONLY camera is allowed - no gallery option
   const allowGallery = objectType !== 'abandoned';
 
-  // Auto-open camera for abandoned items on all platforms
-  useEffect(() => {
-    if (objectType === 'abandoned' && user && !photo && !isCameraLoading) {
-      console.log('Auto-opening camera for abandoned item...');
-      handleCapturePhoto();
-    }
-  }, [objectType, user]);
+  // Auto-open camera for abandoned items on all platforms - only if user explicitly requested it
+  // Remove auto-opening to prevent unwanted camera activations
+  const shouldAutoOpenCamera = false; // Disabled to prevent auto-camera issues
 
   const handleCapturePhoto = async () => {
     try {
