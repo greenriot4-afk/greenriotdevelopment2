@@ -71,8 +71,8 @@ serve(async (req) => {
         },
       ],
       mode: 'payment',
-      success_url: `${req.headers.get("origin")}/wallet?success=true`,
-      cancel_url: `${req.headers.get("origin")}/wallet?canceled=true`,
+      success_url: `${req.headers.get("origin")}/app/wallet?success=true`,
+      cancel_url: `${req.headers.get("origin")}/app/wallet?canceled=true`,
       metadata: {
         user_id: user.id,
         amount: amount.toString(),
