@@ -513,7 +513,7 @@ export const SampleDataManager = () => {
         const { latitude, longitude } = generateNYCCoordinates();
         const price = Math.floor(Math.random() * 31) + 20; // Precio aleatorio entre 20 y 50
         return {
-          type: 'abandoned' as const,
+          type: 'product' as const,
           title: '', // Sin título como solicita el usuario
           description: '', // Sin descripción como solicita el usuario
           location: { latitude, longitude },
