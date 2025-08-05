@@ -1,5 +1,6 @@
 import { useAuth } from '@/hooks/useAuth';
 import { SampleDataManager } from '@/components/SampleDataManager';
+import { MarketProfileUploader } from '@/components/MarketProfileUploader';
 import { Navigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, Shield } from 'lucide-react';
@@ -44,6 +45,11 @@ const AdminContentPage = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Market Profile Uploader */}
+      <div className="mb-6">
+        <MarketProfileUploader />
+      </div>
 
       {/* Sample Data Manager */}
       <SampleDataManager />
