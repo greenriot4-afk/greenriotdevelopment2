@@ -350,7 +350,6 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
             
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{object.title}</CardTitle>
                 {objectType === 'product' && object.price_credits > 0 && (
                   <div className="text-lg font-bold text-primary">
                     ${object.price_credits}
