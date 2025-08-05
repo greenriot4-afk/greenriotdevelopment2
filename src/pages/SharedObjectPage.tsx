@@ -101,6 +101,14 @@ const SharedObjectPage = () => {
       if (!document.head.contains(ogImage)) {
         document.head.appendChild(ogImage);
       }
+      
+      const ogType = document.querySelector('meta[property="og:type"]') || 
+                     document.createElement('meta');
+      ogType.setAttribute('property', 'og:type');
+      ogType.setAttribute('content', 'website');
+      if (!document.head.contains(ogType)) {
+        document.head.appendChild(ogType);
+      }
     }
   }, [object]);
 
