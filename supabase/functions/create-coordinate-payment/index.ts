@@ -14,7 +14,10 @@ serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      throw new Error("No authorization header provided");
+      return new Response(JSON.stringify({ error: 'No se proporcionó autorización' }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
     }
 
     // Create client for user authentication
@@ -30,32 +33,20 @@ serve(async (req) => {
 
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !user?.email) {
-      throw new Error(`Authentication failed: ${userError?.message || 'User not found'}`);
-    }
-
-    const { amount, description, objectType = 'coordinate', currency = 'USD', objectId } = await req.json();
-    
-    console.log('Request payload:', { amount, objectType, currency, objectId });
-    
-    if (!amount || amount <= 0) {
-      console.log('Invalid amount error:', amount);
-      return new Response(JSON.stringify({ error: 'Cantidad inválida' }), {
+      return new Response(JSON.stringify({ error: 'Error de autenticación' }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
+        status: 401,
       });
     }
 
-    if (!['USD', 'EUR'].includes(currency)) {
-      console.log('Unsupported currency error:', currency);
-      return new Response(JSON.stringify({ error: 'Moneda no soportada' }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      });
-    }
-
-    if (!objectId) {
-      console.log('Missing objectId error');
-      return new Response(JSON.stringify({ error: 'ID del objeto es requerido' }), {
+    const requestBody = await req.json();
+    const { amount, objectId, currency = 'USD' } = requestBody;
+    
+    console.log('Payment request:', { amount, objectId, currency, userId: user.id });
+    
+    // Basic validation
+    if (!amount || amount <= 0 || !objectId) {
+      return new Response(JSON.stringify({ error: 'Datos de pago inválidos' }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
@@ -76,7 +67,7 @@ serve(async (req) => {
       .single();
 
     if (objectError || !object) {
-      console.log('Object not found error:', { objectError, objectId, object });
+      console.log('Object not found:', { objectError, objectId });
       return new Response(JSON.stringify({ error: 'Objeto no encontrado' }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
@@ -121,8 +112,8 @@ serve(async (req) => {
         p_amount: amount,
         p_transaction_type: 'debit',
         p_user_id: user.id,
-        p_description: description || `${objectType} purchase`,
-        p_object_type: objectType,
+        p_description: `Compra de coordenadas: ${object.title}`,
+        p_object_type: 'coordinate',
         p_currency: currency
       });
 
@@ -190,7 +181,7 @@ serve(async (req) => {
       currency: currency,
       sellerAmount: sellerAmount,
       platformFee: platformFee,
-      message: `Successfully purchased ${objectType} for ${currency === 'EUR' ? '€' : '$'}${amount}`
+      message: `Coordenadas compradas exitosamente por ${currency === 'EUR' ? '€' : '$'}${amount}`
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
