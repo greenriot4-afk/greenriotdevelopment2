@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Upload, Database, MapPin, Package, Heart, Store, Trash2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, Database, MapPin, Package, Heart, Store, Trash2, CheckCircle, AlertCircle, Shield, Crown } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 
 interface SampleDataItem {
   type: 'abandoned' | 'donation' | 'product' | 'market';
@@ -124,6 +125,7 @@ export const SampleDataManager = () => {
   const [activeTab, setActiveTab] = useState('load');
   const [uploadedItems, setUploadedItems] = useState<string[]>([]);
   const { user } = useAuth();
+  const { isAdmin, makeCurrentUserAdmin, loading: roleLoading } = useUserRole();
 
   const uploadImageToSupabase = async (file: File, fileName: string): Promise<string> => {
     const fileExt = file.name.split('.').pop();
@@ -224,23 +226,37 @@ export const SampleDataManager = () => {
       return;
     }
 
-    if (!confirm('¿Estás seguro de que quieres eliminar TODOS los objetos abandonados? Esta acción no se puede deshacer.')) {
+    const isGlobalDelete = isAdmin();
+    const confirmMessage = isGlobalDelete 
+      ? '¿Estás seguro de que quieres eliminar TODOS los objetos abandonados de TODOS los usuarios? Esta acción no se puede deshacer.'
+      : '¿Estás seguro de que quieres eliminar TODOS los objetos abandonados de tu usuario? Esta acción no se puede deshacer.';
+
+    if (!confirm(confirmMessage)) {
       return;
     }
 
     setLoading(true);
 
     try {
-      // Eliminar solo objetos abandonados del usuario
-      const { error } = await supabase
+      // Si es admin, eliminar todos los objetos abandonados, sino solo los del usuario
+      const query = supabase
         .from('objects')
         .delete()
-        .eq('user_id', user.id)
         .eq('type', 'abandoned');
+
+      if (!isGlobalDelete) {
+        query.eq('user_id', user.id);
+      }
+
+      const { error } = await query;
 
       if (error) throw error;
 
-      toast.success('Todos los objetos abandonados han sido eliminados');
+      const message = isGlobalDelete 
+        ? 'Todos los objetos abandonados han sido eliminados (todos los usuarios)'
+        : 'Todos los objetos abandonados han sido eliminados (tu usuario)';
+      
+      toast.success(message);
       setUploadedItems(prev => prev.filter(item => !item.startsWith('abandoned:')));
     } catch (error) {
       console.error('Error clearing abandoned objects:', error);
@@ -256,36 +272,57 @@ export const SampleDataManager = () => {
       return;
     }
 
-    if (!confirm('¿Estás seguro de que quieres eliminar TODOS los datos? Esta acción no se puede deshacer.')) {
+    const isGlobalDelete = isAdmin();
+    const confirmMessage = isGlobalDelete 
+      ? '¿Estás seguro de que quieres eliminar TODOS los datos de TODOS los usuarios? Esta acción no se puede deshacer.'
+      : '¿Estás seguro de que quieres eliminar TODOS tus datos? Esta acción no se puede deshacer.';
+
+    if (!confirm(confirmMessage)) {
       return;
     }
 
     setLoading(true);
 
     try {
-      // Eliminar objetos del usuario
-      const { error: objectsError } = await supabase
-        .from('objects')
-        .delete()
-        .eq('user_id', user.id);
-
+      // Eliminar objetos
+      const objectsQuery = supabase.from('objects').delete();
+      if (!isGlobalDelete) {
+        objectsQuery.eq('user_id', user.id);
+      }
+      
+      const { error: objectsError } = await objectsQuery;
       if (objectsError) throw objectsError;
 
-      // Eliminar mercados del usuario
-      const { error: marketsError } = await supabase
-        .from('circular_markets')
-        .delete()
-        .eq('user_id', user.id);
-
+      // Eliminar mercados
+      const marketsQuery = supabase.from('circular_markets').delete();
+      if (!isGlobalDelete) {
+        marketsQuery.eq('user_id', user.id);
+      }
+      
+      const { error: marketsError } = await marketsQuery;
       if (marketsError) throw marketsError;
 
-      toast.success('Todos los datos han sido eliminados');
+      const message = isGlobalDelete 
+        ? 'Todos los datos han sido eliminados (todos los usuarios)'
+        : 'Todos tus datos han sido eliminados';
+      
+      toast.success(message);
       setUploadedItems([]);
     } catch (error) {
       console.error('Error clearing data:', error);
       toast.error('Error al eliminar los datos');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleMakeAdmin = async () => {
+    try {
+      await makeCurrentUserAdmin();
+      toast.success('¡Ahora eres administrador! Puedes gestionar contenido de todos los usuarios.');
+    } catch (error) {
+      console.error('Error making user admin:', error);
+      toast.error('Error al otorgar permisos de administrador');
     }
   };
 
@@ -322,10 +359,43 @@ export const SampleDataManager = () => {
           <CardTitle className="flex items-center gap-2">
             <Database className="w-5 h-5" />
             Gestor de Contenido de Muestra
+            {isAdmin() && (
+              <Badge variant="destructive" className="ml-2">
+                <Shield className="w-3 h-3 mr-1" />
+                ADMIN
+              </Badge>
+            )}
           </CardTitle>
         </CardHeader>
         
         <CardContent>
+          {/* Admin privileges card */}
+          {!isAdmin() && (
+            <Card className="mb-4 border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium text-blue-700 dark:text-blue-300 mb-1">
+                      Permisos de Administrador
+                    </h3>
+                    <p className="text-sm text-blue-600 dark:text-blue-400">
+                      Actualmente solo puedes gestionar tu propio contenido. Obtén permisos de admin para gestionar contenido de todos los usuarios.
+                    </p>
+                  </div>
+                  <Button 
+                    onClick={handleMakeAdmin}
+                    disabled={loading || roleLoading}
+                    size="sm"
+                    className="ml-4"
+                  >
+                    <Crown className="w-4 h-4 mr-1" />
+                    Hacer Admin
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="load">Cargar Datos</TabsTrigger>
@@ -354,10 +424,14 @@ export const SampleDataManager = () => {
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2 flex items-center gap-2">
                     <MapPin className="w-4 h-4" />
-                    Eliminar Solo Abandonados
+                    Eliminar Abandonados
+                    {isAdmin() && <Badge variant="outline" className="text-xs">Global</Badge>}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Elimina únicamente los objetos abandonados de tu usuario.
+                    {isAdmin() 
+                      ? 'Elimina TODOS los objetos abandonados de TODOS los usuarios.'
+                      : 'Elimina únicamente los objetos abandonados de tu usuario.'
+                    }
                   </p>
                   <Button 
                     onClick={clearAbandonedObjects} 
@@ -372,10 +446,14 @@ export const SampleDataManager = () => {
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2 flex items-center gap-2">
                     <Trash2 className="w-4 h-4" />
-                    Limpiar Todos los Datos
+                    Eliminar Todos los Datos
+                    {isAdmin() && <Badge variant="destructive" className="text-xs">Global</Badge>}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Elimina todos los objetos y mercados creados por tu usuario.
+                    {isAdmin() 
+                      ? 'Elimina TODOS los objetos y mercados de TODOS los usuarios.'
+                      : 'Elimina todos los objetos y mercados creados por tu usuario.'
+                    }
                   </p>
                   <Button 
                     onClick={clearAllData} 

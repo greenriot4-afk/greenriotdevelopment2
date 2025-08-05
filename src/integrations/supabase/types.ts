@@ -675,6 +675,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      make_user_admin: {
+        Args: { _user_id: string }
+        Returns: undefined
+      }
       refresh_objects_view: {
         Args: Record<PropertyKey, never>
         Returns: undefined
