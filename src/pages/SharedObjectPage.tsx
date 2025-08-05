@@ -238,12 +238,6 @@ const SharedObjectPage = () => {
               </div>
             )}
 
-            {object.latitude && object.longitude && (
-              <Button onClick={openInMaps} className="w-full" variant="outline">
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Ver ubicación en Google Maps
-              </Button>
-            )}
           </CardContent>
         </Card>
 
