@@ -343,6 +343,89 @@ export const SampleDataManager = () => {
     }
   };
 
+  // Function to generate random NYC coordinates
+  const generateNYCCoordinates = () => {
+    // NYC bounds
+    const minLat = 40.4774;
+    const maxLat = 40.9176;
+    const minLng = -74.2591;
+    const maxLng = -73.7004;
+    
+    const latitude = minLat + Math.random() * (maxLat - minLat);
+    const longitude = minLng + Math.random() * (maxLng - minLng);
+    
+    return { latitude, longitude };
+  };
+
+  // Function to upload real photos as abandoned objects
+  const uploadRealPhotos = async () => {
+    if (!user) {
+      toast.error('Debes estar autenticado para subir fotos');
+      return;
+    }
+
+    const photoUrls = [
+      '/lovable-uploads/4fa4f239-c54b-4c68-a661-7db4088cdca2.png', // Mesa redonda elegante
+      '/lovable-uploads/d858858d-118b-4353-ba89-8f96d30e5ed9.png', // Escritorio con cajones
+      '/lovable-uploads/ee3dcab1-d72a-4c66-be3d-d57bc15e26b7.png', // Mueble con espejos
+      '/lovable-uploads/60b572b0-7928-46d6-9b06-5cbe411f33d1.png', // Lámpara con estantes
+      '/lovable-uploads/ac3043bf-47cf-470f-bfd4-67ff33a3d2c5.png', // Armario grande
+      '/lovable-uploads/2f16c3a9-cec9-4586-bf3d-d1044444f6b0.png', // Máquina de café
+      '/lovable-uploads/08e120de-4d85-4e02-b706-bf5dd593b407.png', // Sillas azules
+      '/lovable-uploads/c96d30b3-ea8a-42cd-aefe-dc24b3907d18.png', // Banco de madera
+      '/lovable-uploads/7987082a-7c84-4792-8e36-4676e3ac80f8.png', // Sillón verde
+      '/lovable-uploads/806615ca-1a84-48be-82ab-0c1f2575f890.png'  // Mesa simple
+    ];
+
+    setLoading(true);
+    setProgress(0);
+    setUploadedItems([]);
+
+    try {
+      const itemsToUpload = photoUrls.map((url, index) => {
+        const { latitude, longitude } = generateNYCCoordinates();
+        return {
+          type: 'abandoned' as const,
+          title: '', // Sin título como solicita el usuario
+          description: '', // Sin descripción como solicita el usuario
+          location: { latitude, longitude },
+          image_url: url
+        };
+      });
+
+      for (let i = 0; i < itemsToUpload.length; i++) {
+        const item = itemsToUpload[i];
+        
+        const { error } = await supabase
+          .from('objects')
+          .insert({
+            type: item.type,
+            title: item.title || 'Objeto abandonado',
+            description: item.description,
+            image_url: item.image_url,
+            user_id: user.id,
+            latitude: item.location.latitude,
+            longitude: item.location.longitude
+          });
+
+        if (error) {
+          console.error('Error uploading item:', error);
+          throw error;
+        }
+
+        setUploadedItems(prev => [...prev, `abandoned: Objeto abandonado NYC #${i + 1}`]);
+        setProgress(((i + 1) / itemsToUpload.length) * 100);
+      }
+
+      toast.success(`¡${itemsToUpload.length} objetos abandonados creados exitosamente con coordenadas de NYC!`);
+    } catch (error) {
+      console.error('Error uploading real photos:', error);
+      toast.error('Error al crear objetos abandonados');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'abandoned': return <MapPin className="w-4 h-4" />;
@@ -420,7 +503,7 @@ export const SampleDataManager = () => {
             </TabsList>
 
             <TabsContent value="load" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2 flex items-center gap-2">
                     <Upload className="w-4 h-4" />
@@ -435,6 +518,24 @@ export const SampleDataManager = () => {
                     className="w-full"
                   >
                     {loading ? 'Cargando...' : 'Cargar Datos de Muestra'}
+                  </Button>
+                </Card>
+
+                <Card className="p-4">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Fotos Reales NYC
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Carga 10 objetos abandonados con fotos reales y coordenadas aleatorias de Nueva York.
+                  </p>
+                  <Button 
+                    onClick={uploadRealPhotos} 
+                    disabled={loading}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    {loading ? 'Subiendo...' : 'Subir Fotos NYC'}
                   </Button>
                 </Card>
 
