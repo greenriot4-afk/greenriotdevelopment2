@@ -278,8 +278,11 @@ const ObjectsPage = () => {
     toast.success(t('objects.removedSuccess'));
   };
 
-  const handleFloatingUpload = (objectType: 'abandoned' | 'donation' | 'product') => {
-    setShowUpload(true);
+  const handleFloatingUpload = (uploadType: 'abandoned' | 'donation' | 'product') => {
+    // Only show upload form if the selected type matches the current page type
+    if (uploadType === objectType) {
+      setShowUpload(true);
+    }
   };
 
   if (loading) {
