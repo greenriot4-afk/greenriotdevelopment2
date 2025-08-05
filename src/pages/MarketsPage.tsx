@@ -9,6 +9,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { MapPin, Plus, Crown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const MarketsPage = () => {
   const [markets, setMarkets] = useState<CircularMarket[]>([]);
@@ -18,6 +19,7 @@ const MarketsPage = () => {
   const { userLocation, getCurrentLocation, isLoading: locationLoading } = useLocation();
   const { user } = useAuth();
   const { subscribed, createSubscription, loading: subscriptionLoading, checkSubscription } = useSubscription();
+  const { t } = useLanguage();
 
   const fetchMarkets = async () => {
     try {
@@ -127,9 +129,9 @@ const MarketsPage = () => {
       <div className="mb-4">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-xl font-semibold">Mercadillos Circulares</h2>
+            <h2 className="text-xl font-semibold">{t('markets.circularMarkets')}</h2>
             <p className="text-sm text-muted-foreground">
-              Tiendas de segunda mano y garages sales cerca de ti
+              {t('markets.secondHandDescription')}
             </p>
           </div>
           {!subscribed ? (
@@ -150,7 +152,7 @@ const MarketsPage = () => {
               data-create-market
             >
               <Plus className="w-4 h-4" />
-              Crear
+              {t('common.create')}
             </Button>
           )}
         </div>

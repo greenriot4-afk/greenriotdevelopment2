@@ -594,6 +594,8 @@ const translations = {
     'profile.selectGarageImage': 'Por favor selecciona una imagen para el mercadillo de garaje',
     
     // Market Lists and Details
+    'markets.circularMarkets': 'Mercadillos Circulares',
+    'markets.secondHandDescription': 'Tiendas de segunda mano y garages sales cerca de ti',
     'markets.noMarketsAvailable': 'No hay mercadillos circulares disponibles.',
     'markets.market': 'Mercadillo',
     'markets.created': 'Creado',
