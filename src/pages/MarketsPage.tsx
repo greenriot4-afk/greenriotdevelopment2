@@ -51,6 +51,8 @@ const MarketsPage = () => {
       toast.success('¡Suscripción exitosa! Ahora puedes crear mercadillos circulares.');
       // Refresh subscription status
       checkSubscription();
+      // Automatically open the create form
+      setShowCreateForm(true);
       // Clean up URL parameters
       setSearchParams({});
     } else if (subscriptionParam === 'canceled') {
