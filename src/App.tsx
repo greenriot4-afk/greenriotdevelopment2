@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/hooks/useLanguage";
 import { SubscriptionProvider } from "@/hooks/useSubscription";
 import { FavoritesProvider } from "@/context/FavoritesContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { SuperAdminRoute } from "@/components/SuperAdminRoute";
 import { MobileTabs } from "@/components/MobileTabs";
 import { MobileMenu } from "@/components/MobileMenu";
 import { HeaderWallet } from "@/components/HeaderWallet";
@@ -95,8 +96,8 @@ const AppContent = () => {
             <Route path="chat/:conversationId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
             <Route path="favorites" element={<ProtectedRoute><FavoritesPage /></ProtectedRoute>} />
             <Route path="testing" element={<ProtectedRoute><TestingPage /></ProtectedRoute>} />
-            <Route path="admin-commission" element={<ProtectedRoute><AdminCommissionPage /></ProtectedRoute>} />
-            <Route path="admin-content" element={<ProtectedRoute><AdminContentPage /></ProtectedRoute>} />
+            <Route path="admin-commission" element={<SuperAdminRoute><AdminCommissionPage /></SuperAdminRoute>} />
+            <Route path="admin-content" element={<SuperAdminRoute><AdminContentPage /></SuperAdminRoute>} />
             <Route path="*" element={<Navigate to="/app/abandons" replace />} />
           </Routes>
         </main>
@@ -118,7 +119,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/auth" element={<Auth />} />
-                <Route path="/admin-content" element={<ProtectedRoute><AdminContentPage /></ProtectedRoute>} />
+                <Route path="/admin-content" element={<SuperAdminRoute><AdminContentPage /></SuperAdminRoute>} />
                 <Route path="/cookies" element={<CookiesPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/legal" element={<LegalPage />} />

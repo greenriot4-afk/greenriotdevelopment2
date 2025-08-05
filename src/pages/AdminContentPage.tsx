@@ -23,6 +23,11 @@ const AdminContentPage = () => {
     return <Navigate to="/auth" replace />;
   }
 
+  // Restrict access to specific superadmin only
+  if (user.email !== 'inigoloeprena@gmail.com') {
+    return <Navigate to="/app/abandons" replace />;
+  }
+
   return (
     <div className="flex-1 p-4 max-w-6xl mx-auto w-full">
       {/* Warning Card */}
