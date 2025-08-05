@@ -1,11 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { MapPin, Calendar, Store, ExternalLink } from 'lucide-react';
+import { useParams, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from '@/hooks/useAuth';
+import { LanguageProvider } from '@/hooks/useLanguage';
+import { SubscriptionProvider } from '@/hooks/useSubscription';
+import { FavoritesProvider } from '@/context/FavoritesContext';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import Navbar from '@/components/Navbar';
+import { MobileTabs } from '@/components/MobileTabs';
+import ObjectsPage from '@/pages/ObjectsPage';
+import ObjectDetailPage from '@/pages/ObjectDetailPage';
+import MarketsPage from '@/pages/MarketsPage';
+import MarketDetailPage from '@/pages/MarketDetailPage';
+import MarketCatalogPage from '@/pages/MarketCatalogPage';
+import { UserProfilePage } from '@/pages/UserProfilePage';
 import { supabase } from '@/integrations/supabase/client';
-import { format } from 'date-fns';
 
 interface SharedMarket {
   id: string;
@@ -25,23 +34,16 @@ interface SharedMarket {
   };
 }
 
-const SharedMarketPage = () => {
+// Meta tags component for shared market
+const SharedMarketMeta = () => {
   const { marketId } = useParams<{ marketId: string }>();
   const [market, setMarket] = useState<SharedMarket | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!marketId) {
-      console.log('SharedMarketPage: No marketId provided');
-      return;
-    }
-
-    console.log('SharedMarketPage: Fetching market with ID:', marketId);
+    if (!marketId) return;
 
     const fetchMarket = async () => {
       try {
-        setLoading(true);
-        
         const { data, error } = await supabase
           .from('circular_markets')
           .select(`
@@ -51,10 +53,7 @@ const SharedMarketPage = () => {
           .eq('is_active', true)
           .maybeSingle();
 
-        if (error) {
-          console.error('SharedMarketPage: Error fetching market:', error);
-          throw error;
-        }
+        if (error) throw error;
 
         if (data) {
           // Fetch user profile separately
@@ -64,21 +63,15 @@ const SharedMarketPage = () => {
             .eq('user_id', data.user_id)
             .maybeSingle();
 
-          // Create object with profile data
           const marketWithProfile: SharedMarket = {
             ...data,
             profiles: profileData || undefined
           } as SharedMarket;
 
-          console.log('SharedMarketPage: Market data fetched:', marketWithProfile);
           setMarket(marketWithProfile);
-        } else {
-          setMarket(null);
         }
       } catch (error) {
-        console.error('SharedMarketPage: Catch block error:', error);
-      } finally {
-        setLoading(false);
+        console.error('SharedMarketMeta: Error fetching market:', error);
       }
     };
 
@@ -99,8 +92,6 @@ const SharedMarketPage = () => {
       if (imageUrl.startsWith('/')) {
         imageUrl = `${window.location.origin}${imageUrl}`;
       }
-
-      console.log('Setting meta tags with image URL:', imageUrl);
       
       // Basic meta description
       const metaDescription = document.createElement('meta');
@@ -148,18 +139,6 @@ const SharedMarketPage = () => {
         document.head.appendChild(meta);
       });
 
-      // WhatsApp specific (uses Open Graph but sometimes needs help)
-      const whatsappMeta = document.createElement('meta');
-      whatsappMeta.setAttribute('property', 'og:image:type');
-      whatsappMeta.setAttribute('content', 'image/jpeg');
-      document.head.appendChild(whatsappMeta);
-
-      // Telegram specific
-      const telegramMeta = document.createElement('meta');
-      telegramMeta.setAttribute('name', 'telegram:channel');
-      telegramMeta.setAttribute('content', '@greenriot');
-      document.head.appendChild(telegramMeta);
-
       // Additional meta for better compatibility
       const additionalMetas = [
         { property: 'article:author', content: market.profiles?.display_name || 'Usuario GreenRiot' },
@@ -178,123 +157,77 @@ const SharedMarketPage = () => {
         meta.setAttribute('content', tag.content);
         document.head.appendChild(meta);
       });
-
-      console.log('Meta tags set for market:', market.title);
     }
   }, [market]);
 
-  const openInMaps = () => {
-    if (market?.latitude && market?.longitude) {
-      const url = `https://www.google.com/maps?q=${market.latitude},${market.longitude}`;
-      window.open(url, '_blank');
-    }
-  };
+  return null;
+};
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Cargando...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!market) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-2">Mercadillo no encontrado</h1>
-          <p className="text-muted-foreground">El mercadillo que buscas no existe o ha sido eliminado.</p>
-        </div>
-      </div>
-    );
-  }
+// Main app component for shared market
+const SharedMarketApp = () => {
+  const { marketId } = useParams<{ marketId: string }>();
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto p-4">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-foreground mb-2">GreenRiot</h1>
-          <p className="text-sm text-muted-foreground mb-1">Stooping & Thrifting Circular economy App</p>
-          <p className="text-xs text-muted-foreground">Save or make money. Save the planet</p>
-        </div>
+      {/* Header */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <Navbar />
+      </header>
 
-        {/* Market Card */}
-        <Card className="mb-6">
-          {market.image_url && (
-            <div className="aspect-video w-full overflow-hidden rounded-t-lg">
-              <img
-                src={market.image_url}
-                alt={market.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+      {/* Main Content */}
+      <main className="flex-1 overflow-auto">
+        <Routes>
+          {/* Public routes */}
+          <Route path="abandons" element={<ObjectsPage />} />
+          <Route path="donations" element={<ObjectsPage />} />
+          <Route path="products" element={<ObjectsPage />} />
+          <Route path="object/:objectId" element={<ObjectDetailPage />} />
+          <Route path="markets" element={<MarketsPage />} />
+          <Route path="market-detail/:marketId" element={<MarketDetailPage />} />
+          <Route path="market-catalog/:marketId" element={<MarketCatalogPage />} />
+          <Route path="profile/:userId" element={<UserProfilePage />} />
           
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <Badge variant="outline" className="mb-2">
-                  <Store className="w-3 h-3 mr-1" />
-                  Mercadillo Circular
-                </Badge>
-                <CardTitle className="text-xl">{market.title}</CardTitle>
-              </div>
-            </div>
-          </CardHeader>
+          {/* Default redirect to the shared market */}
+          <Route index element={marketId ? <Navigate to={`market-detail/${marketId}`} replace /> : <Navigate to="markets" replace />} />
+          <Route path="*" element={marketId ? <Navigate to={`market-detail/${marketId}`} replace /> : <Navigate to="markets" replace />} />
+        </Routes>
+      </main>
 
-          <CardContent className="space-y-4">
-            {market.description && (
-              <p className="text-foreground">{market.description}</p>
-            )}
-
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-              {market.location_name && (
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />
-                  {market.location_name}
-                </div>
-              )}
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                {format(new Date(market.created_at), 'dd/MM/yyyy')}
-              </div>
-            </div>
-
-            {market.accepts_donations && (
-              <Badge variant="outline" className="text-xs">
-                Acepta donaciones
-              </Badge>
-            )}
-
-            {market.profiles?.display_name && (
-              <div className="border-t pt-4">
-                <p className="text-sm text-muted-foreground">
-                  Creado por <span className="font-medium text-foreground">{market.profiles.display_name}</span>
-                </p>
-              </div>
-            )}
-
-          </CardContent>
-        </Card>
-
-        {/* App Download CTA */}
-        <Card>
-          <CardContent className="text-center p-6">
-            <h3 className="font-semibold text-foreground mb-2">¿Te interesa este mercadillo?</h3>
-            <p className="text-muted-foreground mb-4">
-              Crea una cuenta en Greenriot
-            </p>
-            <Button className="w-full">
-              Crear cuenta
-            </Button>
-          </CardContent>
-        </Card>
+      {/* Mobile Navigation */}
+      <div className="md:hidden">
+        <MobileTabs />
       </div>
     </div>
+  );
+};
+
+// Main SharedMarketPage component
+const SharedMarketPage = () => {
+  const { marketId } = useParams<{ marketId: string }>();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <LanguageProvider>
+        <AuthProvider>
+          <SubscriptionProvider>
+            <FavoritesProvider>
+              <TooltipProvider>
+                {marketId && <SharedMarketMeta />}
+                <SharedMarketApp />
+              </TooltipProvider>
+            </FavoritesProvider>
+          </SubscriptionProvider>
+        </AuthProvider>
+      </LanguageProvider>
+    </QueryClientProvider>
   );
 };
 
