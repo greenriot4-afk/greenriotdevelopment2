@@ -206,6 +206,30 @@ export default function ObjectDetailPage() {
             )}
           </div>
 
+          {/* Información del usuario */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+              <User className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <p className="font-medium">
+                {object.user_display_name || object.username || t('object.user')}
+              </p>
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  {getTimeAgo(object.created_at)}
+                </div>
+                {getDistanceText() && (
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    {getDistanceText()}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
 
           {/* Precio y acciones */}
           <div className="space-y-4">
