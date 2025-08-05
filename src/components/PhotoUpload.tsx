@@ -58,11 +58,19 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel, autoOpenCamera = f
 
   // Auto-open camera for abandoned items when explicitly requested
   useEffect(() => {
+    console.log('PhotoUpload autoOpenCamera effect', { 
+      objectType, 
+      autoOpenCamera, 
+      user: !!user, 
+      photo: !!photo, 
+      isCameraLoading 
+    });
+    
     if (objectType === 'abandoned' && autoOpenCamera && user && !photo && !isCameraLoading) {
       console.log('Auto-opening camera for abandoned item...');
       handleCapturePhoto();
     }
-  }, [objectType, autoOpenCamera, user]);
+  }, [objectType, autoOpenCamera, user, photo, isCameraLoading]);
 
   const handleCapturePhoto = async () => {
     try {

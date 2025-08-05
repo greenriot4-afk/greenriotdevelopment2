@@ -36,6 +36,8 @@ export function FloatingActionButton({ onUpload }: FloatingActionButtonProps) {
 
   const handleOptionClick = (type: 'abandoned' | 'donation' | 'product') => {
     requireAuth(() => {
+      console.log('FAB option clicked', { type, currentPath: window.location.pathname });
+      
       const routeMap = {
         abandoned: '/app/abandons',
         donation: '/app/donations',
@@ -48,14 +50,17 @@ export function FloatingActionButton({ onUpload }: FloatingActionButtonProps) {
       
       if (currentPath === targetPath) {
         // Same page, just show the upload form immediately
+        console.log('Already on correct page, triggering upload');
         onUpload(type);
       } else {
         // Different page, navigate first then show upload form
+        console.log('Navigating to different page', { from: currentPath, to: targetPath });
         navigate(targetPath);
-        // Use a longer timeout to ensure navigation and useEffect complete
+        // Use a timeout to ensure navigation completes and upload state is reset
         setTimeout(() => {
+          console.log('Navigation completed, triggering upload');
           onUpload(type);
-        }, 300);
+        }, 500); // Increased timeout to be more reliable
       }
       
       setIsOpen(false);

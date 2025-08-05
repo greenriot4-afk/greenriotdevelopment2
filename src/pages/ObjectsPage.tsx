@@ -169,21 +169,26 @@ const ObjectsPage = () => {
     }
   };
 
+  // Effect to handle route changes and reset upload state
   useEffect(() => {
-    console.log('ObjectsPage useEffect triggered', { 
+    console.log('Route changed, resetting upload state', { 
       type, 
       objectType, 
-      user: !!user,
       pathname: routerLocation.pathname 
     });
     
-    // Only reset upload form if it's a different object type
-    // This prevents resetting when navigating to the same type from FAB
-    const currentObjectType = getTypeFromPath(routerLocation.pathname);
-    if (currentObjectType !== type) {
-      setShowUpload(false);
-      setAutoOpenCamera(false);
-    }
+    // Always reset upload form when route changes to prevent unexpected form visibility
+    setShowUpload(false);
+    setAutoOpenCamera(false);
+  }, [routerLocation.pathname]);
+
+  // Separate effect for fetching objects - only when type changes
+  useEffect(() => {
+    console.log('Object type changed, fetching objects', { 
+      type, 
+      objectType, 
+      user: !!user
+    });
     
     // Check cache to prevent duplicate requests
     const now = Date.now();
@@ -206,7 +211,7 @@ const ObjectsPage = () => {
       console.log('Missing dependencies for fetchObjects', { type, objectType });
       setLoading(false);
     }
-  }, [type, objectType, routerLocation.pathname]);
+  }, [type, objectType]); // Remove routerLocation.pathname from dependencies
 
   // Separate effect for sorting when location changes
   useEffect(() => {
@@ -289,11 +294,18 @@ const ObjectsPage = () => {
   };
 
   const handleFloatingUpload = (uploadType: 'abandoned' | 'donation' | 'product') => {
+    console.log('FloatingActionButton clicked', { uploadType, currentObjectType: objectType });
+    
     // Only show upload form if the selected type matches the current page type
     if (uploadType === objectType) {
+      console.log('Showing upload form for matching type');
       setShowUpload(true);
       // Auto-open camera for abandoned items when coming from FAB
       setAutoOpenCamera(uploadType === 'abandoned');
+    } else {
+      console.log('Upload type does not match current page type, ignoring');
+      // Optional: Show a message to user that they need to navigate to correct page
+      // This case should not happen with proper FAB navigation, but good to be safe
     }
   };
 
