@@ -170,8 +170,8 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
         selectedObject
       });
 
-      // Use test function to debug the issue
-      const response = await supabase.functions.invoke('test-coordinate-purchase', {
+      // Use real function for coordinate purchase
+      const response = await supabase.functions.invoke('create-coordinate-payment', {
         body: {
           objectId: selectedObject.id,
           amount: selectedObject.price_credits,
