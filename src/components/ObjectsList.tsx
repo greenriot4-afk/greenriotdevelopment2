@@ -171,12 +171,12 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
       });
 
       // Use the new coordinate purchase function that handles seller payment and platform fee
-      const response = await supabase.functions.invoke('process-coordinate-purchase', {
+      const response = await supabase.functions.invoke('create-coordinate-payment', {
         body: {
-          objectId: selectedObject.id,
           amount: selectedObject.price_credits,
           description: `Coordenadas para: ${selectedObject.title}`,
-          objectType: objectType
+          objectType: objectType,
+          currency: 'USD'
         }
       });
 
