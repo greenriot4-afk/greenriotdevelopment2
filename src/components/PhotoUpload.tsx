@@ -26,7 +26,7 @@ interface PhotoUploadProps {
 export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState(objectType === 'donation' ? 0 : 50);
+  const [price, setPrice] = useState(objectType === 'donation' ? 0 : 1);
   const [photo, setPhoto] = useState<PhotoWithLocation | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -162,7 +162,7 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
       // Reset form
       setTitle('');
       setDescription('');
-      setPrice(50);
+      setPrice(objectType === 'donation' ? 0 : 1);
       setPhoto(null);
       toast.success('¡Objeto publicado exitosamente!');
     } catch (error) {
@@ -316,9 +316,11 @@ export const PhotoUpload = ({ onUpload, objectType, onCancel }: PhotoUploadProps
                 max={20}
                 placeholder="1"
               />
-              <p className="text-xs text-muted-foreground">
-                Precio entre $1 y $20. Este precio se cobrará a otros usuarios para acceder a la ubicación del objeto.
-              </p>
+              {objectType === 'abandoned' && (
+                <p className="text-xs text-muted-foreground">
+                  Precio entre $1 y $20. Este precio se cobrará a otros usuarios para acceder a la ubicación del objeto.
+                </p>
+              )}
             </div>
           )}
 
