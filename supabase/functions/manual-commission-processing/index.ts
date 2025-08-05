@@ -57,8 +57,8 @@ serve(async (req) => {
 
     console.log("Referral found:", referral.id);
 
-    // Step 2: Calculate commission (fixed 4.75 EUR for Premium)
-    const commissionAmount = 4.75;
+    // Step 2: Calculate commission (25% of $20 USD subscription)
+    const commissionAmount = 5.00;
     
     console.log("Commission amount:", commissionAmount);
 
@@ -102,12 +102,12 @@ serve(async (req) => {
     console.log("Commission record created:", commission.id);
 
     // Step 5: Handle wallet
-    // Check if EUR wallet exists
+    // Check if USD wallet exists
     const { data: existingWallet } = await supabaseService
       .from('wallets')
       .select('id, balance')
       .eq('user_id', referral.affiliate_user_id)
-      .eq('currency', 'EUR')
+      .eq('currency', 'USD')
       .maybeSingle();
 
     let walletId;
@@ -116,14 +116,14 @@ serve(async (req) => {
     if (existingWallet) {
       walletId = existingWallet.id;
       currentBalance = parseFloat(existingWallet.balance.toString());
-      console.log("Existing EUR wallet found:", walletId, "balance:", currentBalance);
+      console.log("Existing USD wallet found:", walletId, "balance:", currentBalance);
     } else {
-      // Create new EUR wallet
+      // Create new USD wallet
       const { data: newWallet, error: createError } = await supabaseService
         .from('wallets')
         .insert({
           user_id: referral.affiliate_user_id,
-          currency: 'EUR',
+          currency: 'USD',
           balance: 0
         })
         .select()
@@ -135,7 +135,7 @@ serve(async (req) => {
       }
 
       walletId = newWallet.id;
-      console.log("New EUR wallet created:", walletId);
+      console.log("New USD wallet created:", walletId);
     }
 
     // Step 6: Update wallet balance
@@ -167,7 +167,7 @@ serve(async (req) => {
         status: 'completed',
         description: `Affiliate commission for referral ${referral.id}`,
         object_type: 'affiliate_commission',
-        currency: 'EUR'
+        currency: 'USD'
       });
 
     if (transactionError) {

@@ -10,7 +10,7 @@ export const ProcessCommissionButton = () => {
     try {
       setProcessing(true);
       const result = await processAffiliateCommission('560a6c56-9bec-4000-a509-25b2e845272a');
-      toast.success(`Comisión procesada exitosamente: €${result.commission}`);
+      toast.success(`Comisión procesada exitosamente: $${result.commission}`);
       console.log('Commission result:', result);
     } catch (error) {
       toast.error('Error al procesar la comisión');
