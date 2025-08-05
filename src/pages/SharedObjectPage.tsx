@@ -63,6 +63,47 @@ const SharedObjectPage = () => {
     fetchObject();
   }, [objectId]);
 
+  // Meta tags para compartir en redes sociales
+  useEffect(() => {
+    if (object) {
+      document.title = `${object.title} - GreenRiot`;
+      
+      // Meta description
+      const metaDescription = document.querySelector('meta[name="description"]') || 
+                             document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      metaDescription.setAttribute('content', object.description || object.title);
+      if (!document.head.contains(metaDescription)) {
+        document.head.appendChild(metaDescription);
+      }
+      
+      // Open Graph meta tags
+      const ogTitle = document.querySelector('meta[property="og:title"]') || 
+                     document.createElement('meta');
+      ogTitle.setAttribute('property', 'og:title');
+      ogTitle.setAttribute('content', object.title);
+      if (!document.head.contains(ogTitle)) {
+        document.head.appendChild(ogTitle);
+      }
+      
+      const ogDescription = document.querySelector('meta[property="og:description"]') || 
+                           document.createElement('meta');
+      ogDescription.setAttribute('property', 'og:description');
+      ogDescription.setAttribute('content', object.description || object.title);
+      if (!document.head.contains(ogDescription)) {
+        document.head.appendChild(ogDescription);
+      }
+      
+      const ogImage = document.querySelector('meta[property="og:image"]') || 
+                     document.createElement('meta');
+      ogImage.setAttribute('property', 'og:image');
+      ogImage.setAttribute('content', object.image_url || '/lovable-uploads/991c69cf-b058-411d-b885-f70ba12f255b.png');
+      if (!document.head.contains(ogImage)) {
+        document.head.appendChild(ogImage);
+      }
+    }
+  }, [object]);
+
   const getTypeLabel = (type: string) => {
     switch (type) {
       case 'abandoned': return 'Objeto Abandonado';
