@@ -85,8 +85,9 @@ serve(async (req) => {
     }
 
     console.log('Purchase validation passed, proceeding with payment');
-    const sellerAmount = Math.round(amount * 0.8); // 80% to seller
-    const platformFee = amount - sellerAmount; // 20% platform fee
+    // Ensure platform fee is always at least 1 unit for company commission
+    const platformFee = Math.max(1, Math.round(amount * 0.2)); // Minimum 1 unit commission
+    const sellerAmount = amount - platformFee; // Rest goes to seller
 
     // Get or create buyer wallet for the specified currency
     const { data: walletId } = await serviceSupabase
@@ -142,6 +143,17 @@ serve(async (req) => {
 
     if (companyError) {
       throw new Error(`Failed to process platform commission: ${companyError.message}`);
+    }
+
+    // 4. Delete the abandoned object after successful purchase
+    const { error: deleteError } = await serviceSupabase
+      .from('objects')
+      .delete()
+      .eq('id', objectId);
+
+    if (deleteError) {
+      console.error('Warning: Failed to delete object after purchase:', deleteError.message);
+      // Don't throw error here as payment was successful
     }
 
     // Type assertion for the RPC result
