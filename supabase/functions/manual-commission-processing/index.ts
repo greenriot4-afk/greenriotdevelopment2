@@ -138,52 +138,111 @@ serve(async (req) => {
 
     logStep("Commission record created", { commissionId: commission.id });
 
-    // Get or create wallet for affiliate user
-    logStep("Getting or creating wallet", { affiliateUserId: referral.affiliate_user_id });
-    const { data: walletId, error: walletIdError } = await supabaseService
-      .rpc('get_or_create_wallet', {
-        p_user_id: referral.affiliate_user_id,
-        p_currency: 'EUR'
-      });
-
-    if (walletIdError) {
-      logStep("Wallet creation error", { error: walletIdError });
-      throw walletIdError;
-    }
-
-    logStep("Wallet retrieved/created", { walletId });
-
-    // Add commission to affiliate's wallet using the atomic function
-    logStep("Starting wallet balance update", { 
-      walletId, 
-      amount: commissionAmount, 
-      userId: referral.affiliate_user_id 
-    });
+    // Get or create EUR wallet for affiliate user
+    logStep("Getting or creating EUR wallet", { affiliateUserId: referral.affiliate_user_id });
     
-    const { data: walletResult, error: walletError } = await supabaseService
-      .rpc('update_wallet_balance_atomic', {
-        p_wallet_id: walletId,
-        p_amount: commissionAmount,
-        p_transaction_type: 'credit',
-        p_user_id: referral.affiliate_user_id,
-        p_description: `Affiliate commission for referral ${referral.id}`,
-        p_object_type: 'affiliate_commission',
-        p_currency: 'EUR'
-      });
+    let walletId;
+    const { data: existingWallet } = await supabaseService
+      .from('wallets')
+      .select('id, balance')
+      .eq('user_id', referral.affiliate_user_id)
+      .eq('currency', 'EUR')
+      .single();
 
-    if (walletError) {
-      logStep("Wallet update error", { error: walletError });
-      throw walletError;
+    if (existingWallet) {
+      walletId = existingWallet.id;
+      logStep("Existing EUR wallet found", { walletId, currentBalance: existingWallet.balance });
+    } else {
+      // Create new EUR wallet
+      const { data: newWallet, error: createWalletError } = await supabaseService
+        .from('wallets')
+        .insert({
+          user_id: referral.affiliate_user_id,
+          currency: 'EUR',
+          balance: 0
+        })
+        .select()
+        .single();
+
+      if (createWalletError) {
+        logStep("Error creating EUR wallet", { error: createWalletError });
+        throw createWalletError;
+      }
+
+      walletId = newWallet.id;
+      logStep("New EUR wallet created", { walletId });
     }
 
-    logStep("Wallet update completed", { walletResult });
+    // Update wallet balance directly
+    logStep("Updating wallet balance", { walletId, commissionAmount });
+    
+    // First get current balance
+    const { data: currentWallet, error: getWalletError } = await supabaseService
+      .from('wallets')
+      .select('balance')
+      .eq('id', walletId)
+      .single();
+
+    if (getWalletError) {
+      logStep("Error getting current wallet balance", { error: getWalletError });
+      throw getWalletError;
+    }
+
+    const currentBalance = parseFloat(currentWallet.balance.toString());
+    const newBalance = currentBalance + commissionAmount;
+
+    // Update with new balance
+    const { data: updatedWallet, error: updateError } = await supabaseService
+      .from('wallets')
+      .update({ 
+        balance: newBalance,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', walletId)
+      .select()
+      .single();
+
+    if (updateError) {
+      logStep("Error updating wallet balance", { error: updateError });
+      throw updateError;
+    }
+
+    logStep("Wallet balance updated successfully", { 
+      walletId, 
+      previousBalance: currentBalance,
+      commissionAmount,
+      newBalance: updatedWallet.balance 
+    });
+
+    // Create transaction record manually
+    const { data: transaction, error: transactionError } = await supabaseService
+      .from('transactions')
+      .insert({
+        user_id: referral.affiliate_user_id,
+        wallet_id: walletId,
+        type: 'credit',
+        amount: commissionAmount,
+        status: 'completed',
+        description: `Affiliate commission for referral ${referral.id}`,
+        object_type: 'affiliate_commission',
+        currency: 'EUR'
+      })
+      .select()
+      .single();
+
+    if (transactionError) {
+      logStep("Error creating transaction", { error: transactionError });
+      throw transactionError;
+    }
+
+    logStep("Transaction created successfully", { transactionId: transaction.id });
 
     logStep("Commission processed successfully", { 
       affiliateUserId: referral.affiliate_user_id,
       affiliateLevel,
       commissionPercentage,
       commissionAmount,
-      walletResult
+      newBalance: updatedWallet.balance
     });
 
     return new Response(JSON.stringify({ 
@@ -192,7 +251,7 @@ serve(async (req) => {
       affiliateUserId: referral.affiliate_user_id,
       affiliateLevel,
       commissionPercentage,
-      walletResult
+      newBalance: updatedWallet.balance
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
