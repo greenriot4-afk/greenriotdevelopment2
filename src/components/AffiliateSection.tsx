@@ -124,8 +124,8 @@ export const AffiliateSection = () => {
             </Badge>
           </div>
 
-          {/* Affiliate Code Section */}
-          {!affiliateCode ? (
+          {/* Affiliate code creation button for users without code */}
+          {!affiliateCode && (
             <div className="text-center py-6 border border-dashed border-muted-foreground/25 rounded-lg">
               <Gift className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
               <h3 className="font-medium mb-2">{t('affiliate.startEarning')}</h3>
@@ -135,40 +135,6 @@ export const AffiliateSection = () => {
               <Button onClick={createAffiliateCode}>
                 {t('affiliate.createAffiliateCode')}
               </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">{t('affiliate.yourCode')}</label>
-                <div className="flex gap-2 mt-1">
-                  <div className="flex-1 p-3 bg-muted rounded-lg font-mono text-center text-lg font-bold">
-                    {affiliateCode.code}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => copyAffiliateLink(affiliateCode.code)}
-                  >
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">{t('affiliate.yourLink')}</label>
-                <div className="flex gap-2 mt-1">
-                  <div className="flex-1 p-3 bg-muted rounded-lg text-sm break-all">
-                    {getAffiliateLink(affiliateCode.code)}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => copyAffiliateLink(affiliateCode.code)}
-                  >
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
             </div>
           )}
         </CardContent>
@@ -204,47 +170,6 @@ export const AffiliateSection = () => {
         </Card>
       </div>
 
-      {/* Recent Referrals */}
-      {referrals.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">{t('affiliate.recentReferrals')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {referrals.slice(0, 5).map((referral) => (
-                <div key={referral.id} className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Users className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{t('affiliate.referredUser')}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(referral.referred_at), {
-                          addSuffix: true,
-                          locale: language === 'es' ? es : enUS
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    {referral.commission_paid ? (
-                      <Badge variant="secondary" className="text-green-600">
-                        {formatCurrency(referral.commission_amount)}
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline">
-                        {t('affiliate.pending')}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
 
       {/* Commission Levels */}
