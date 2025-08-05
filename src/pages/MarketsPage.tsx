@@ -108,11 +108,8 @@ const MarketsPage = () => {
   };
 
   const handleMarketClick = (marketId: string) => {
-    const market = markets.find(m => m.id === marketId);
-    if (market) {
-      const mapsUrl = `https://www.google.com/maps?q=${market.latitude},${market.longitude}`;
-      window.open(mapsUrl, '_blank');
-    }
+    // Navigate to market detail page when clicking on the card
+    window.location.href = `/app/market-catalog/${marketId}`;
   };
 
   if (loading) {
