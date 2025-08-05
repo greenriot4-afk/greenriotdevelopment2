@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Share2, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -92,6 +92,9 @@ const ShareButton = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Compartir</DialogTitle>
+          <DialogDescription>
+            Comparte este {type === 'object' ? 'objeto' : 'mercadillo'} con tus contactos
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           {/* Preview */}
