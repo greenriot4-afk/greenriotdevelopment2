@@ -565,19 +565,19 @@ export const SampleDataManager = () => {
 
     const thriftStoreData = [
       {
-        imageUrl: '/lovable-uploads/8721f4eb-340f-4d1f-aab9-f612d81bebff.png',
+        imageUrl: 'https://0a522484-1d74-46b5-a7dc-22519140aef6.lovableproject.com/lovable-uploads/8721f4eb-340f-4d1f-aab9-f612d81bebff.png',
         title: 'Brooklyn Thrift Emporium',
         description: 'Tienda de segunda mano establecida en el corazón de Brooklyn. Especialistas en ropa vintage, muebles restaurados y artículos únicos del hogar. Cada pieza es cuidadosamente seleccionada para ofrecer calidad y estilo a precios accesibles. Aceptamos donaciones y ofrecemos descuentos especiales los fines de semana.',
         locationName: 'Park Slope, Brooklyn, NY'
       },
       {
-        imageUrl: '/lovable-uploads/3ae68ed8-5e4d-4e2c-aa6c-60595fbf0dd8.png',
+        imageUrl: 'https://0a522484-1d74-46b5-a7dc-22519140aef6.lovableproject.com/lovable-uploads/3ae68ed8-5e4d-4e2c-aa6c-60595fbf0dd8.png',
         title: 'Family Pathways Donation Center',
         description: 'Centro de donaciones y tienda de segunda mano con propósito comunitario. Todos los ingresos se destinan a programas familiares locales. Amplia selección de ropa, libros, juguetes y artículos para el hogar en excelente estado. Misión: crear oportunidades para familias necesitadas mientras promovemos la sostenibilidad.',
         locationName: 'Queens Village, Queens, NY'
       },
       {
-        imageUrl: '/lovable-uploads/8d7b7ad4-ea76-4385-af65-def830e90d9d.png',
+        imageUrl: 'https://0a522484-1d74-46b5-a7dc-22519140aef6.lovableproject.com/lovable-uploads/8d7b7ad4-ea76-4385-af65-def830e90d9d.png',
         title: 'Praha Vintage Thrift Store',
         description: 'Tienda de segunda mano con sabor internacional en el Lower East Side. Especializada en piezas vintage europeas, ropa étnica y objetos de arte únicos. Ambiente acogedor donde cada visita es una aventura de descubrimiento. Perfecto para encontrar piezas de conversación y tesoros culturales auténticos.',
         locationName: 'Lower East Side, Manhattan, NY'
