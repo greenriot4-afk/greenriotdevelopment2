@@ -363,35 +363,6 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
             </CardHeader>
             
             <CardContent>
-              {/* User info and likes */}
-              <div className="flex items-center justify-between mb-3 p-2 bg-muted/30 rounded-lg">
-                <div className="flex flex-col gap-1">
-                  <Link 
-                    to={`/app/profile/${object.user_id}`}
-                    className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
-                  >
-                    {object.market_id ? (
-                      <Store className="w-3 h-3 text-green-600" />
-                    ) : (
-                      <UserCircle className="w-3 h-3 text-blue-600" />
-                     )}
-                     {object.user_display_name || 'Usuario'}
-                   </Link>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3" />
-                      {getDistanceText(object)}
-                    </div>
-                     <span>{getDateText(object)}</span>
-                     {objectType === 'abandoned' && (
-                       <span className="text-xs text-red-500 dark:text-red-400">
-                         {getDeletionCountdownText(object)}
-                       </span>
-                     )}
-                   </div>
-                 </div>
-                 <UserLikes targetUserId={object.user_id} size="sm" />
-               </div>
               
               <div className="space-y-2">
                 {/* Botones de acción */}
