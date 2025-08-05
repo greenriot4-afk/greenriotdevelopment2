@@ -66,6 +66,17 @@ serve(async (req) => {
     }
 
     const sellerId = object.user_id;
+    
+    // Check if user is trying to buy their own object
+    if (sellerId === user.id) {
+      return new Response(JSON.stringify({ 
+        error: 'No puedes comprar una coordenada publicada por ti mismo!' 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+
     const sellerAmount = Math.round(amount * 0.8); // 80% to seller
     const platformFee = amount - sellerAmount; // 20% platform fee
 
@@ -92,31 +103,26 @@ serve(async (req) => {
       throw new Error(`Failed to process buyer payment: ${buyerError.message}`);
     }
 
-    // 2. Add to seller (only if not the same user)
-    let sellerResult = null;
-    if (sellerId !== user.id) {
-      const { data: sellerWalletId } = await serviceSupabase
-        .rpc('get_or_create_wallet', {
-          p_user_id: sellerId,
-          p_currency: currency
-        });
+    // 2. Add to seller
+    const { data: sellerWalletId } = await serviceSupabase
+      .rpc('get_or_create_wallet', {
+        p_user_id: sellerId,
+        p_currency: currency
+      });
 
-      const { data: result, error: sellerError } = await serviceSupabase
-        .rpc('update_wallet_balance_atomic', {
-          p_wallet_id: sellerWalletId,
-          p_amount: sellerAmount,
-          p_transaction_type: 'credit',
-          p_user_id: sellerId,
-          p_description: `Venta de coordenadas: ${object.title} (80% after platform fee)`,
-          p_object_type: 'coordinate_sale',
-          p_currency: currency
-        });
+    const { data: sellerResult, error: sellerError } = await serviceSupabase
+      .rpc('update_wallet_balance_atomic', {
+        p_wallet_id: sellerWalletId,
+        p_amount: sellerAmount,
+        p_transaction_type: 'credit',
+        p_user_id: sellerId,
+        p_description: `Venta de coordenadas: ${object.title} (80% after platform fee)`,
+        p_object_type: 'coordinate_sale',
+        p_currency: currency
+      });
 
-      if (sellerError) {
-        throw new Error(`Failed to process seller payment: ${sellerError.message}`);
-      }
-      
-      sellerResult = result;
+    if (sellerError) {
+      throw new Error(`Failed to process seller payment: ${sellerError.message}`);
     }
 
     // 3. Add platform commission to company wallet (20%)
@@ -144,6 +150,8 @@ serve(async (req) => {
       transaction_id: walletResult.transaction_id,
       new_balance: walletResult.new_balance,
       currency: currency,
+      sellerAmount: sellerAmount,
+      platformFee: platformFee,
       message: `Successfully purchased ${objectType} for ${currency === 'EUR' ? '€' : '$'}${amount}`
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
