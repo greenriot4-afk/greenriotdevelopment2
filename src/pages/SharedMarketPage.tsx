@@ -45,23 +45,36 @@ const SharedMarketPage = () => {
         const { data, error } = await supabase
           .from('circular_markets')
           .select(`
-            *,
-            profiles!circular_markets_user_id_fkey (
-              display_name,
-              username
-            )
+            *
           `)
           .eq('id', marketId)
           .eq('is_active', true)
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error('SharedMarketPage: Error fetching market:', error);
           throw error;
         }
-        
-        console.log('SharedMarketPage: Market data fetched:', data);
-        setMarket(data as SharedMarket);
+
+        if (data) {
+          // Fetch user profile separately
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('display_name, username')
+            .eq('user_id', data.user_id)
+            .maybeSingle();
+
+          // Create object with profile data
+          const marketWithProfile: SharedMarket = {
+            ...data,
+            profiles: profileData || undefined
+          } as SharedMarket;
+
+          console.log('SharedMarketPage: Market data fetched:', marketWithProfile);
+          setMarket(marketWithProfile);
+        } else {
+          setMarket(null);
+        }
       } catch (error) {
         console.error('SharedMarketPage: Catch block error:', error);
       } finally {

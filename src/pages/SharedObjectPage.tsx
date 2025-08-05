@@ -46,22 +46,35 @@ const SharedObjectPage = () => {
         const { data, error } = await supabase
           .from('objects')
           .select(`
-            *,
-            profiles!objects_user_id_fkey (
-              display_name,
-              username
-            )
+            *
           `)
           .eq('id', objectId)
-          .single();
+          .maybeSingle();
 
         if (error) {
           console.error('SharedObjectPage: Error fetching object:', error);
           throw error;
         }
-        
-        console.log('SharedObjectPage: Object data fetched:', data);
-        setObject(data as SharedObject);
+
+        if (data) {
+          // Fetch user profile separately
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('display_name, username')
+            .eq('user_id', data.user_id)
+            .maybeSingle();
+
+          // Create object with profile data
+          const objectWithProfile: SharedObject = {
+            ...data,
+            profiles: profileData || undefined
+          } as SharedObject;
+
+          console.log('SharedObjectPage: Object data fetched:', objectWithProfile);
+          setObject(objectWithProfile);
+        } else {
+          setObject(null);
+        }
       } catch (error) {
         console.error('SharedObjectPage: Catch block error:', error);
       } finally {
