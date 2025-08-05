@@ -27,7 +27,7 @@ const translations = {
     'menu.myChats': 'My Chats',
     'menu.favorites': 'Favorites',
     'menu.myAds': 'My Ads',
-    'menu.affiliateProgram': 'Bring a circular market:\nHelp the planet and earn $19!',
+    'menu.affiliateProgram': 'Bring a circular market:\nHelp the planet and make money!',
     'menu.myCircularMarket': 'My Circular Market',
     'menu.createCircularMarket': 'Create Circular Market',
     'menu.signOut': 'Sign Out',
@@ -70,7 +70,7 @@ const translations = {
     
     // Affiliate System
     'affiliate.title': 'Affiliate System',
-    'affiliate.description': 'Earn $19 for each user you refer who create a circular market. Planet wins and you too',
+    'affiliate.description': 'Make money for each user you refer who create a circular market. Planet wins and you too',
     'affiliate.totalEarnings': 'Total earnings:',
     'affiliate.startEarning': 'Start earning with affiliates',
     'affiliate.createCode': 'Create your unique code and start referring users',
@@ -85,7 +85,7 @@ const translations = {
     'affiliate.howItWorks': 'How it works?',
     'affiliate.step1': 'Share your affiliate link with friends',
     'affiliate.step2': 'When they register using your link, they will be linked to you',
-    'affiliate.step3': 'If they subscribe to the premium plan in the next 30 days, you receive $19',
+    'affiliate.step3': 'If they subscribe to the premium plan in the next 30 days, you make money',
     'affiliate.step4': 'Commissions are automatically deposited to your wallet',
     'affiliate.premiumPlan': 'Premium Plan',
     'affiliate.premiumPrice': '$19/month',
@@ -339,7 +339,7 @@ const translations = {
     'menu.myChats': 'Mis Chats',
     'menu.favorites': 'Favoritos',
     'menu.myAds': 'Mis anuncios',
-    'menu.affiliateProgram': 'Trae un mercadillo circular:\n¡Ayuda al planeta y gana 19$!',
+    'menu.affiliateProgram': 'Trae un mercadillo circular:\n¡Ayuda al planeta y gana dinero!',
     'menu.myCircularMarket': 'Mi Mercadillo Circular',
     'menu.createCircularMarket': 'Crear Mercadillo Circular',
     'menu.signOut': 'Cerrar Sesión',
@@ -382,7 +382,7 @@ const translations = {
     
     // Affiliate System
     'affiliate.title': 'Sistema de Afiliados',
-    'affiliate.description': 'Gana $19 por cada usuario que refiera y se suscriba al plan premium',
+    'affiliate.description': 'Gana dinero por cada usuario que refieras y se suscriba al plan premium',
     'affiliate.totalEarnings': 'Ganancias totales:',
     'affiliate.startEarning': 'Comienza a ganar con afiliados',
     'affiliate.createCode': 'Crea tu código único y empieza a referir usuarios',
@@ -397,7 +397,7 @@ const translations = {
     'affiliate.howItWorks': '¿Cómo funciona?',
     'affiliate.step1': 'Comparte tu link de afiliado con amigos',
     'affiliate.step2': 'Cuando se registren usando tu link, quedarán vinculados a ti',
-    'affiliate.step3': 'Si se suscriben al plan premium en los próximos 30 días, recibes $19',
+    'affiliate.step3': 'Si se suscriben al plan premium en los próximos 30 días, ganas dinero',
     'affiliate.step4': 'Las comisiones se depositan automáticamente en tu wallet',
     'affiliate.premiumPlan': 'Plan Premium',
     'affiliate.premiumPrice': '$19/mes',
