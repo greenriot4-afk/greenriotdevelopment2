@@ -171,7 +171,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
       });
 
       // Use the new coordinate purchase function that handles seller payment and platform fee
-      const { data, error } = await supabase.functions.invoke('process-coordinate-purchase', {
+      const response = await supabase.functions.invoke('process-coordinate-purchase', {
         body: {
           objectId: selectedObject.id,
           amount: selectedObject.price_credits,
@@ -180,14 +180,17 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
         }
       });
 
-      console.log('Edge function response:', { data, error });
+      console.log('Raw edge function response:', response);
 
+      const { data, error } = response;
+      
       if (error) {
         console.error('Edge function error details:', {
           message: error.message,
           details: error.details,
           hint: error.hint,
-          code: error.code
+          code: error.code,
+          fullError: error
         });
         
         // Try to get more details from the error

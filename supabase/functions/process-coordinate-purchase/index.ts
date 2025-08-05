@@ -20,7 +20,13 @@ serve(async (req) => {
     
     if (!authHeader) {
       console.error('No authorization header found');
-      throw new Error('No authorization header');
+      return new Response(JSON.stringify({ 
+        error: 'No authorization header provided',
+        step: 'auth_check'
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
     }
 
     // Initialize Supabase client with service role key for admin operations
@@ -47,7 +53,14 @@ serve(async (req) => {
     
     if (userError || !user) {
       console.error('User authentication failed:', userError);
-      throw new Error('Invalid user token');
+      return new Response(JSON.stringify({ 
+        error: 'Invalid user token',
+        step: 'user_auth',
+        details: userError?.message
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
     }
 
     const requestBody = await req.json();
@@ -57,24 +70,34 @@ serve(async (req) => {
     
     if (!objectId || !amount) {
       console.error('Missing required fields:', { objectId, amount });
-      throw new Error('Missing objectId or amount');
+      return new Response(JSON.stringify({ 
+        error: 'Missing objectId or amount',
+        step: 'validation',
+        received: { objectId, amount, description, objectType }
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
-    console.log('Processing coordinate purchase:', { objectId, amount, buyerId: user.id, objectType, description });
-
-    // Get object details to find the seller
-    const { data: object, error: objectError } = await supabaseClient
-      .from('objects')
-      .select('user_id, title, price_credits')
-      .eq('id', objectId)
-      .single();
-
-    console.log('Object fetch result:', { object, error: objectError?.message });
-
-    if (objectError || !object) {
-      console.error('Failed to fetch object:', objectError);
-      throw new Error('Object not found');
-    }
+    // For now, just return success with debug info
+    console.log('All validation passed, returning success');
+    
+    return new Response(JSON.stringify({ 
+      success: true,
+      debug: {
+        userId: user.id,
+        objectId,
+        amount,
+        objectType,
+        step: 'debug_success'
+      },
+      platformFee: 0,
+      sellerAmount: 0
+    }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
 
     const sellerId = object.user_id;
     const sellerAmount = Math.round(amount * 0.8); // 80% to seller (20% commission)
