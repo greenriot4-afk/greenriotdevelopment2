@@ -6,7 +6,8 @@ import { LanguageProvider } from '@/hooks/useLanguage';
 import { SubscriptionProvider } from '@/hooks/useSubscription';
 import { FavoritesProvider } from '@/context/FavoritesContext';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import Navbar from '@/components/Navbar';
+import { HeaderWallet } from '@/components/HeaderWallet';
+import { MobileMenu } from '@/components/MobileMenu';
 import { MobileTabs } from '@/components/MobileTabs';
 import ObjectsPage from '@/pages/ObjectsPage';
 import ObjectDetailPage from '@/pages/ObjectDetailPage';
@@ -168,11 +169,24 @@ const SharedMarketApp = () => {
   const { marketId } = useParams<{ marketId: string }>();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <Navbar />
+      <header className="flex items-center justify-between h-14 px-4 border-b bg-primary backdrop-blur">
+        <div className="flex items-center">
+          <img 
+            src="/lovable-uploads/991c69cf-b058-411d-b885-f70ba12f255b.png" 
+            alt="Greenriot" 
+            className="h-8 w-auto"
+          />
+        </div>
+        <div className="flex items-center gap-3">
+          <HeaderWallet />
+          <MobileMenu />
+        </div>
       </header>
+
+      {/* Mobile Navigation Tabs */}
+      <MobileTabs />
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
@@ -192,11 +206,6 @@ const SharedMarketApp = () => {
           <Route path="*" element={marketId ? <Navigate to={`market-detail/${marketId}`} replace /> : <Navigate to="markets" replace />} />
         </Routes>
       </main>
-
-      {/* Mobile Navigation */}
-      <div className="md:hidden">
-        <MobileTabs />
-      </div>
     </div>
   );
 };
