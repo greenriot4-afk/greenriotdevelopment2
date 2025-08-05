@@ -30,7 +30,7 @@ export default function Auth() {
 
   // Redirigir si ya está autenticado
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/app/abandons" replace />;
   }
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -137,7 +137,7 @@ export default function Auth() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/`
+        redirectTo: `${window.location.origin}/app/abandons`
       }
     });
     
