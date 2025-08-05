@@ -228,24 +228,40 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error processing coordinate purchase:', error.message);
+    console.error('Full error details:', error);
     
     let userFriendlyMessage = error.message;
+    let statusCode = 400;
     
     // Provide more user-friendly error messages
-    if (error.message.includes('Insufficient balance')) {
+    if (error.message.includes('Insufficient balance') || error.message.includes('No tienes suficiente saldo')) {
       userFriendlyMessage = 'No tienes suficiente saldo para esta compra. Recarga tu wallet.';
+      statusCode = 400;
     } else if (error.message.includes('Object not found')) {
       userFriendlyMessage = 'El objeto ya no está disponible.';
-    } else if (error.message.includes('Invalid user token')) {
+      statusCode = 404;
+    } else if (error.message.includes('Invalid user token') || error.message.includes('Authentication')) {
       userFriendlyMessage = 'Sesión expirada. Inicia sesión nuevamente.';
+      statusCode = 401;
     } else if (error.message.includes('Missing objectId or amount')) {
       userFriendlyMessage = 'Error en los datos del pago.';
+      statusCode = 400;
+    } else if (error.message.includes('Company wallet') || error.message.includes('commission')) {
+      userFriendlyMessage = 'Error interno del sistema. Intenta de nuevo.';
+      statusCode = 500;
+    } else {
+      userFriendlyMessage = 'Error al procesar el pago. Intenta de nuevo.';
+      statusCode = 500;
     }
     
     return new Response(
-      JSON.stringify({ error: userFriendlyMessage }),
+      JSON.stringify({ 
+        error: userFriendlyMessage,
+        details: error.message,
+        timestamp: new Date().toISOString()
+      }),
       { 
-        status: 400,
+        status: statusCode,
         headers: { 
           ...corsHeaders, 
           'Content-Type': 'application/json' 
