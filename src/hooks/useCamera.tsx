@@ -89,14 +89,49 @@ export const useCamera = (): {
       overlay.appendChild(buttonContainer);
       document.body.appendChild(overlay);
 
-      // Get camera stream with better error handling
-      navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          facingMode: 'environment', // Use back camera on mobile
-          width: { ideal: 1024 },
-          height: { ideal: 1024 }
-        } 
-      })
+      // Try progressively simpler camera configurations for better PC compatibility
+      const tryGetUserMedia = async () => {
+        const configs = [
+          // First try: ideal configuration for mobile
+          { 
+            video: { 
+              facingMode: 'environment',
+              width: { ideal: 1024 },
+              height: { ideal: 1024 }
+            } 
+          },
+          // Second try: any back camera without size constraints
+          { 
+            video: { 
+              facingMode: 'environment'
+            } 
+          },
+          // Third try: any camera with size preferences
+          { 
+            video: { 
+              width: { ideal: 1024 },
+              height: { ideal: 1024 }
+            } 
+          },
+          // Last try: any available camera (most compatible)
+          { video: true }
+        ];
+
+        for (let i = 0; i < configs.length; i++) {
+          try {
+            console.log(`Trying camera config ${i + 1}:`, configs[i]);
+            return await navigator.mediaDevices.getUserMedia(configs[i]);
+          } catch (error) {
+            console.log(`Camera config ${i + 1} failed:`, error);
+            if (i === configs.length - 1) {
+              throw error; // Re-throw the last error
+            }
+            // Continue to next configuration
+          }
+        }
+      };
+
+      tryGetUserMedia()
       .then(stream => {
         video.srcObject = stream;
         video.play();
