@@ -139,7 +139,7 @@ const MarketsPage = () => {
               disabled={subscriptionLoading}
             >
               <Crown className="w-4 h-4" />
-              {subscriptionLoading ? 'Cargando...' : 'Create circular market $19/month'}
+              {subscriptionLoading ? 'Cargando...' : 'Create circular market $20/month'}
             </Button>
           ) : (
             <Button 

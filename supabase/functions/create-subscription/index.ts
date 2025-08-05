@@ -45,7 +45,7 @@ serve(async (req) => {
               name: "Suscripción Premium - Mercadillos Circulares",
               description: "Acceso completo para crear y gestionar mercadillos circulares"
             },
-            unit_amount: 1900, // $19.00
+            unit_amount: 2000, // $20.00
             recurring: { interval: "month" },
           },
           quantity: 1,
