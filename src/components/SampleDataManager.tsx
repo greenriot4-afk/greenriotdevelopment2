@@ -490,6 +490,72 @@ export const SampleDataManager = () => {
     }
   };
 
+  // Function to upload product photos
+  const uploadProductPhotos = async () => {
+    if (!user) {
+      toast.error('Debes estar autenticado para subir fotos');
+      return;
+    }
+
+    const productPhotoUrls = [
+      '/lovable-uploads/3a1682d4-83cb-4479-96be-5be15d919e19.png', // Cómoda de madera
+      '/lovable-uploads/3deb34de-57a8-4532-9836-39c46ec673ef.png', // Cajonera de madera
+      '/lovable-uploads/d171036b-00bb-4bd9-af7a-d908af868182.png', // Monitor/pantalla
+      '/lovable-uploads/283a1e76-d5b0-40c2-885b-3d40d6efa147.png'  // Setup de computadora
+    ];
+
+    setLoading(true);
+    setProgress(0);
+    setUploadedItems([]);
+
+    try {
+      const itemsToUpload = productPhotoUrls.map((url, index) => {
+        const { latitude, longitude } = generateNYCCoordinates();
+        const price = Math.floor(Math.random() * 31) + 20; // Precio aleatorio entre 20 y 50
+        return {
+          type: 'for_sale' as const,
+          title: '', // Sin título como solicita el usuario
+          description: '', // Sin descripción como solicita el usuario
+          location: { latitude, longitude },
+          image_url: url,
+          price: price
+        };
+      });
+
+      for (let i = 0; i < itemsToUpload.length; i++) {
+        const item = itemsToUpload[i];
+        
+        const { error } = await supabase
+          .from('objects')
+          .insert({
+            type: item.type,
+            title: item.title || 'Producto en venta',
+            description: item.description,
+            image_url: item.image_url,
+            user_id: user.id,
+            latitude: item.location.latitude,
+            longitude: item.location.longitude,
+            price_credits: item.price
+          });
+
+        if (error) {
+          console.error('Error uploading product:', error);
+          throw error;
+        }
+
+        setUploadedItems(prev => [...prev, `producto: $${item.price} - NYC #${i + 1}`]);
+        setProgress(((i + 1) / itemsToUpload.length) * 100);
+      }
+
+      toast.success(`¡${itemsToUpload.length} productos creados exitosamente con coordenadas de NYC!`);
+    } catch (error) {
+      console.error('Error uploading product photos:', error);
+      toast.error('Error al crear productos');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'abandoned': return <MapPin className="w-4 h-4" />;
@@ -567,7 +633,7 @@ export const SampleDataManager = () => {
             </TabsList>
 
             <TabsContent value="load" className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2 flex items-center gap-2">
                     <Upload className="w-4 h-4" />
@@ -618,6 +684,24 @@ export const SampleDataManager = () => {
                     className="w-full"
                   >
                     {loading ? 'Subiendo...' : 'Subir Donaciones NYC'}
+                  </Button>
+                </Card>
+
+                <Card className="p-4">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <Package className="w-4 h-4" />
+                    Productos NYC
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Carga 4 productos con precios aleatorios ($20-$50) y coordenadas de Nueva York.
+                  </p>
+                  <Button 
+                    onClick={uploadProductPhotos} 
+                    disabled={loading}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    {loading ? 'Subiendo...' : 'Subir Productos NYC'}
                   </Button>
                 </Card>
 
