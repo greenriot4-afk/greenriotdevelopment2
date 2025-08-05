@@ -114,7 +114,7 @@ const App = () => (
                 <Route path="/cookies" element={<CookiesPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/legal" element={<LegalPage />} />
-                <Route path="/app/*" element={<AppContent />} />
+                <Route path="/app/*" element={<ProtectedRoute><AppContent /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
