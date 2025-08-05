@@ -12,8 +12,14 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Starting create-coordinate-payment with headers:', {
+      authorization: !!req.headers.get("Authorization"),
+      contentType: req.headers.get("Content-Type")
+    });
+
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
+      console.error('No authorization header provided');
       throw new Error("No authorization header provided");
     }
 
@@ -28,22 +34,35 @@ serve(async (req) => {
       }
     );
 
+    console.log('Getting user from auth token...');
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !user?.email) {
+      console.error('Authentication failed:', { userError, hasUser: !!user, hasEmail: !!user?.email });
       throw new Error(`Authentication failed: ${userError?.message || 'User not found'}`);
     }
 
-    const { amount, description, objectType = 'coordinate', currency = 'USD', objectId } = await req.json();
+    console.log('User authenticated successfully:', { userId: user.id, email: user.email });
+
+    console.log('Parsing request body...');
+    const body = await req.json();
+    console.log('Request body received:', body);
+    
+    const { amount, description, objectType = 'coordinate', currency = 'USD', objectId } = body;
+    
+    console.log('Validating parameters:', { amount, objectType, currency, objectId });
     
     if (!amount || amount <= 0) {
+      console.error('Invalid amount:', amount);
       throw new Error('Invalid amount');
     }
 
     if (!['USD', 'EUR'].includes(currency)) {
+      console.error('Unsupported currency:', currency);
       throw new Error('Unsupported currency');
     }
 
     if (!objectId) {
+      console.error('Object ID is required');
       throw new Error('Object ID is required');
     }
 
@@ -55,13 +74,22 @@ serve(async (req) => {
     );
 
     // Get object details to find the seller
+    console.log('Fetching object details for ID:', objectId);
     const { data: object, error: objectError } = await serviceSupabase
       .from('objects')
       .select('user_id, title, price_credits')
       .eq('id', objectId)
-      .single();
+      .maybeSingle();
 
-    if (objectError || !object) {
+    console.log('Object query result:', { object, objectError });
+
+    if (objectError) {
+      console.error('Database error fetching object:', objectError);
+      throw new Error(`Database error: ${objectError.message}`);
+    }
+    
+    if (!object) {
+      console.error('Object not found with ID:', objectId);
       throw new Error('Object not found');
     }
 
