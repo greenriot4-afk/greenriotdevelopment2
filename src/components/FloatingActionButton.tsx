@@ -36,19 +36,27 @@ export function FloatingActionButton({ onUpload }: FloatingActionButtonProps) {
 
   const handleOptionClick = (type: 'abandoned' | 'donation' | 'product') => {
     requireAuth(() => {
-      // Navigate to the correct page first
       const routeMap = {
         abandoned: '/app/abandons',
         donation: '/app/donations',
         product: '/app/products'
       };
       
-      navigate(routeMap[type]);
+      // Check if we're already on the correct page
+      const currentPath = window.location.pathname;
+      const targetPath = routeMap[type];
       
-      // Then trigger the upload
-      setTimeout(() => {
+      if (currentPath === targetPath) {
+        // Same page, just show the upload form immediately
         onUpload(type);
-      }, 100);
+      } else {
+        // Different page, navigate first then show upload form
+        navigate(targetPath);
+        // Use a longer timeout to ensure navigation and useEffect complete
+        setTimeout(() => {
+          onUpload(type);
+        }, 300);
+      }
       
       setIsOpen(false);
     }, 'Debes crear una cuenta para publicar contenido');

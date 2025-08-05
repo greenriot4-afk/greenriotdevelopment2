@@ -176,8 +176,12 @@ const ObjectsPage = () => {
       pathname: routerLocation.pathname 
     });
     
-    // Reset the upload form when changing routes/types
-    setShowUpload(false);
+    // Only reset upload form if it's a different object type
+    // This prevents resetting when navigating to the same type from FAB
+    const currentObjectType = getTypeFromPath(routerLocation.pathname);
+    if (currentObjectType !== type) {
+      setShowUpload(false);
+    }
     
     // Check cache to prevent duplicate requests
     const now = Date.now();
@@ -200,7 +204,7 @@ const ObjectsPage = () => {
       console.log('Missing dependencies for fetchObjects', { type, objectType });
       setLoading(false);
     }
-  }, [type, objectType, routerLocation.pathname]); // Add pathname to reset form on route change
+  }, [type, objectType, routerLocation.pathname]);
 
   // Separate effect for sorting when location changes
   useEffect(() => {
