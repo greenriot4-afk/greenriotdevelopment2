@@ -24,7 +24,7 @@ export const SuperAdminRoute = ({ children }: SuperAdminRouteProps) => {
   }
 
   // Only allow access to specific superadmin
-  if (user.email !== 'inigoloeprena@gmail.com') {
+  if (user.email !== 'inigoloperena@gmail.com') {
     return <Navigate to="/app/abandons" replace />;
   }
 

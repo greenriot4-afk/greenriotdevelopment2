@@ -24,7 +24,7 @@ const AdminContentPage = () => {
   }
 
   // Restrict access to specific superadmin only
-  if (user.email !== 'inigoloeprena@gmail.com') {
+  if (user.email !== 'inigoloperena@gmail.com') {
     return <Navigate to="/app/abandons" replace />;
   }
 
