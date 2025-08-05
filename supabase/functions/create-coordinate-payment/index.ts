@@ -12,14 +12,8 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Starting create-coordinate-payment with headers:', {
-      authorization: !!req.headers.get("Authorization"),
-      contentType: req.headers.get("Content-Type")
-    });
-
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      console.error('No authorization header provided');
       throw new Error("No authorization header provided");
     }
 
@@ -34,43 +28,22 @@ serve(async (req) => {
       }
     );
 
-    console.log('Getting user from auth token...');
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !user?.email) {
-      console.error('Authentication failed:', { userError, hasUser: !!user, hasEmail: !!user?.email });
       throw new Error(`Authentication failed: ${userError?.message || 'User not found'}`);
     }
 
-    console.log('User authenticated successfully:', { userId: user.id, email: user.email });
-
-    console.log('Parsing request body...');
-    let body;
-    try {
-      const text = await req.text();
-      console.log('Raw request text:', text);
-      body = JSON.parse(text);
-      console.log('Parsed body:', body);
-    } catch (parseError) {
-      console.error('JSON parsing error:', parseError);
-      throw new Error(`Invalid JSON in request body: ${parseError.message}`);
-    }
-    
-    const { amount, description, objectType = 'coordinate', currency = 'USD', objectId } = body;
-    
-    console.log('Validating parameters:', { amount, objectType, currency, objectId });
+    const { amount, description, objectType = 'coordinate', currency = 'USD', objectId } = await req.json();
     
     if (!amount || amount <= 0) {
-      console.error('Invalid amount:', amount);
       throw new Error('Invalid amount');
     }
 
     if (!['USD', 'EUR'].includes(currency)) {
-      console.error('Unsupported currency:', currency);
       throw new Error('Unsupported currency');
     }
 
     if (!objectId) {
-      console.error('Object ID is required');
       throw new Error('Object ID is required');
     }
 
@@ -82,22 +55,13 @@ serve(async (req) => {
     );
 
     // Get object details to find the seller
-    console.log('Fetching object details for ID:', objectId);
     const { data: object, error: objectError } = await serviceSupabase
       .from('objects')
       .select('user_id, title, price_credits')
       .eq('id', objectId)
-      .maybeSingle();
+      .single();
 
-    console.log('Object query result:', { object, objectError });
-
-    if (objectError) {
-      console.error('Database error fetching object:', objectError);
-      throw new Error(`Database error: ${objectError.message}`);
-    }
-    
-    if (!object) {
-      console.error('Object not found with ID:', objectId);
+    if (objectError || !object) {
       throw new Error('Object not found');
     }
 
@@ -121,10 +85,8 @@ serve(async (req) => {
     }
 
     console.log('Purchase validation passed, proceeding with payment');
-    
-    // Calculate platform fee (exactly 20%)
-    const platformFee = Math.round(amount * 0.2); // Exactly 20% platform fee
-    const sellerAmount = amount - platformFee; // Seller gets the remainder
+    const sellerAmount = Math.round(amount * 0.8); // 80% to seller
+    const platformFee = amount - sellerAmount; // 20% platform fee
 
     // Get or create buyer wallet for the specified currency
     const { data: walletId } = await serviceSupabase
@@ -205,22 +167,10 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Error in create-coordinate-payment:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name
-    });
-    
-    // Return specific error details for debugging
-    const errorResponse = {
-      error: error.message || 'Failed to process coordinate payment',
-      errorType: error.name || 'UnknownError',
-      timestamp: new Date().toISOString()
-    };
-    
-    console.error('Returning error response:', errorResponse);
-    
-    return new Response(JSON.stringify(errorResponse), {
+    console.error('Error in create-coordinate-payment:', error);
+    return new Response(JSON.stringify({ 
+      error: error.message || 'Failed to process coordinate payment' 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
     });
