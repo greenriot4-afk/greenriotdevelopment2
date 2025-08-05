@@ -89,7 +89,7 @@ const AppContent = () => {
             <Route path="profile/:userId" element={<UserProfilePage />} />
             
             {/* Rutas protegidas - requieren autenticación */}
-            <Route path="affiliates" element={<ProtectedRoute><AffiliatePage /></ProtectedRoute>} />
+            <Route path="affiliates" element={<AffiliatePage />} />
             <Route path="wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
             <Route path="account" element={<ProtectedRoute><AccountSettings /></ProtectedRoute>} />
             <Route path="my-market" element={<ProtectedRoute><MyMarketPage /></ProtectedRoute>} />

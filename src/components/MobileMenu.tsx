@@ -82,10 +82,8 @@ export function MobileMenu() {
     });
   };
   const handleAffiliatesClick = () => {
-    requireAuth(() => {
-      navigate('/app/affiliates');
-      setIsOpen(false);
-    });
+    navigate('/app/affiliates');
+    setIsOpen(false);
   };
 
   const handleAdminContentClick = () => {

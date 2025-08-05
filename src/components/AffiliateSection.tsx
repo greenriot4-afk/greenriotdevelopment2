@@ -60,7 +60,8 @@ export const AffiliateSection = () => {
     }
   };
 
-  if (loading) {
+  // Show loading only for authenticated users
+  if (loading && user) {
     return (
       <Card>
         <CardHeader>
@@ -75,6 +76,108 @@ export const AffiliateSection = () => {
           </div>
         </CardContent>
       </Card>
+    );
+  }
+
+  // For non-authenticated users, show promotional content
+  if (!user) {
+    return (
+      <div className="space-y-6">
+        {/* Header Section for Non-Authenticated Users */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Share2 className="w-5 h-5 text-primary" />
+              {t('affiliate.title')}
+            </CardTitle>
+            <p className="text-sm text-muted-foreground">
+              {t('affiliate.description')}
+            </p>
+            
+            {/* Call to action for non-authenticated users */}
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 mt-4">
+              <div className="flex items-start gap-3">
+                <Share2 className="w-6 h-6 text-green-600 mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-green-800 mb-2">
+                    💰 ¡Únete al programa de afiliados!
+                  </h4>
+                  <p className="text-sm text-green-700 mb-3">
+                    Regístrate para acceder a tu código de afiliado personalizado y empezar a ganar comisiones por cada referido que se suscriba.
+                  </p>
+                  <Button 
+                    onClick={() => window.location.href = '/auth'} 
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    Registrarse Ahora
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+
+        {/* Commission Levels - Always visible */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">{t('affiliate.commissionLevels.title')}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4">
+              <div className="flex items-center justify-between p-4 border border-primary/20 rounded-lg bg-primary/5">
+                <div>
+                  <h4 className="font-semibold text-primary font-impact text-rebel">{t('affiliate.commissionLevels.level1.title')}</h4>
+                  <span className="text-xl font-bold text-primary">{t('affiliate.commissionLevels.level1.commission')}</span>
+                </div>
+                <p className="text-sm text-primary/80">{t('affiliate.commissionLevels.level1.description')}</p>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 border border-accent/20 rounded-lg bg-accent/5">
+                <div>
+                  <h4 className="font-semibold text-accent font-impact text-rebel">{t('affiliate.commissionLevels.level2.title')}</h4>
+                  <span className="text-xl font-bold text-accent">{t('affiliate.commissionLevels.level2.commission')}</span>
+                </div>
+                <p className="text-sm text-accent/80">{t('affiliate.commissionLevels.level2.description')}</p>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 border border-secondary/20 rounded-lg bg-secondary/5">
+                <div>
+                  <h4 className="font-semibold text-secondary font-impact text-rebel">{t('affiliate.commissionLevels.level3.title')}</h4>
+                  <span className="text-xl font-bold text-secondary">{t('affiliate.commissionLevels.level3.commission')}</span>
+                </div>
+                <p className="text-sm text-secondary/80">{t('affiliate.commissionLevels.level3.description')}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* How It Works - Always visible */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">{t('affiliate.howItWorks')}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-sm font-bold">1</span>
+                <p className="text-sm">{t('affiliate.step1')}</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-sm font-bold">2</span>
+                <p className="text-sm">{t('affiliate.step2')}</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-sm font-bold">3</span>
+                <p className="text-sm">{t('affiliate.step3')}</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-sm font-bold">4</span>
+                <p className="text-sm">{t('affiliate.step4')}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
