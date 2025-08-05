@@ -44,8 +44,16 @@ serve(async (req) => {
     console.log('User authenticated successfully:', { userId: user.id, email: user.email });
 
     console.log('Parsing request body...');
-    const body = await req.json();
-    console.log('Request body received:', body);
+    let body;
+    try {
+      const text = await req.text();
+      console.log('Raw request text:', text);
+      body = JSON.parse(text);
+      console.log('Parsed body:', body);
+    } catch (parseError) {
+      console.error('JSON parsing error:', parseError);
+      throw new Error(`Invalid JSON in request body: ${parseError.message}`);
+    }
     
     const { amount, description, objectType = 'coordinate', currency = 'USD', objectId } = body;
     
@@ -197,10 +205,22 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('Error in create-coordinate-payment:', error);
-    return new Response(JSON.stringify({ 
-      error: error.message || 'Failed to process coordinate payment' 
-    }), {
+    console.error('Error in create-coordinate-payment:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    
+    // Return specific error details for debugging
+    const errorResponse = {
+      error: error.message || 'Failed to process coordinate payment',
+      errorType: error.name || 'UnknownError',
+      timestamp: new Date().toISOString()
+    };
+    
+    console.error('Returning error response:', errorResponse);
+    
+    return new Response(JSON.stringify(errorResponse), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
     });
