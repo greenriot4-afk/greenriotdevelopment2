@@ -72,10 +72,23 @@ serve(async (req) => {
 
         console.log(`Processing coordinate purchase: objectId=${objectId}, userId=${userId}, amount=${amount}`);
         
-        // First, deduct from user's wallet
+        // Get object details to find the seller
+        const { data: object, error: objectError } = await supabaseClient
+          .from('objects')
+          .select('user_id, title, price_credits')
+          .eq('id', objectId)
+          .single();
+
+        if (objectError || !object) {
+          throw new Error('Object not found');
+        }
+
+        const sellerId = object.user_id;
         const currency = sanitizeString(session.metadata?.currency || 'USD');
+        const sellerAmount = Math.round(amount * 0.8); // 80% to seller
+        const platformFee = amount - sellerAmount; // 20% platform fee
         
-        // Get or create user wallet
+        // Get or create buyer wallet
         const { data: walletId } = await supabaseClient
           .rpc('get_or_create_wallet', {
             p_user_id: userId,
@@ -86,14 +99,14 @@ serve(async (req) => {
           throw new Error('Failed to get user wallet');
         }
 
-        // Use atomic wallet update to deduct balance
+        // 1. Deduct from buyer's wallet
         const { data: walletResult, error: walletError } = await supabaseClient
           .rpc('update_wallet_balance_atomic', {
             p_wallet_id: walletId,
             p_amount: amount,
             p_transaction_type: 'debit',
             p_user_id: userId,
-            p_description: `Coordinate purchase: ${objectId}`,
+            p_description: `Coordinate purchase: ${object.title}`,
             p_object_type: 'coordinate',
             p_currency: currency
           });
@@ -105,7 +118,50 @@ serve(async (req) => {
 
         console.log('Successfully deducted from wallet:', walletResult);
 
-        // Delete the object immediately after successful payment
+        // 2. Add to seller (only if not the same user)
+        if (sellerId !== userId) {
+          const { data: sellerWalletId } = await supabaseClient
+            .rpc('get_or_create_wallet', {
+              p_user_id: sellerId,
+              p_currency: currency
+            });
+
+          const { data: sellerResult, error: sellerError } = await supabaseClient
+            .rpc('update_wallet_balance_atomic', {
+              p_wallet_id: sellerWalletId,
+              p_amount: sellerAmount,
+              p_transaction_type: 'credit',
+              p_user_id: sellerId,
+              p_description: `Venta de coordenadas: ${object.title} (80% after platform fee)`,
+              p_object_type: 'coordinate_sale',
+              p_currency: currency
+            });
+
+          if (sellerError) {
+            console.error('Failed to credit seller:', sellerError);
+            // Don't throw error here as buyer payment was successful - log the issue
+            console.log('Seller credit failed but buyer payment was processed successfully');
+          } else {
+            console.log('Successfully credited seller:', sellerResult);
+          }
+        }
+
+        // 3. Add platform commission to company wallet (20%)
+        const { data: companyResult, error: companyError } = await supabaseClient
+          .rpc('update_company_wallet_balance_atomic', {
+            p_amount: platformFee,
+            p_description: `Comisión 20% - Venta coordenadas: ${object.title}`
+          });
+
+        if (companyError) {
+          console.error('Failed to process platform commission:', companyError);
+          // Don't throw error here as main transaction was successful - log the issue
+          console.log('Platform commission failed but transaction was processed successfully');
+        } else {
+          console.log('Successfully processed platform commission:', companyResult);
+        }
+
+        // Delete the object after successful payment and transfers
         const { error: deleteError } = await supabaseClient
           .from('objects')
           .delete()
