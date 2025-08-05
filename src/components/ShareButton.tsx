@@ -70,7 +70,7 @@ const ShareButton = ({
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(`${shareText}${shareUrl}`);
+      await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       toast.success('Enlace copiado al portapapeles');
       setTimeout(() => setCopied(false), 2000);
