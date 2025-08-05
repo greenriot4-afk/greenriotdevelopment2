@@ -179,30 +179,30 @@ export const AffiliateSection = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Level 1 - Greenriot Ambassadors */}
-          <div className="border rounded-lg p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 dark:from-green-900/20 dark:to-emerald-900/20 dark:border-green-800">
+          <div className="border border-primary/20 rounded-lg p-4 bg-gradient-to-r from-primary/10 to-accent/10 shadow-rebel">
             <div className="flex justify-between items-start mb-2">
-              <h4 className="font-semibold text-green-800 dark:text-green-300">{t('affiliate.commissionLevels.level1.title')}</h4>
-              <span className="text-xl font-bold text-green-600 dark:text-green-400">{t('affiliate.commissionLevels.level1.commission')}</span>
+              <h4 className="font-semibold text-primary font-impact text-rebel">{t('affiliate.commissionLevels.level1.title')}</h4>
+              <span className="text-xl font-bold text-primary">{t('affiliate.commissionLevels.level1.commission')}</span>
             </div>
-            <p className="text-sm text-green-700 dark:text-green-400">{t('affiliate.commissionLevels.level1.description')}</p>
+            <p className="text-sm text-primary/80">{t('affiliate.commissionLevels.level1.description')}</p>
           </div>
           
           {/* Level 2 - Active Users */}
-          <div className="border rounded-lg p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200 dark:from-blue-900/20 dark:to-cyan-900/20 dark:border-blue-800">
+          <div className="border border-accent/30 rounded-lg p-4 bg-gradient-to-r from-accent/5 to-primary/5">
             <div className="flex justify-between items-start mb-2">
-              <h4 className="font-semibold text-blue-800 dark:text-blue-300">{t('affiliate.commissionLevels.level2.title')}</h4>
-              <span className="text-xl font-bold text-blue-600 dark:text-blue-400">{t('affiliate.commissionLevels.level2.commission')}</span>
+              <h4 className="font-semibold text-accent font-impact text-rebel">{t('affiliate.commissionLevels.level2.title')}</h4>
+              <span className="text-xl font-bold text-accent">{t('affiliate.commissionLevels.level2.commission')}</span>
             </div>
-            <p className="text-sm text-blue-700 dark:text-blue-400">{t('affiliate.commissionLevels.level2.description')}</p>
+            <p className="text-sm text-accent/80">{t('affiliate.commissionLevels.level2.description')}</p>
           </div>
           
           {/* Level 3 - Default Users */}
-          <div className="border rounded-lg p-4 bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200 dark:from-gray-900/20 dark:to-slate-900/20 dark:border-gray-800">
+          <div className="border border-secondary/20 rounded-lg p-4 bg-gradient-to-r from-secondary/5 to-muted/5">
             <div className="flex justify-between items-start mb-2">
-              <h4 className="font-semibold text-gray-800 dark:text-gray-300">{t('affiliate.commissionLevels.level3.title')}</h4>
-              <span className="text-xl font-bold text-gray-600 dark:text-gray-400">{t('affiliate.commissionLevels.level3.commission')}</span>
+              <h4 className="font-semibold text-secondary font-impact text-rebel">{t('affiliate.commissionLevels.level3.title')}</h4>
+              <span className="text-xl font-bold text-secondary">{t('affiliate.commissionLevels.level3.commission')}</span>
             </div>
-            <p className="text-sm text-gray-700 dark:text-gray-400">{t('affiliate.commissionLevels.level3.description')}</p>
+            <p className="text-sm text-secondary/80">{t('affiliate.commissionLevels.level3.description')}</p>
           </div>
         </CardContent>
       </Card>
