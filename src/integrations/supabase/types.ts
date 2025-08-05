@@ -668,12 +668,20 @@ export type Database = {
         Args: { p_user_id: string; p_currency?: string }
         Returns: string
       }
+      get_security_status: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       has_role: {
         Args: {
           _user_id: string
           _role: Database["public"]["Enums"]["app_role"]
         }
         Returns: boolean
+      }
+      log_security_event: {
+        Args: { event_type: string; user_id_param?: string; details?: Json }
+        Returns: undefined
       }
       make_user_admin: {
         Args: { _user_id: string }
@@ -695,6 +703,16 @@ export type Database = {
           p_operation: string
         }
         Returns: boolean
+      }
+      secure_wallet_transaction: {
+        Args: {
+          p_user_id: string
+          p_amount: number
+          p_transaction_type: string
+          p_description: string
+          p_currency?: string
+        }
+        Returns: Json
       }
       trigger_abandons_cleanup: {
         Args: Record<PropertyKey, never>
@@ -728,6 +746,14 @@ export type Database = {
       validate_amount: {
         Args: { amount: number }
         Returns: boolean
+      }
+      validate_and_sanitize_profile: {
+        Args: {
+          p_display_name?: string
+          p_username?: string
+          p_location_name?: string
+        }
+        Returns: Json
       }
       validate_numeric_input: {
         Args: {

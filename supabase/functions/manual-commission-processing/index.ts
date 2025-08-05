@@ -4,6 +4,33 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
+  'Referrer-Policy': 'strict-origin-when-cross-origin'
+};
+
+// Input validation and sanitization
+const validateAndSanitizeInput = (input: any) => {
+  if (!input || typeof input !== 'object') {
+    throw new Error('Invalid input format');
+  }
+  
+  const { referralId } = input;
+  
+  if (!referralId || typeof referralId !== 'string') {
+    throw new Error('Missing or invalid referral ID');
+  }
+  
+  // Sanitize referral ID (remove any non-UUID characters)
+  const sanitizedReferralId = referralId.trim().replace(/[^a-fA-F0-9-]/g, '');
+  
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(sanitizedReferralId)) {
+    throw new Error('Invalid UUID format for referral ID');
+  }
+  
+  return { referralId: sanitizedReferralId };
 };
 
 serve(async (req) => {
@@ -12,20 +39,18 @@ serve(async (req) => {
   }
 
   try {
-    console.log("Function started");
+    console.log("Function started with enhanced security");
+
+    // Parse and validate input
+    const rawInput = await req.json();
+    const { referralId } = validateAndSanitizeInput(rawInput);
+    console.log("Processing referral:", referralId);
 
     const supabaseService = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } }
     );
-
-    const { referralId } = await req.json();
-    console.log("Processing referral:", referralId);
-    
-    if (!referralId) {
-      throw new Error("Referral ID is required");
-    }
 
     // Step 1: Get referral
     const { data: referral, error: referralError } = await supabaseService
