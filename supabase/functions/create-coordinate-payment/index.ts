@@ -122,8 +122,8 @@ serve(async (req) => {
 
     console.log('Purchase validation passed, proceeding with payment');
     
-    // Calculate platform fee first to ensure it's at least 1 cent
-    const platformFee = Math.max(1, Math.round(amount * 0.2)); // At least 1 cent/euro cent platform fee
+    // Calculate platform fee (exactly 20%)
+    const platformFee = Math.round(amount * 0.2); // Exactly 20% platform fee
     const sellerAmount = amount - platformFee; // Seller gets the remainder
 
     // Get or create buyer wallet for the specified currency
