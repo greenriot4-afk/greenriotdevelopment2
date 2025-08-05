@@ -182,76 +182,58 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
       });
 
       console.log('Raw edge function response:', response);
-      
-      // Try to get error details from the response object
-      if (response.error && response.error.context) {
-        console.log('Error context:', response.error.context);
-      }
-      
-      // If there's a response object, try to extract more details
-      if (response.error && response.error.response) {
-        try {
-          const errorText = await response.error.response.text();
-          console.log('Error response text:', errorText);
-          
-          try {
-            const errorJson = JSON.parse(errorText);
-            console.log('Parsed error JSON:', errorJson);
-            throw new Error(errorJson.error || errorJson.message || 'Unknown error');
-          } catch (parseError) {
-            console.log('Could not parse error as JSON:', parseError);
-            throw new Error(errorText || 'Unknown error');
-          }
-        } catch (textError) {
-          console.log('Could not get error text:', textError);
+
+      // Check for successful response first
+      if (response.data?.success) {
+        const { data } = response;
+        const platformFee = data.platformFee;
+        const sellerAmount = data.sellerAmount;
+        
+        toast.success(
+          `¡Pagaste $${selectedObject.price_credits} por las coordenadas! ` +
+          `(Vendedor recibe $${sellerAmount}, comisión $${platformFee})`
+        );
+        
+        openGoogleMaps(selectedObject);
+        
+        // Force wallet refresh to update header balance
+        setTimeout(() => {
+          fetchWallet();
+        }, 500);
+
+        // If object was an abandoned item and was deleted, remove it from the list
+        if (objectType === 'abandoned' && onObjectRemoved) {
+          onObjectRemoved(selectedObject.id);
         }
+        
+        return; // Exit successfully
       }
 
-      const { data, error } = response;
-      
-      if (error) {
-        console.error('Edge function error details:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code,
-          fullError: error
-        });
+      // Handle errors - check data.error first (status 400 with error message)
+      if (response.data?.error) {
+        console.log('Edge function returned error in data:', response.data.error);
+        throw new Error(response.data.error);
+      }
+
+      // Handle Supabase client errors
+      if (response.error) {
+        console.error('Supabase client error:', response.error);
         
-        // Try to get more details from the error
-        const errorMessage = error.message || error.details || 'Error al procesar el pago';
+        // Try to extract error message from error details
+        let errorMessage = 'Error al procesar el pago';
+        
+        if (response.error.message) {
+          errorMessage = response.error.message;
+        } else if (response.error.details) {
+          errorMessage = response.error.details;
+        }
+        
         throw new Error(errorMessage);
       }
 
-      if (data?.error) {
-        console.error('Data error:', data.error);
-        throw new Error(data.error);
-      }
-
-      if (!data?.success) {
-        console.error('Payment failed - no success flag:', data);
-        throw new Error('El pago no se procesó correctamente');
-      }
-
-      const platformFee = data.platformFee;
-      const sellerAmount = data.sellerAmount;
-      
-      toast.success(
-        `¡Pagaste $${selectedObject.price_credits} por las coordenadas! ` +
-        `(Vendedor recibe $${sellerAmount}, comisión $${platformFee})`
-      );
-      
-      openGoogleMaps(selectedObject);
-      
-      // Force wallet refresh to update header balance
-      setTimeout(() => {
-        fetchWallet();
-      }, 500);
-
-      // If object was an abandoned item and was deleted, remove it from the list
-      if (objectType === 'abandoned' && onObjectRemoved) {
-        onObjectRemoved(selectedObject.id);
-      }
+      // If we get here, something unexpected happened
+      console.error('Unexpected response format:', response);
+      throw new Error('El pago no se procesó correctamente');
       
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Error al procesar el pago';

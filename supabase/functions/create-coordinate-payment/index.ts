@@ -67,8 +67,15 @@ serve(async (req) => {
 
     const sellerId = object.user_id;
     
+    console.log('Checking ownership:', {
+      buyerId: user.id,
+      sellerId: sellerId,
+      isSameUser: sellerId === user.id
+    });
+    
     // Check if user is trying to buy their own object
     if (sellerId === user.id) {
+      console.log('User trying to buy own object - returning error');
       return new Response(JSON.stringify({ 
         error: 'No puedes comprar una coordenada publicada por ti mismo!' 
       }), {
@@ -77,6 +84,7 @@ serve(async (req) => {
       });
     }
 
+    console.log('Purchase validation passed, proceeding with payment');
     const sellerAmount = Math.round(amount * 0.8); // 80% to seller
     const platformFee = amount - sellerAmount; // 20% platform fee
 
