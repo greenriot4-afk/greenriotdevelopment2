@@ -628,6 +628,58 @@ export const SampleDataManager = () => {
     }
   };
 
+  const clearCircularMarkets = async () => {
+    if (!user) {
+      toast.error('Debes estar autenticado');
+      return;
+    }
+
+    const isGlobalDelete = isAdmin();
+    const confirmMessage = isGlobalDelete 
+      ? '¿Estás seguro de que quieres eliminar TODOS los mercados circulares de TODOS los usuarios? Esta acción no se puede deshacer.'
+      : '¿Estás seguro de que quieres eliminar TODOS los mercados circulares de tu usuario? Esta acción no se puede deshacer.';
+
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      console.log('Deleting markets - User:', user?.id, 'IsAdmin:', isGlobalDelete);
+      
+      // Si es admin, eliminar todos los mercados, sino solo los del usuario
+      let query = supabase
+        .from('circular_markets')
+        .delete();
+
+      if (!isGlobalDelete) {
+        query = query.eq('user_id', user.id);
+      } else {
+        // Para eliminación global, usar una condición que sea siempre verdadera
+        query = query.neq('id', '00000000-0000-0000-0000-000000000000');
+      }
+
+      console.log('Executing delete query for circular markets, global:', isGlobalDelete);
+      const { data, error, count } = await query;
+      console.log('Delete result:', { data, error, count });
+
+      if (error) throw error;
+
+      const message = isGlobalDelete 
+        ? `Todos los mercados circulares han sido eliminados (todos los usuarios) - ${count || 0} elementos`
+        : `Todos los mercados circulares han sido eliminados (tu usuario) - ${count || 0} elementos`;
+      
+      toast.success(message);
+      setUploadedItems(prev => prev.filter(item => !item.startsWith('Tienda:')));
+    } catch (error) {
+      console.error('Error clearing circular markets:', error);
+      toast.error('Error al eliminar los mercados circulares: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'abandoned': return <MapPin className="w-4 h-4" />;
@@ -814,6 +866,28 @@ export const SampleDataManager = () => {
                     className="w-full"
                   >
                     {loading ? 'Eliminando...' : 'Eliminar Abandonados'}
+                  </Button>
+                </Card>
+
+                <Card className="p-4 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <Store className="w-4 h-4" />
+                    Eliminar Mercados Circulares
+                    {isAdmin() && <Badge variant="outline" className="text-xs">Global</Badge>}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {isAdmin() 
+                      ? 'Elimina TODOS los mercados circulares (tiendas) de TODOS los usuarios.'
+                      : 'Elimina únicamente los mercados circulares de tu usuario.'
+                    }
+                  </p>
+                  <Button 
+                    onClick={clearCircularMarkets} 
+                    disabled={loading}
+                    variant="outline"
+                    className="w-full bg-red-100 hover:bg-red-200 border-red-300"
+                  >
+                    {loading ? 'Eliminando...' : 'Eliminar Mercados'}
                   </Button>
                 </Card>
 
