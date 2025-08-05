@@ -120,7 +120,10 @@ const ShareButton = ({
             <Button
               variant="outline"
               size="icon"
-              onClick={copyToClipboard}
+              onClick={(e) => {
+                e.stopPropagation();
+                copyToClipboard();
+              }}
               className="shrink-0"
             >
               {copied ? (
@@ -135,7 +138,10 @@ const ShareButton = ({
           <div className="grid grid-cols-2 gap-2">
             <Button
               variant="outline"
-              onClick={shareWhatsApp}
+              onClick={(e) => {
+                e.stopPropagation();
+                shareWhatsApp();
+              }}
               className="justify-start"
             >
               <div className="w-4 h-4 mr-2 bg-green-500 rounded-sm"></div>
@@ -144,7 +150,10 @@ const ShareButton = ({
             
             <Button
               variant="outline"
-              onClick={shareTelegram}
+              onClick={(e) => {
+                e.stopPropagation();
+                shareTelegram();
+              }}
               className="justify-start"
             >
               <div className="w-4 h-4 mr-2 bg-blue-500 rounded-sm"></div>
@@ -153,7 +162,10 @@ const ShareButton = ({
             
             <Button
               variant="outline"
-              onClick={shareTwitter}
+              onClick={(e) => {
+                e.stopPropagation();
+                shareTwitter();
+              }}
               className="justify-start"
             >
               <div className="w-4 h-4 mr-2 bg-blue-400 rounded-sm"></div>
@@ -162,7 +174,10 @@ const ShareButton = ({
             
             <Button
               variant="outline"
-              onClick={shareFacebook}
+              onClick={(e) => {
+                e.stopPropagation();
+                shareFacebook();
+              }}
               className="justify-start"
             >
               <div className="w-4 h-4 mr-2 bg-blue-600 rounded-sm"></div>
@@ -174,7 +189,10 @@ const ShareButton = ({
           {navigator.share && (
             <Button
               variant="outline"
-              onClick={handleNativeShare}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNativeShare();
+              }}
               className="w-full"
             >
               <Share2 className="w-4 h-4 mr-2" />
