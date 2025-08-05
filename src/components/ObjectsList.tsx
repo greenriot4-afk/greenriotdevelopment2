@@ -98,12 +98,12 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
   // Helper function to format deletion countdown text
   const getDeletionCountdownText = (object: AbandonedObject): string => {
     const { hours, minutes } = getTimeUntilDeletion(object);
-    if (hours === 0 && minutes === 0) return 'Se eliminará pronto';
-    if (hours < 1) return `Se elimina en ${minutes}m`;
-    if (hours < 24) return `Se elimina en ${hours}h ${minutes}m`;
+    if (hours === 0 && minutes === 0) return 'Deletes soon';
+    if (hours < 1) return `Deletes in ${minutes}m`;
+    if (hours < 24) return `Deletes in ${hours}h ${minutes}m`;
     const days = Math.floor(hours / 24);
     const remainingHours = hours % 24;
-    return `Se elimina en ${days}d ${remainingHours}h`;
+    return `Deletes in ${days}d ${remainingHours}h`;
   };
 
   // Helper function to format countdown text
@@ -271,7 +271,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
       return (
         <>
           <MapPin className="w-3 h-3 mr-1" />
-          Abrir Google Maps
+          Open Google Maps
         </>
       );
     }
@@ -283,14 +283,14 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
         return (
           <>
             <MapPin className="w-3 h-3 mr-1" />
-            Abrir Google Maps <span className="text-red-500 font-bold">GRATIS</span>
+            Open Google Maps <span className="text-red-500 font-bold">FREE</span>
           </>
         );
       } else {
         return (
           <>
             <MapPin className="w-3 h-3 mr-1" />
-            Abrir Google Maps <span className="text-red-500 font-bold">{object.price_credits}$</span>
+            Open Google Maps <span className="text-red-500 font-bold">{object.price_credits}$</span>
             <Clock className="w-3 h-3 ml-2" />
           </>
         );
@@ -300,7 +300,7 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
     return (
       <>
         <MapPin className="w-3 h-3 mr-1" />
-        Abrir Google Maps <span className="text-red-500 font-bold">{object.price_credits}$</span>
+        Open Google Maps <span className="text-red-500 font-bold">{object.price_credits}$</span>
       </>
     );
   };

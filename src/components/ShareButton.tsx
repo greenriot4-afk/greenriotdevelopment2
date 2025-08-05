@@ -127,14 +127,14 @@ const ShareButton = ({
           onClick={(e) => e.stopPropagation()}
         >
           <Share2 className="w-4 h-4 mr-1" />
-          Compartir
+          Share
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">Compartir</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">Share</DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            Comparte este {type === 'object' ? 'objeto' : 'mercadillo'} con tus contactos
+            Share this {type === 'object' ? 'object' : 'market'} with your contacts
           </DialogDescription>
         </DialogHeader>
         
@@ -185,7 +185,7 @@ const ShareButton = ({
 
           {/* Social Media Buttons */}
           <div className="space-y-3">
-            <h5 className="text-sm font-medium text-foreground">Compartir en redes sociales</h5>
+            <h5 className="text-sm font-medium text-foreground">Share on social media</h5>
             <div className="grid grid-cols-2 gap-3">
               <Button
                 variant="outline"

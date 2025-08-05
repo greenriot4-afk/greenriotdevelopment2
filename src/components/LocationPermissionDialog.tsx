@@ -31,7 +31,7 @@ export const LocationPermissionDialog: React.FC<LocationPermissionDialogProps> =
           </div>
           
           <DialogTitle className="text-xl">
-            Compartir Ubicación
+            Share Location
           </DialogTitle>
           
           <DialogDescription className="text-center space-y-2">
@@ -58,7 +58,7 @@ export const LocationPermissionDialog: React.FC<LocationPermissionDialogProps> =
             className="w-full"
           >
             <Navigation className="w-4 h-4 mr-2" />
-            {isLoading ? 'Obteniendo ubicación...' : 'Compartir Ubicación'}
+            {isLoading ? 'Getting location...' : 'Share Location'}
           </Button>
           
           <Button

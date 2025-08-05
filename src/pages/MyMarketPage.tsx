@@ -291,7 +291,7 @@ const MyMarketPage = () => {
                 className="w-full mb-3"
               >
                 <MapPin className="w-3 h-3 mr-2" />
-                Ver en Google Maps
+                View in Google Maps
               </Button>
               
               <p className="text-xs text-muted-foreground text-center">

@@ -208,7 +208,7 @@ const MarketDetailPage = () => {
           size="lg"
         >
           <MapPin className="w-4 h-4 mr-2" />
-          Abrir en Google Maps
+          Open in Google Maps
         </Button>
 
         <div className="grid grid-cols-3 gap-2">
