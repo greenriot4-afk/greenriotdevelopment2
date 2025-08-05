@@ -247,6 +247,41 @@ export const AffiliateSection = () => {
       )}
 
 
+      {/* Commission Levels */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">{t('affiliate.commissionLevels.title')}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Level 1 - Greenriot Ambassadors */}
+          <div className="border rounded-lg p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 dark:from-green-900/20 dark:to-emerald-900/20 dark:border-green-800">
+            <div className="flex justify-between items-start mb-2">
+              <h4 className="font-semibold text-green-800 dark:text-green-300">{t('affiliate.commissionLevels.level1.title')}</h4>
+              <span className="text-xl font-bold text-green-600 dark:text-green-400">{t('affiliate.commissionLevels.level1.commission')}</span>
+            </div>
+            <p className="text-sm text-green-700 dark:text-green-400">{t('affiliate.commissionLevels.level1.description')}</p>
+          </div>
+          
+          {/* Level 2 - Active Users */}
+          <div className="border rounded-lg p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200 dark:from-blue-900/20 dark:to-cyan-900/20 dark:border-blue-800">
+            <div className="flex justify-between items-start mb-2">
+              <h4 className="font-semibold text-blue-800 dark:text-blue-300">{t('affiliate.commissionLevels.level2.title')}</h4>
+              <span className="text-xl font-bold text-blue-600 dark:text-blue-400">{t('affiliate.commissionLevels.level2.commission')}</span>
+            </div>
+            <p className="text-sm text-blue-700 dark:text-blue-400">{t('affiliate.commissionLevels.level2.description')}</p>
+          </div>
+          
+          {/* Level 3 - Default Users */}
+          <div className="border rounded-lg p-4 bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200 dark:from-gray-900/20 dark:to-slate-900/20 dark:border-gray-800">
+            <div className="flex justify-between items-start mb-2">
+              <h4 className="font-semibold text-gray-800 dark:text-gray-300">{t('affiliate.commissionLevels.level3.title')}</h4>
+              <span className="text-xl font-bold text-gray-600 dark:text-gray-400">{t('affiliate.commissionLevels.level3.commission')}</span>
+            </div>
+            <p className="text-sm text-gray-700 dark:text-gray-400">{t('affiliate.commissionLevels.level3.description')}</p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* How it works */}
       <Card>
         <CardHeader>

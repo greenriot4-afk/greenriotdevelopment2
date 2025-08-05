@@ -99,6 +99,16 @@ const translations = {
     'affiliate.errorCopyingLink': 'Error copying link',
     'affiliate.loadingData': 'Loading...',
     'affiliate.errorLoadingData': 'Error loading affiliate data',
+    'affiliate.commissionLevels.title': 'Commission Levels',
+    'affiliate.commissionLevels.level1.title': 'Level 1 - Greenriot Ambassadors',
+    'affiliate.commissionLevels.level1.description': 'Greenriot ambassadors or special marketing agreements',
+    'affiliate.commissionLevels.level1.commission': '100% commission',
+    'affiliate.commissionLevels.level2.title': 'Level 2 - Active Users',
+    'affiliate.commissionLevels.level2.description': 'Users who have bought or sold a coordinate in the last 7 days or managers of a circular market',
+    'affiliate.commissionLevels.level2.commission': '50% commission',
+    'affiliate.commissionLevels.level3.title': 'Level 3 - Default Users',
+    'affiliate.commissionLevels.level3.description': 'All users by default',
+    'affiliate.commissionLevels.level3.commission': '25% commission',
     
     // Account Settings
     'account.title': 'Account Settings',
@@ -401,6 +411,16 @@ const translations = {
     'affiliate.errorCopyingLink': 'Error al copiar el link',
     'affiliate.loadingData': 'Cargando...',
     'affiliate.errorLoadingData': 'Error al cargar datos de afiliados',
+    'affiliate.commissionLevels.title': 'Niveles de Comisión',
+    'affiliate.commissionLevels.level1.title': 'Nivel 1 - Embajadores Greenriot',
+    'affiliate.commissionLevels.level1.description': 'Embajadores de Greenriot o acuerdos de marketing especiales',
+    'affiliate.commissionLevels.level1.commission': '100% de comisión',
+    'affiliate.commissionLevels.level2.title': 'Nivel 2 - Usuarios Activos',
+    'affiliate.commissionLevels.level2.description': 'Usuarios que han comprado o vendido una coordenada en los últimos 7 días o managers de un mercado circular',
+    'affiliate.commissionLevels.level2.commission': '50% de comisión',
+    'affiliate.commissionLevels.level3.title': 'Nivel 3 - Usuarios por Defecto',
+    'affiliate.commissionLevels.level3.description': 'Todos los usuarios por defecto',
+    'affiliate.commissionLevels.level3.commission': '25% de comisión',
     
     // Account Settings
     'account.title': 'Configuración de Cuenta',
