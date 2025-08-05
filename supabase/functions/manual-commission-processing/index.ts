@@ -139,6 +139,7 @@ serve(async (req) => {
     logStep("Commission record created", { commissionId: commission.id });
 
     // Get or create wallet for affiliate user
+    logStep("Getting or creating wallet", { affiliateUserId: referral.affiliate_user_id });
     const { data: walletId, error: walletIdError } = await supabaseService
       .rpc('get_or_create_wallet', {
         p_user_id: referral.affiliate_user_id,
@@ -146,10 +147,19 @@ serve(async (req) => {
       });
 
     if (walletIdError) {
+      logStep("Wallet creation error", { error: walletIdError });
       throw walletIdError;
     }
 
+    logStep("Wallet retrieved/created", { walletId });
+
     // Add commission to affiliate's wallet using the atomic function
+    logStep("Starting wallet balance update", { 
+      walletId, 
+      amount: commissionAmount, 
+      userId: referral.affiliate_user_id 
+    });
+    
     const { data: walletResult, error: walletError } = await supabaseService
       .rpc('update_wallet_balance_atomic', {
         p_wallet_id: walletId,
@@ -162,8 +172,11 @@ serve(async (req) => {
       });
 
     if (walletError) {
+      logStep("Wallet update error", { error: walletError });
       throw walletError;
     }
+
+    logStep("Wallet update completed", { walletResult });
 
     logStep("Commission processed successfully", { 
       affiliateUserId: referral.affiliate_user_id,
@@ -186,8 +199,8 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
+    const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
+    logStep("ERROR", { message: errorMessage, stack: error instanceof Error ? error.stack : undefined });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
