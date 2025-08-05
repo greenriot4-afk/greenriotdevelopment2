@@ -1,11 +1,28 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
+import { AuthProvider } from "@/hooks/useAuth";
+import { LanguageProvider } from "@/hooks/useLanguage";
+import { SubscriptionProvider } from "@/hooks/useSubscription";
+import { FavoritesProvider } from "@/context/FavoritesContext";
+import { MobileTabs } from "@/components/MobileTabs";
+import { MobileMenu } from "@/components/MobileMenu";
+import { HeaderWallet } from "@/components/HeaderWallet";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import ObjectsPage from "./ObjectsPage";
+import ObjectDetailPage from "./ObjectDetailPage";
+import MarketsPage from "./MarketsPage";
+import MarketDetailPage from "./MarketDetailPage";
+import MarketCatalogPage from "./MarketCatalogPage";
+import { UserProfilePage } from "./UserProfilePage";
+import { Routes, Route } from 'react-router-dom';
 
 interface SharedObject {
   id: string;
@@ -26,23 +43,15 @@ interface SharedObject {
   };
 }
 
-const SharedObjectPage = () => {
-  const { objectId } = useParams<{ objectId: string }>();
+// Component to handle meta tags for sharing
+const SharedObjectMeta = ({ objectId }: { objectId: string }) => {
   const [object, setObject] = useState<SharedObject | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!objectId) {
-      console.log('SharedObjectPage: No objectId provided');
-      return;
-    }
-
-    console.log('SharedObjectPage: Fetching object with ID:', objectId);
+    if (!objectId) return;
 
     const fetchObject = async () => {
       try {
-        setLoading(true);
-        
         const { data, error } = await supabase
           .from('objects')
           .select(`
@@ -51,41 +60,29 @@ const SharedObjectPage = () => {
           .eq('id', objectId)
           .maybeSingle();
 
-        if (error) {
-          console.error('SharedObjectPage: Error fetching object:', error);
-          throw error;
-        }
+        if (error || !data) return;
 
-        if (data) {
-          // Fetch user profile separately
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('display_name, username')
-            .eq('user_id', data.user_id)
-            .maybeSingle();
+        // Fetch user profile separately
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('display_name, username')
+          .eq('user_id', data.user_id)
+          .maybeSingle();
 
-          // Create object with profile data
-          const objectWithProfile: SharedObject = {
-            ...data,
-            profiles: profileData || undefined
-          } as SharedObject;
+        const objectWithProfile: SharedObject = {
+          ...data,
+          profiles: profileData || undefined
+        } as SharedObject;
 
-          console.log('SharedObjectPage: Object data fetched:', objectWithProfile);
-          setObject(objectWithProfile);
-        } else {
-          setObject(null);
-        }
+        setObject(objectWithProfile);
       } catch (error) {
-        console.error('SharedObjectPage: Catch block error:', error);
-      } finally {
-        setLoading(false);
+        console.error('Error fetching object for meta tags:', error);
       }
     };
 
     fetchObject();
   }, [objectId]);
 
-  // Meta tags para compartir en redes sociales
   useEffect(() => {
     if (object) {
       // Clear existing meta tags first
@@ -100,8 +97,6 @@ const SharedObjectPage = () => {
         imageUrl = `${window.location.origin}${imageUrl}`;
       }
 
-      console.log('Setting meta tags with image URL:', imageUrl);
-      
       // Basic meta description
       const metaDescription = document.createElement('meta');
       metaDescription.setAttribute('name', 'description');
@@ -148,20 +143,10 @@ const SharedObjectPage = () => {
         document.head.appendChild(meta);
       });
 
-      // WhatsApp specific (uses Open Graph but sometimes needs help)
-      const whatsappMeta = document.createElement('meta');
-      whatsappMeta.setAttribute('property', 'og:image:type');
-      whatsappMeta.setAttribute('content', 'image/jpeg');
-      document.head.appendChild(whatsappMeta);
-
-      // Telegram specific
-      const telegramMeta = document.createElement('meta');
-      telegramMeta.setAttribute('name', 'telegram:channel');
-      telegramMeta.setAttribute('content', '@greenriot');
-      document.head.appendChild(telegramMeta);
-
       // Additional meta for better compatibility
       const additionalMetas = [
+        { property: 'og:image:type', content: 'image/jpeg' },
+        { name: 'telegram:channel', content: '@greenriot' },
         { property: 'article:author', content: object.profiles?.display_name || 'Usuario GreenRiot' },
         { property: 'article:published_time', content: object.created_at },
         { name: 'robots', content: 'index, follow' },
@@ -178,132 +163,99 @@ const SharedObjectPage = () => {
         meta.setAttribute('content', tag.content);
         document.head.appendChild(meta);
       });
-
-      console.log('Meta tags set for object:', object.title);
     }
   }, [object]);
 
-  const getTypeLabel = (type: string) => {
-    switch (type) {
-      case 'abandoned': return 'Objeto Abandonado';
-      case 'donation': return 'Donación';
-      case 'product': return 'Producto';
-      default: return 'Objeto';
+  return null;
+};
+
+// Main shared object app component
+const SharedObjectApp = () => {
+  const { objectId } = useParams<{ objectId: string }>();
+  const location = useLocation();
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+
+  useEffect(() => {
+    // Check if we should redirect to the object detail view
+    if (objectId && location.pathname === `/shared/object/${objectId}`) {
+      // Set a flag to redirect after the app is mounted
+      setShouldRedirect(true);
     }
-  };
+  }, [objectId, location.pathname]);
 
-  const openInMaps = () => {
-    if (object?.latitude && object?.longitude) {
-      const url = `https://www.google.com/maps?q=${object.latitude},${object.longitude}`;
-      window.open(url, '_blank');
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Cargando...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!object) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-2">Objeto no encontrado</h1>
-          <p className="text-muted-foreground">El objeto que buscas no existe o ha sido eliminado.</p>
-        </div>
-      </div>
-    );
+  // If we should redirect, navigate to the object detail page
+  if (shouldRedirect && objectId) {
+    return <Navigate to={`/shared/object/${objectId}/app/object/${objectId}`} replace />;
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto p-4">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-foreground mb-2">GreenRiot</h1>
-          <p className="text-sm text-muted-foreground mb-1">Stooping & Thrifting Circular economy App</p>
-          <p className="text-xs text-muted-foreground">Save or make money. Save the planet</p>
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* Header */}
+      <header className="flex items-center justify-between h-14 px-4 border-b bg-primary backdrop-blur">
+        <div className="flex items-center">
+          <img 
+            src="/lovable-uploads/991c69cf-b058-411d-b885-f70ba12f255b.png" 
+            alt="Greenriot" 
+            className="h-8 w-auto"
+          />
         </div>
+        <div className="flex items-center gap-3">
+          <HeaderWallet />
+          <MobileMenu />
+        </div>
+      </header>
 
-        {/* Object Card */}
-        <Card className="mb-6">
-          {object.image_url && (
-            <div className="aspect-video w-full overflow-hidden rounded-t-lg">
-              <img
-                src={object.image_url}
-                alt={object.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+      {/* Mobile Navigation Tabs */}
+      <MobileTabs />
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-auto">
+        <Routes>
+          {/* Public routes */}
+          <Route path="abandons" element={<ObjectsPage />} />
+          <Route path="donations" element={<ObjectsPage />} />
+          <Route path="products" element={<ObjectsPage />} />
+          <Route path="object/:objectId" element={<ObjectDetailPage />} />
+          <Route path="markets" element={<MarketsPage />} />
+          <Route path="market-detail/:marketId" element={<MarketDetailPage />} />
+          <Route path="market-catalog/:marketId" element={<MarketCatalogPage />} />
+          <Route path="profile/:userId" element={<UserProfilePage />} />
           
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <Badge variant="outline" className="mb-2">
-                  {getTypeLabel(object.type)}
-                </Badge>
-                <CardTitle className="text-xl">{object.title}</CardTitle>
-              </div>
-              {object.price && object.type === 'product' && (
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-foreground">
-                    €{object.price}
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardHeader>
-
-          <CardContent className="space-y-4">
-            {object.description && (
-              <p className="text-foreground">{object.description}</p>
-            )}
-
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-              {object.location_name && (
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />
-                  {object.location_name}
-                </div>
-              )}
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                {format(new Date(object.created_at), 'dd/MM/yyyy')}
-              </div>
-            </div>
-
-            {object.profiles?.display_name && (
-              <div className="border-t pt-4">
-                <p className="text-sm text-muted-foreground">
-                  Publicado por <span className="font-medium text-foreground">{object.profiles.display_name}</span>
-                </p>
-              </div>
-            )}
-
-          </CardContent>
-        </Card>
-
-        {/* App Download CTA */}
-        <Card>
-          <CardContent className="text-center p-6">
-            <h3 className="font-semibold text-foreground mb-2">¿Te interesa este objeto?</h3>
-            <p className="text-muted-foreground mb-4">
-              Crea una cuenta en Greenriot
-            </p>
-            <Button className="w-full">
-              Crear cuenta
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+          {/* Default redirect to the shared object */}
+          <Route path="*" element={objectId ? <Navigate to={`object/${objectId}`} replace /> : <Navigate to="abandons" replace />} />
+        </Routes>
+      </main>
     </div>
+  );
+};
+
+const SharedObjectPage = () => {
+  const { objectId } = useParams<{ objectId: string }>();
+
+  return (
+    <AuthProvider>
+      <LanguageProvider>
+        <SubscriptionProvider>
+          <FavoritesProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              
+              {/* Add meta tags for sharing */}
+              {objectId && <SharedObjectMeta objectId={objectId} />}
+              
+              <Routes>
+                {/* Route for the shared object with full app navigation */}
+                <Route path="/app/*" element={<SharedObjectApp />} />
+                
+                {/* Default route - redirect to app view */}
+                <Route path="*" element={objectId ? <Navigate to={`/shared/object/${objectId}/app/object/${objectId}`} replace /> : <Navigate to="/app/abandons" replace />} />
+              </Routes>
+            </TooltipProvider>
+          </FavoritesProvider>
+        </SubscriptionProvider>
+      </LanguageProvider>
+    </AuthProvider>
   );
 };
 
