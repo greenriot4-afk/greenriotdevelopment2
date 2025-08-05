@@ -169,7 +169,8 @@ const SharedMarketPage = () => {
         {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-foreground mb-2">GreenRiot</h1>
-          <p className="text-muted-foreground">Economía circular y sostenible</p>
+          <p className="text-sm text-muted-foreground mb-1">Stooping & Thrifting Circular economy App</p>
+          <p className="text-xs text-muted-foreground">Save or make money. Save the planet</p>
         </div>
 
         {/* Market Card */}
@@ -240,10 +241,10 @@ const SharedMarketPage = () => {
           <CardContent className="text-center p-6">
             <h3 className="font-semibold text-foreground mb-2">¿Te interesa este mercadillo?</h3>
             <p className="text-muted-foreground mb-4">
-              Descarga GreenRiot para ver el catálogo completo, contactar con el creador y descubrir más mercadillos cerca de ti
+              Crea una cuenta en Greenriot
             </p>
             <Button className="w-full">
-              Descargar GreenRiot
+              Crear cuenta
             </Button>
           </CardContent>
         </Card>
