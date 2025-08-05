@@ -323,12 +323,9 @@ const ObjectsPage = () => {
 
   return (
     <div className="flex-1 p-4 max-w-md mx-auto w-full">
-      {/* Content Header */}
+      {/* Content Header - Only show for circular markets */}
       <div className="mb-4">
-        <div className="mb-3">
-          <h2 className="text-xl font-semibold">{getTitle()}</h2>
-          <p className="text-sm text-muted-foreground">{getDescription()}</p>
-        </div>
+        {/* Titles removed for all ad types except circular markets */}
       </div>
 
       {/* Upload Form - Only shown when FAB is clicked */}

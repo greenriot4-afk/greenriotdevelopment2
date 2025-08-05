@@ -366,17 +366,6 @@ export const ObjectsList = ({ objects, onPurchaseCoordinates, userLocation, obje
               {/* User info and likes */}
               <div className="flex items-center justify-between mb-3">
                 <div className="flex flex-col gap-1">
-                  <Link 
-                    to={`/app/profile/${object.user_id}`}
-                    className="flex items-center gap-1 text-sm font-medium hover:text-primary transition-colors"
-                  >
-                    {object.market_id ? (
-                      <Store className="w-3 h-3 text-green-600" />
-                    ) : (
-                      <UserCircle className="w-3 h-3 text-blue-600" />
-                     )}
-                     {object.user_display_name || 'Usuario'}
-                   </Link>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <MapPin className="w-3 h-3" />
