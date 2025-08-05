@@ -88,8 +88,8 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/markets?subscription=success`,
-      cancel_url: `${req.headers.get("origin")}/markets?subscription=canceled`,
+      success_url: `${req.headers.get("origin")}/app/markets?subscription=success`,
+      cancel_url: `${req.headers.get("origin")}/app/markets?subscription=canceled`,
       metadata: {
         user_id: user.id,
         subscription_type: "premium_market"
