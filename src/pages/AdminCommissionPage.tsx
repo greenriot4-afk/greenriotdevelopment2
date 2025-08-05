@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const AdminCommissionPage = () => {
-  const [referralId, setReferralId] = useState("e4e920d2-736d-417c-97a9-f6e5b2d4dee4");
+  const [referralId, setReferralId] = useState("");
   const [processing, setProcessing] = useState(false);
 
   const processCommission = async () => {
@@ -23,6 +23,11 @@ const AdminCommissionPage = () => {
 
       if (error) {
         throw error;
+      }
+
+      if (data.success === false) {
+        toast.warning(data.message);
+        return;
       }
 
       toast.success(`Commission processed successfully! Amount: €${data.commission}`);

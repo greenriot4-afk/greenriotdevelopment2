@@ -32,8 +32,7 @@ serve(async (req) => {
       .from('referrals')
       .select('*')
       .eq('id', referralId)
-      .eq('commission_paid', false)
-      .single();
+      .maybeSingle();
 
     if (referralError) {
       console.error("Referral error:", referralError);
@@ -41,7 +40,19 @@ serve(async (req) => {
     }
 
     if (!referral) {
-      throw new Error("No eligible referral found");
+      throw new Error("Referral not found with the provided ID");
+    }
+
+    if (referral.commission_paid) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        message: "Commission already paid for this referral",
+        commission: referral.commission_amount,
+        paidAt: referral.subscription_date
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
     }
 
     console.log("Referral found:", referral.id);
