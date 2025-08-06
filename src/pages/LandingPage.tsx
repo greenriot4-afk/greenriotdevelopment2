@@ -55,9 +55,9 @@ export default function LandingPage() {
         
         {/* Background decoration */}
         <div className="absolute inset-0 opacity-5 bg-[#17503a]">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-primary rounded-full animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-24 h-24 bg-secondary rounded-full animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-accent rounded-full animate-pulse delay-500"></div>
+          <div className="absolute top-20 left-10 w-32 h-32 bg-primary rounded-full"></div>
+          <div className="absolute bottom-20 right-10 w-24 h-24 bg-secondary rounded-full"></div>
+          <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-accent rounded-full"></div>
         </div>
       </section>
 
