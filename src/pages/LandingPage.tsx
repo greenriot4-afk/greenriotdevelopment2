@@ -35,13 +35,13 @@ export default function LandingPage() {
     }}>
         <div className="container mx-auto max-w-5xl text-center relative z-10">
           
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-impact text-rebel mb-8 animate-fade-in delay-100 drop-shadow-2xl">
             <span className="text-accent">{t('landing.hero.title')}</span>
             <br />
             <span className="text-accent">{t('landing.hero.subtitle')}</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">{t('landing.hero.description')}</p>
+          <p className="text-2xl md:text-3xl text-accent mb-12 max-w-4xl mx-auto leading-relaxed animate-fade-in delay-200 font-impact">{t('landing.hero.description')}</p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in delay-300">
             <Button asChild size="lg" className="text-lg px-8 py-4 h-auto bg-white text-secondary hover:bg-gray-100 font-impact text-rebel shadow-rebel">
