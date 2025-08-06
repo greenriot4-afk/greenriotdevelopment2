@@ -152,7 +152,7 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-2xl font-impact text-rebel mb-4 text-accent">GREENRIOT</h3>
+              
               <p className="text-white mb-4 font-impact">
                 {t('footer.description')}
               </p>
