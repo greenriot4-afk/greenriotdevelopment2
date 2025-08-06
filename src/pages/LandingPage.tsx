@@ -111,7 +111,8 @@ export default function LandingPage() {
                       />
                     </LazyLoadWrapper>
                   </div>
-                  <h3 className="text-3xl font-impact text-rebel mb-4 text-foreground">{t('landing.coordinates.cardTitle')}</h3>
+                  <h3 className="text-4xl font-impact text-rebel mb-4 text-foreground">{t('landing.coordinates.cardTitle')}</h3>
+                  <p className="text-lg font-impact text-foreground mb-4">You know there is a FREE COUCH 6 miles away from you but not exactly where, buy the coordinates and get a $200 COUCH FOR $1</p>
                   <p className="text-foreground text-lg leading-relaxed font-impact">{t('landing.coordinates.cardDescription')}</p>
                 </div>
               </div>
