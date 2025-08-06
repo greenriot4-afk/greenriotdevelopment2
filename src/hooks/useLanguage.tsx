@@ -166,7 +166,7 @@ const translations = {
     'landing.coordinates.feature3': 'TURN YOUR DAILY WALKS INTO AN URBAN BUSINESS OPPORTUNITY',
     'landing.coordinates.cta': 'START MAKING MONEY AND HELPING THE PLANET',
     'landing.coordinates.cardTitle': 'BUY COORDINATES AND GET BARGAINS',
-    'landing.coordinates.cardDescription': 'You know there is a FREE COUCH 6 miles away from you but not exactly where, buy the coordinates and get a $200 COUCH FOR $1',
+    'landing.coordinates.cardDescription': 'You know there is a FREE COUCH 6 away from you but not exactly where, buy the coordinates and get a $200 COUCH FOR $1',
     
     // Circular markets section
     'landing.markets.badge': '🏪 CIRCULAR MARKETS',
@@ -478,7 +478,7 @@ const translations = {
     'landing.coordinates.feature3': 'CONVIERTE TUS PASEOS DIARIOS EN UNA OPORTUNIDAD DE NEGOCIO URBANO',
     'landing.coordinates.cta': 'EMPEZAR A GANAR DINERO Y AYUDAR AL PLANETA',
     'landing.coordinates.cardTitle': 'COMPRA COORDENADAS Y CONSIGUE GANGAS',
-    'landing.coordinates.cardDescription': 'Sabes que hay un SOFÁ GRATIS a 6 millas de ti, pero no exactamente dónde. Compra las coordenadas y consigue un SOFÁ DE $200 POR $1.',
+    'landing.coordinates.cardDescription': 'Sabes que hay un SOFÁ GRATIS a 6 km de ti, pero no exactamente dónde. Compra las coordenadas y consigue un SOFÁ DE $200 POR $1.',
     
     // Circular markets section
     'landing.markets.badge': '🏪 MERCADOS CIRCULARES',
