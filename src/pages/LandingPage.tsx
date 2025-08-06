@@ -5,6 +5,8 @@ import { ArrowRight, MapPin, Users, ShoppingBag, Gift, DollarSign, Camera, Eye, 
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { useLanguage } from "@/hooks/useLanguage";
+import { OptimizedImage } from "@/components/OptimizedImage";
+import { LazyLoadWrapper } from "@/components/LazyLoadWrapper";
 export default function LandingPage() {
   const {
     t
@@ -15,7 +17,15 @@ export default function LandingPage() {
 
       {/* Header Image Section */}
       <section className="relative h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
-        <img src="/lovable-uploads/ec2460b1-159d-4595-9308-5a371bae3751.png" alt="Header" className="w-full h-full object-cover" />
+        <OptimizedImage 
+          src="/lovable-uploads/ec2460b1-159d-4595-9308-5a371bae3751.png" 
+          alt="Header" 
+          className="w-full h-full object-cover" 
+          quality="medium"
+          loading="eager"
+          width={1920}
+          height={1080}
+        />
         <div className="absolute inset-0 bg-black/20"></div>
       </section>
 
@@ -90,7 +100,16 @@ export default function LandingPage() {
               <div className="p-8">
                 <div className="text-center">
                   <div className="mb-6">
-                    <img src="/lovable-uploads/d555150b-d59d-46cf-ad9e-2a7883671574.png" alt="Buy Coordinates" className="w-96 h-auto mx-auto" />
+                    <LazyLoadWrapper>
+                      <OptimizedImage 
+                        src="/lovable-uploads/d555150b-d59d-46cf-ad9e-2a7883671574.png" 
+                        alt="Buy Coordinates" 
+                        className="w-96 h-auto mx-auto" 
+                        quality="medium"
+                        width={384}
+                        height={300}
+                      />
+                    </LazyLoadWrapper>
                   </div>
                   <h3 className="text-2xl font-impact text-rebel mb-4 text-foreground">{t('landing.coordinates.cardTitle')}</h3>
                   <p className="text-foreground text-lg leading-relaxed font-impact">{t('landing.coordinates.cardDescription')}</p>
@@ -109,7 +128,16 @@ export default function LandingPage() {
               {/* App Screenshots - Aligned to left */}
               <div className="space-y-8">
                 <div className="w-80 max-w-sm">
-                  <img src="/lovable-uploads/72660b3e-2b63-423d-86c3-d5f90e52aa22.png" alt="GreenRiot app showing garage sale and market features" className="w-full h-auto rounded-3xl shadow-2xl" />
+                  <LazyLoadWrapper>
+                    <OptimizedImage 
+                      src="/lovable-uploads/72660b3e-2b63-423d-86c3-d5f90e52aa22.png" 
+                      alt="GreenRiot app showing garage sale and market features" 
+                      className="w-full h-auto rounded-3xl shadow-2xl" 
+                      quality="medium"
+                      width={320}
+                      height={600}
+                    />
+                  </LazyLoadWrapper>
                 </div>
               </div>
             </div>

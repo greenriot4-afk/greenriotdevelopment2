@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Languages, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 export default function Navbar() {
   const { t, language, setLanguage } = useLanguage();
@@ -14,10 +15,14 @@ export default function Navbar() {
         <div className="flex items-center justify-start md:justify-between h-16 sm:h-18 lg:h-20 gap-8 md:gap-0">
           {/* Logo */}
           <Link to="/" className="flex items-center flex-shrink-0">
-            <img 
+            <OptimizedImage 
               src="/lovable-uploads/fed4e95f-7ec0-41bc-b194-9781cdc063de.png" 
               alt="Greenriot" 
               className="h-8 sm:h-10 lg:h-12 w-auto"
+              quality="high"
+              loading="eager"
+              width={48}
+              height={48}
             />
           </Link>
 

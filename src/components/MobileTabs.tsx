@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Globe } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
+import { OptimizedImage } from "@/components/OptimizedImage";
 
 const tabs = [
   {
@@ -68,10 +69,14 @@ export function MobileTabs() {
             >
               <div className="flex flex-col items-center gap-1">
                 {tab.iconSrc ? (
-                  <img 
+                  <OptimizedImage 
                     src={tab.iconSrc} 
                     alt={t(tab.labelKey)}
                     className={`h-5 w-5 ${isActive ? 'opacity-100' : 'opacity-60'}`}
+                    quality="medium"
+                    loading="eager"
+                    width={20}
+                    height={20}
                   />
                 ) : tab.icon ? (
                   <tab.icon 
